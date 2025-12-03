@@ -39,22 +39,23 @@ import com.fortgame.ksynic.ui.theme.DiscountRed
 // ----------------------------------------------------------------
 @Composable
 fun ProductGrid() {
-    // В реальном приложении лучше использовать LazyVerticalGrid,
-    // но внутри Scrollable Column проще использовать Row с весами для макета
+    // Один ряд из двух карточек, как на макете
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Товар 1: Часы
         ProductCard(
             modifier = Modifier.weight(1f),
             title = "Часы наручные Кварцевые",
-            price = 4200,
-            oldPrice = 21000,
+            price = 4_200,
+            oldPrice = 21_000,
             discount = "-80%",
             rating = 5.0,
             reviews = 23,
-            imageUrl = "", // Сюда подставите URL
+            imageUrl = null,
             isTimeLimited = true
         )
 
@@ -63,16 +64,25 @@ fun ProductGrid() {
             modifier = Modifier.weight(1f),
             title = "Брюки прямые TBOE",
             price = 900,
-            oldPrice = 3000,
+            oldPrice = 3_000,
             discount = "-70%",
             rating = 5.0,
             reviews = 23,
-            imageUrl = "", // Сюда подставите URL
+            imageUrl = null,
             isTimeLimited = false,
             badgeContent = {
-                // Пример красного бейджа бренда как на фото
-                Box(modifier = Modifier.background(Color.Red).padding(2.dp)) {
-                    Text("TBOE", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                // Красный бейдж бренда, как на скриншоте
+                Box(
+                    modifier = Modifier
+                        .background(Color.Red, RoundedCornerShape(4.dp))
+                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        "TBOE",
+                        color = Color.White,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         )
@@ -88,56 +98,93 @@ fun ProductCard(
     discount: String,
     rating: Double,
     reviews: Int,
-    imageUrl: String,
+    // imageUrl зарезервирован под загрузку из сети, сейчас всегда рисуем заглушку
+    imageUrl: String?,
     isTimeLimited: Boolean = false,
     badgeContent: @Composable (() -> Unit)? = null
 ) {
     Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
+        modifier = modifier.height(320.dp),
+        shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column {
-            // Область картинки
+            // Область "картинки" — сейчас всегда заглушка под будущую загрузку
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
-                    .background(Color.LightGray) // Плейсхолдер для картинки
+                    .height(190.dp)
+                    .background(Color(0xFFE5E5E5), RoundedCornerShape(topStart = 14.dp, topEnd = 14.dp))
             ) {
-                // Здесь должен быть AsyncImage(model = imageUrl ...)
+                // Заглушка вместо AsyncImage(model = imageUrl ...)
+                Text(
+                    text = "Изображение",
+                    color = Color(0xFF888888),
+                    fontSize = 12.sp,
+                    modifier = Modifier.align(Alignment.Center)
+                )
 
                 // Иконка лайка
                 Icon(
                     imageVector = Icons.Outlined.FavoriteBorder,
                     contentDescription = null,
                     tint = Color.Gray,
-                    modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
                 )
 
                 // Бейдж бренда (если есть)
                 if (badgeContent != null) {
-                    Box(modifier = Modifier.align(Alignment.BottomEnd).padding(8.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(8.dp)
+                    ) {
                         badgeContent()
                     }
                 }
             }
 
             // Информация о товаре
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp, vertical = 10.dp)
+                    .fillMaxWidth()
+            ) {
                 // Рейтинг
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Build, contentDescription = null, modifier = Modifier.size(12.dp), tint = Color.Gray)
+                    Icon(
+                        Icons.Default.Build,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                        tint = Color.Gray
+                    )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("$reviews отзыва", fontSize = 10.sp, color = Color.Gray)
                     Spacer(modifier = Modifier.weight(1f))
-                    Icon(Icons.Default.Star, contentDescription = null, modifier = Modifier.size(12.dp), tint = Color(0xFFFFD700))
-                    Text("$rating", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Icon(
+                        Icons.Default.Star,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                        tint = Color(0xFFFFD700)
+                    )
+                    Text(
+                        "$rating",
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(title, maxLines = 2, overflow = TextOverflow.Ellipsis, fontSize = 14.sp)
+                Text(
+                    title,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -158,9 +205,9 @@ fun ProductCard(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.weight(1f))
 
-                // Скидка и таймер
+                // Скидка и таймер (всегда прижаты к низу карточки)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(
                         color = DiscountRed.copy(alpha = 0.1f),

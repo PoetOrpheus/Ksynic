@@ -34,7 +34,9 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CategoriesRow() {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         CategoryItem("Стать\nпродавцом", Color(0xFFD15664), Icons.Default.Build)
@@ -47,11 +49,14 @@ fun CategoriesRow() {
 
 @Composable
 fun CategoryItem(text: String, color: Color, icon: ImageVector) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(70.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.width(70.dp)
+    ) {
         Box(
             modifier = Modifier
-                .size(56.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .size(60.dp)
+                .clip(RoundedCornerShape(18.dp))
                 .background(
                     brush = Brush.linearGradient(
                         colors = listOf(color, color.copy(alpha = 0.7f))

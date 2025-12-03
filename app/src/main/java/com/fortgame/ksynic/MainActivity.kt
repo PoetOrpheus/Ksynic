@@ -12,6 +12,10 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +33,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fortgame.ksynic.BottomNavItem
 import com.fortgame.ksynic.BottomNavigationBar
 import com.fortgame.ksynic.UI.CategoriesRow
 import com.fortgame.ksynic.UI.ProductGrid
@@ -39,8 +44,15 @@ import com.fortgame.ksynic.ui.theme.*
 
 @Composable
 fun MarketplaceScreen() {
+    var selectedTab by remember { mutableStateOf(BottomNavItem.Home) }
+
     Scaffold(
-        bottomBar = { BottomNavigationBar() },
+        bottomBar = {
+            BottomNavigationBar(
+                selectedItem = selectedTab,
+                onItemSelected = { selectedTab = it }
+            )
+        },
         containerColor = BackgroundLight
     ) { paddingValues ->
         // Основной контент с прокруткой
