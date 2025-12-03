@@ -1,4 +1,4 @@
-package com.fortgame.ksynic.UI
+package com.fortgame.ksynic.Layer
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

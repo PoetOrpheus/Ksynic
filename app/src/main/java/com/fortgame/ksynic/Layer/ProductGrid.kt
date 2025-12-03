@@ -1,4 +1,4 @@
-package com.fortgame.ksynic.UI
+package com.fortgame.ksynic.Layer
 
 
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fortgame.ksynic.ui.theme.DiscountRed
+import com.fortgame.ksynic.theme.DiscountRed
 
 // ----------------------------------------------------------------
 // Карточки товаров

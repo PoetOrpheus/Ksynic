@@ -1,4 +1,4 @@
-package com.fortgame.ksynic.ui.theme
+package com.fortgame.ksynic.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

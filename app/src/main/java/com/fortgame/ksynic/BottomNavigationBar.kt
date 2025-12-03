@@ -20,7 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fortgame.ksynic.ui.theme.BrandPurple
+import com.fortgame.ksynic.theme.*
 
 // ----------------------------------------------------------------
 // 5. Нижняя навигация

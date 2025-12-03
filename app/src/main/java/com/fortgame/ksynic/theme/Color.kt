@@ -1,4 +1,4 @@
-package com.fortgame.ksynic.ui.theme
+package com.fortgame.ksynic.theme
 
 import androidx.compose.ui.graphics.Color
 
