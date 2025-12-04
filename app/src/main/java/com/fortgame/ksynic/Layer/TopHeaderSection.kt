@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -47,8 +48,10 @@ fun TopHeaderSection() {
             // конвертируем через утилиту fh(...) в dp текущего экрана
             .height(fh(220))
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFF6773E6), Color(0xFFEBA6EA))
+                brush = Brush.linearGradient(
+                    colors = listOf(Color(0xFF5D76CB), Color(0xFFFCB4D5)),
+                    start = Offset(0f, 0f),  // Левый верхний
+                    end = Offset(600f, 600f), // Правый нижний (или используйте Offset.Infinite)
                 )
             )
     ) {

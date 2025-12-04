@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -43,16 +42,16 @@ fun CategoriesRow() {
             .padding(top = fh(10)),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        CategoryItem("Стать\nпродавцом", Color(0xFFD15664), Icons.Default.Build)
-        CategoryItem("Магазины\nи бренды", Color(0xFF9E56D1), Icons.Default.Build)
-        CategoryItem("Финансы", Color(0xFFC7A656), Icons.Default.Build)
-        CategoryItem("История\nпросмотров", Color(0xFF358C7F), Icons.Default.Build)
-        CategoryItem("Каталог", Color(0xFF3B56D3), Icons.Default.Build)
+        CategoryItem("Стать\nпродавцом", Color(0xFF5D76CB),Color(0xFFD23E41), Icons.Default.Build)
+        CategoryItem("Магазины\nи бренды", Color(0xFF5D76CB),Color(0xFFCC5086), Icons.Default.Build)
+        CategoryItem("Финансы", Color(0xFF5D76CB), Color(0xFFDAA636),Icons.Default.Build)
+        CategoryItem("История\nпросмотров", Color(0xFF5D76CB), Color(0xFF21936F),Icons.Default.Build)
+        CategoryItem("Каталог", Color(0xFF5D76CB), Color(0xFF1D36D7),Icons.Default.Build)
     }
 }
 
 @Composable
-fun CategoryItem(text: String, color: Color, icon: ImageVector) {
+fun CategoryItem(text: String, color1: Color, color2: Color, icon: ImageVector) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -65,8 +64,8 @@ fun CategoryItem(text: String, color: Color, icon: ImageVector) {
                 .height(fh(70))
                 .clip(RoundedCornerShape(18.dp))
                 .background(
-                    brush = Brush.linearGradient(
-                        colors = listOf(color, color.copy(alpha = 0.7f))
+                    brush = Brush.verticalGradient(
+                        colors = listOf(color1, color2)
                     )
                 ),
             contentAlignment = Alignment.Center
