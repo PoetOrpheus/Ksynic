@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsControllerCompat
 import com.fortgame.ksynic.Layer.CategoriesRow
 import com.fortgame.ksynic.Layer.ProductGrid
+import com.fortgame.ksynic.Layer.Screen.MarketplaceScreen
 import com.fortgame.ksynic.Layer.TopHeaderSection
 import com.fortgame.ksynic.theme.*
 import com.fortgame.ksynic.utils.fh
@@ -37,53 +38,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
-
-
-
-@Composable
-fun MarketplaceScreen() {
-    var selectedTab by remember { mutableStateOf(BottomNavItem.Home) }
-
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(
-                selectedItem = selectedTab,
-                onItemSelected = { selectedTab = it }
-            )
-        },
-        containerColor = BackgroundLight
-    ) { paddingValues ->
-        // Основной контент с прокруткой
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-        ) {
-            // Верхняя секция с градиентом
-            TopHeaderSection()
-
-            //Spacer(modifier = Modifier.height(16.dp))
-
-            // Категории (иконки)
-            CategoriesRow()
-
-            Spacer(modifier = Modifier.height(fh(10)))
-
-            // Сетка товаров
-            ProductGrid()
-
-
-            Spacer(modifier = Modifier.height(fh(10)))
-        }
-    }
-}
-
-
-
-// Для превью в Android Studio
-@Preview(showBackground = true)
-@Composable
-fun MarketplacePreview() {
-    MarketplaceScreen()
 }

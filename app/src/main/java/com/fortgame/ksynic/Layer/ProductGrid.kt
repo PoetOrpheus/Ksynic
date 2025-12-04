@@ -51,9 +51,6 @@ fun ProductGrid() {
     ) {
         // Товар 1: Часы
         ProductCard(
-            modifier = Modifier
-                .width(fw(210))
-                .height(fh(420)),
             title = "Часы наручные Кварцевые",
             price = 4_200,
             oldPrice = 21_000,
@@ -66,9 +63,6 @@ fun ProductGrid() {
 
         // Товар 2: Джинсы
         ProductCard(
-            modifier = Modifier
-                .width(fw(210))
-                .height(fh(420)),
             title = "Брюки прямые TBOE",
             price = 900,
             oldPrice = 3_000,
@@ -77,28 +71,12 @@ fun ProductGrid() {
             reviews = 23,
             imageUrl = null,
             isTimeLimited = false,
-            badgeContent = {
-                // Красный бейдж бренда, как на скриншоте
-                Box(
-                    modifier = Modifier
-                        .background(Color.Red, RoundedCornerShape(4.dp))
-                        .padding(horizontal = 4.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        "TBOE",
-                        color = Color.White,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
         )
     }
 }
 
 @Composable
 fun ProductCard(
-    modifier: Modifier = Modifier,
     title: String,
     price: Int,
     oldPrice: Int,
@@ -108,10 +86,11 @@ fun ProductCard(
     // imageUrl зарезервирован под загрузку из сети, сейчас всегда рисуем заглушку
     imageUrl: String?,
     isTimeLimited: Boolean = false,
-    badgeContent: @Composable (() -> Unit)? = null
 ) {
     Card(
-        modifier = modifier,
+        modifier = Modifier
+            .width(fw(210))
+            .height(fh(420)),
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -121,7 +100,7 @@ fun ProductCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(fh(280))
+                    .height(fh(240)) // чуть ниже, чтобы снизу было больше места под текст и блок скидки
                     .background(Color(0xFFE5E5E5), RoundedCornerShape(topStart = 14.dp, topEnd = 14.dp))
             ) {
                 // Заглушка вместо AsyncImage(model = imageUrl ...)
@@ -141,17 +120,6 @@ fun ProductCard(
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
                 )
-
-                // Бейдж бренда (если есть)
-                if (badgeContent != null) {
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(8.dp)
-                    ) {
-                        badgeContent()
-                    }
-                }
             }
 
             Spacer(modifier = Modifier.height(fh(5)))
@@ -159,69 +127,60 @@ fun ProductCard(
             // Информация о товаре
             Column(
                 modifier = Modifier
-                    .padding(horizontal = fw(15), vertical = fh(5))
+                    .padding(horizontal = fw(15))
                     .fillMaxWidth()
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // Левая часть: иконка + кол-во отзывов
                     Icon(
-                        Icons.Default.Build,
+                        imageVector = Icons.Default.Build,
                         contentDescription = null,
-                        modifier = Modifier
-                            .size(fh(10)),
+                        modifier = Modifier.size(12.dp),
                         tint = Color.Gray
                     )
-                    Spacer(modifier = Modifier.width(fw(5)))
-                    Box(
-                        modifier = Modifier
-                            .width(fw(75))
-                            .height(fh(10)),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        Text("$reviews отзыва", fontSize = 8.sp, color = Color.Gray)
-                    }
-                    Spacer(modifier=Modifier.width(fw(20)))
-                    Box(
-                        modifier=Modifier
-                            .width(fw(50))
-                            .height(fh(10)),
-                        contentAlignment = Alignment.CenterEnd
-                    ){
-                        Text("$rating",
-                            fontSize = 10.sp,
-                            color = Color.Black,
-                            fontWeight = FontWeight.ExtraBold)
-
-                    }
-                    Spacer(modifier = Modifier.width(fw(5)))
-                    Icon(
-                        Icons.Default.Build,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(fh(10)),
-                        tint = Color.Gray
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "$reviews отзыва",
+                        fontSize = 10.sp,
+                        color = Color.Gray
                     )
 
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // Правая часть: рейтинг со звездой
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                        tint = Color(0xFFFFD700)
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Text(
+                        text = String.format("%.1f", rating),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(fh(10)))
-                // Название
+                // Название (до 2 строк, без жёсткого ограничения по высоте,
+                // чтобы не обрезалось на устройствах с крупным шрифтом)
                 Box(
                     modifier = Modifier
-                        .width(fw(180))
-                        .height(fh(40)),
+                        .width(fw(180)),
                     contentAlignment = Alignment.CenterStart
-                ){
-                Text(
-                    title,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                )}
+                ) {
+                    Text(
+                        text = title,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
 
                  Spacer(modifier = Modifier.height(fh(5)))
  
@@ -242,7 +201,7 @@ fun ProductCard(
                              text = "$oldPrice ₽",
                              style = TextStyle(textDecoration = TextDecoration.LineThrough),
                              color = Color.Gray,
-                             fontSize = 9.sp
+                             fontSize = 8.sp
                          )
                      }
                      Spacer(modifier = Modifier.width(fw(5)))
@@ -255,7 +214,7 @@ fun ProductCard(
                          Text(
                              text = "$price ₽",
                              color = DiscountRed,
-                             fontSize = 15.sp,
+                             fontSize = 14.sp,
                              fontWeight = FontWeight.Bold
                          )
                      }
@@ -283,26 +242,30 @@ fun ProductCard(
                                 text = discount,
                                 color = DiscountRed,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
                         }
                     }
                     if (isTimeLimited) {
+                        Spacer(modifier = Modifier.width(fw(10)))
                         Box(
                             modifier = Modifier
                                 .width(fw(120))
                                 .height(fh(20)),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.BottomStart
                         ) {
                             Text(
                                 "Время ограничено",
-                                fontSize = 8.sp,
+                                fontSize = 9.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Gray
                             )
                         }
                     }
                 }
+
+                // Отступ 10px до низа карточки
+                Spacer(modifier = Modifier.height(fh(10)))
             }
         }
     }
