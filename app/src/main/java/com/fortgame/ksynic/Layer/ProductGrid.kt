@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -265,21 +266,51 @@ fun ProductCard(
                     Spacer(modifier = Modifier.height(fh(5)))
 
                     // Скидка и таймер
-                    Row(
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(fh(35)),
-                        verticalAlignment = Alignment.Bottom // Выравнивание по нижнему краю, как на скриншоте
+                        contentAlignment = Alignment.BottomStart
                     ) {
+                        // --- СЛОЙ 1: ВРЕМЯ  ---
+                        if (isTimeLimited) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = fw(30))
+                                    .width(fw(150))
+                                    .height(fh(20))
+                                    .shadow(
+                                        elevation = 5.dp,
+                                        shape = RoundedCornerShape(5.dp),
+                                        clip = false,
+                                        spotColor = Color.Black.copy(alpha = 0.3f),
+                                        ambientColor = Color.Black.copy(alpha = 0.3f)
+                                    )
+                                    .background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(5.dp)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Время ограничено",
+                                    fontSize = 7.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color.Black,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+
+                        // --- СЛОЙ 2: СКИДКА (Рисуем второй, чтобы был СВЕРХУ) ---
                         if (discount != 0) {
-                            // Плашка скидки
                             Surface(
                                 modifier = Modifier
                                     .width(fw(60))
-                                    .height(fh(35)),
+                                    .height(fh(35))
+                                    .align(Alignment.BottomStart), // Прижимаем влево
                                 color = Color.White,
                                 shape = RoundedCornerShape(10.dp),
-                                // Тень для скидки (если нужно оставить как было)
                                 shadowElevation = 4.dp
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
@@ -290,36 +321,6 @@ fun ProductCard(
                                         fontSize = 14.sp
                                     )
                                 }
-                            }
-                        }
-
-                        if (isTimeLimited) {
-                            // Блок "Время ограничено"
-                            Box(
-                                modifier = Modifier
-                                    .width(fw(120))
-                                    .height(fh(23))
-                                    .shadow(
-                                        elevation = 5.dp, // Соответствует Blur 5
-                                        shape = RoundedCornerShape(5.dp), // Radius 5px
-                                        clip = false, // Важно, чтобы тень не обрезалась
-                                        spotColor = Color.Black.copy(alpha = 0.3f), // Цвет тени #000000 30%
-                                        ambientColor = Color.Black.copy(alpha = 0.3f)
-                                    )
-                                    // 2. Белый фон и форма самой плашки
-                                    .background(
-                                        color = Color.White,
-                                        shape = RoundedCornerShape(5.dp) // Radius 5px
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "Время ограничено",
-                                    fontSize = 7.sp, // Шрифт чуть меньше, чтобы влезло
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.Black,
-                                    maxLines = 1,
-                                )
                             }
                         }
                     }
