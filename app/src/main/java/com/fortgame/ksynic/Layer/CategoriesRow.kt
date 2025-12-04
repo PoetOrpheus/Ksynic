@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fortgame.ksynic.utils.fh
+import com.fortgame.ksynic.utils.fw
 
 // ----------------------------------------------------------------
 // Категории (Кружочки)
@@ -36,7 +38,9 @@ fun CategoriesRow() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp),
+            .height(fh(115))
+            .padding(horizontal = fw(10))
+            .padding(top = fh(10)),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         CategoryItem("Стать\nпродавцом", Color(0xFFD15664), Icons.Default.Build)
@@ -51,11 +55,14 @@ fun CategoriesRow() {
 fun CategoryItem(text: String, color: Color, icon: ImageVector) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(70.dp)
+        modifier = Modifier
+            .width(fw(70))
+            .height(fh(110))
     ) {
         Box(
             modifier = Modifier
-                .size(60.dp)
+                .width(fw(70))
+                .height(fh(70))
                 .clip(RoundedCornerShape(18.dp))
                 .background(
                     brush = Brush.linearGradient(
@@ -66,15 +73,22 @@ fun CategoryItem(text: String, color: Color, icon: ImageVector) {
         ) {
             Icon(imageVector = icon, contentDescription = null, tint = Color.White)
         }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = text,
-            fontSize = 11.sp,
-            lineHeight = 12.sp,
-            fontWeight = FontWeight.Medium,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            maxLines = 2
-        )
+        Spacer(modifier = Modifier.height(fh(4)))
+        Box(
+            modifier = Modifier
+                .width(fw(70))
+                .height(fh(40)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
+                fontSize = 10.sp,
+                lineHeight = 12.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                maxLines = 2
+            )
+        }
     }
 }
 

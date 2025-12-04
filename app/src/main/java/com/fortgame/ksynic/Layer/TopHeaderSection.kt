@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.utils.fh
+import com.fortgame.ksynic.utils.fw
 
 // ----------------------------------------------------------------
 // Верхняя шапка (Адрес, Поиск, Баннер 11.11)
@@ -41,14 +43,22 @@ fun TopHeaderSection() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(280.dp) // Высота фиолетовой подложки
+            // Высота блока по макету Figma: 220px на листе 450x900,
+            // конвертируем через утилиту fh(...) в dp текущего экрана
+            .height(fh(220))
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(Color(0xFF6773E6), Color(0xFFEBA6EA))
                 )
             )
     ) {
-        Column(modifier = Modifier.padding(start = 10.dp,end=10.dp)) {
+        Column(
+            modifier = Modifier.padding(
+                start = fw(15),
+                end = fw(15),
+                top = fh(10)
+            )
+        ) {
             // Строка адреса
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -63,16 +73,23 @@ fun TopHeaderSection() {
                 Image(
                     painter = painterResource(R.drawable.message_without_notification),
                     contentDescription = "Месседжер",
-                    modifier = Modifier.padding(top = 6.dp, end = 6.dp)
+                    modifier = Modifier
+                        .width(fw(40))
+                        .height(fh(30))
+                        //.padding(top = fh(10), end = fw(15))
                 )
 
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            // Отступ 10px вниз от иконки чата до поисковой строки
+            Spacer(modifier = Modifier.height(fh(10)))
 
             // Поисковая строка
             Surface(
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .width(fw(420))
+                    .height(fh(40)),
                 shape = RoundedCornerShape(12.dp),
                 color = Color.White
             ) {
@@ -88,13 +105,15 @@ fun TopHeaderSection() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            // Отступ 10px вниз от поисковой строки до рекламного блока
+            Spacer(modifier = Modifier.height(fh(10)))
 
             // Баннер 11.11
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .width(fw(420))
+                    .height(fh(110))
                     .clip(RoundedCornerShape(16.dp))
                     .background(
                         brush = Brush.horizontalGradient(
