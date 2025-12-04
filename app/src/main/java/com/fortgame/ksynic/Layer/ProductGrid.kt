@@ -269,52 +269,59 @@ fun ProductCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(fh(35)),
-                        verticalAlignment = Alignment.Bottom
+                        verticalAlignment = Alignment.Bottom // Выравнивание по нижнему краю, как на скриншоте
                     ) {
-                        if (discount!=0){
-                        // Для плашки скидки добавляем белый фон, чтобы она не сливалась с градиентом
-                        Surface(
-                            modifier = Modifier
-                                .width(fw(60))
-                                .height(fh(35)),
-                            color = Color.White,
-                            shape = RoundedCornerShape(10.dp),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xfffffff)),
-                            shadowElevation = 7.dp
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
+                        if (discount != 0) {
+                            // Плашка скидки
+                            Surface(
+                                modifier = Modifier
+                                    .width(fw(60))
+                                    .height(fh(35)),
+                                color = Color.White,
+                                shape = RoundedCornerShape(10.dp),
+                                // Тень для скидки (если нужно оставить как было)
+                                shadowElevation = 4.dp
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Text(
+                                        text = "-$discount%",
+                                        color = DiscountRed,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp
+                                    )
+                                }
+                            }
+                        }
+
+                        if (isTimeLimited) {
+                            // Блок "Время ограничено"
+                            Box(
+                                modifier = Modifier
+                                    .width(fw(120))
+                                    .height(fh(23))
+                                    .shadow(
+                                        elevation = 5.dp, // Соответствует Blur 5
+                                        shape = RoundedCornerShape(5.dp), // Radius 5px
+                                        clip = false, // Важно, чтобы тень не обрезалась
+                                        spotColor = Color.Black.copy(alpha = 0.3f), // Цвет тени #000000 30%
+                                        ambientColor = Color.Black.copy(alpha = 0.3f)
+                                    )
+                                    // 2. Белый фон и форма самой плашки
+                                    .background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(5.dp) // Radius 5px
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 Text(
-                                    text = "$discount%",
-                                    color = DiscountRed,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 14.sp
+                                    text = "Время ограничено",
+                                    fontSize = 7.sp, // Шрифт чуть меньше, чтобы влезло
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color.Black,
+                                    maxLines = 1,
                                 )
                             }
                         }
-                        if (isTimeLimited) {
-
-                            Box(
-                                modifier = Modifier
-                                    .width(fw(150))
-                                    .height(fh(20))
-                                    .shadow(
-                                        elevation = 0.3.dp,
-                                        RoundedCornerShape(fh(5)),
-                                        spotColor = Color(0x4D000000)
-                                    ),
-                                contentAlignment = Alignment.Center,
-
-                            ) {
-                                // Если фон очень темный, возможно, стоит поменять цвет текста на белый?
-                                // Но пока оставим Gray/DarkGray как в оригинале, так как градиент внизу не черный.
-                                Text(
-                                    "Время ограничено",
-                                    fontSize = 9.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.DarkGray // Чуть темнее, чтобы читалось на красном фоне
-                                )
-                            }
-                        }}
                     }
                     Spacer(modifier = Modifier.height(fh(10)))
                 }
