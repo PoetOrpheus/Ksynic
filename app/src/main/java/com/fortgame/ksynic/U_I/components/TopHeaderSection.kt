@@ -1,4 +1,4 @@
-package com.fortgame.ksynic.Layer
+package com.fortgame.ksynic.U_I.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

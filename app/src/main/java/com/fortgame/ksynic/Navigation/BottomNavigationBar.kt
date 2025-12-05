@@ -1,22 +1,15 @@
-package com.fortgame.ksynic
+package com.fortgame.ksynic.Navigation
 
-import android.graphics.ColorFilter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +19,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.fortgame.ksynic.R
 import com.fortgame.ksynic.theme.*
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
@@ -34,9 +28,9 @@ import com.fortgame.ksynic.utils.fw
 // 5. Нижняя навигация
 // ----------------------------------------------------------------
 
-enum class BottomNavItem {
-    Home, Cart, Favorites, Profile
-}
+//enum class BottomNavItem {
+//    Home, Cart, Favorites, Profile
+//}
 
 @Composable
 fun BottomNavigationBar(
@@ -56,7 +50,7 @@ fun BottomNavigationBar(
                 .height(fh(60))
                 .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                 .background(Color(0xFFF2F2F2)),
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
             BottomNavIcon(
@@ -91,7 +85,9 @@ private fun BottomNavIcon(
 ) {
     val tint = if (isSelected) BrandPurple else Color(0xFF000000)
     Box(
-        modifier = Modifier.size(fh(40)), // зона нажатия чуть больше 30px-иконки
+        modifier = Modifier
+            .size(fh(40))
+            .clickable(onClick=onClick),
         contentAlignment = Alignment.Center
     ) {
         Image(

@@ -1,6 +1,5 @@
-package com.fortgame.ksynic.Layer.Atom
+package com.fortgame.ksynic.U_I.components.Atom
 
-import android.graphics.drawable.shapes.Shape
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
