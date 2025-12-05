@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Цвет статус-бара (время/зарядка) под цвет верхней шапки
-        window.statusBarColor = AndroidColor.parseColor("#6773E6")
+        window.statusBarColor = AndroidColor.parseColor("#5D76CB")
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
 
         setContent {

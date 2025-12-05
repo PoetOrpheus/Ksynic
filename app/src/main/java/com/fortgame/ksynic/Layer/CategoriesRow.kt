@@ -1,5 +1,6 @@
 package com.fortgame.ksynic.Layer
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,11 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fortgame.ksynic.R
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -42,16 +47,22 @@ fun CategoriesRow() {
             .padding(top = fh(10)),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        CategoryItem("Стать\nпродавцом", Color(0xFF5D76CB),Color(0xFFD23E41), Icons.Default.Build)
-        CategoryItem("Магазины\nи бренды", Color(0xFF5D76CB),Color(0xFFCC5086), Icons.Default.Build)
-        CategoryItem("Финансы", Color(0xFF5D76CB), Color(0xFFDAA636),Icons.Default.Build)
-        CategoryItem("История\nпросмотров", Color(0xFF5D76CB), Color(0xFF21936F),Icons.Default.Build)
-        CategoryItem("Каталог", Color(0xFF5D76CB), Color(0xFF1D36D7),Icons.Default.Build)
+        CategoryItem("Стать\nпродавцом", Color(0xFF5D76CB),Color(0xFFD23E41), painterResource(R.drawable.seller_icon), 30,30)
+        CategoryItem("Магазины\nи бренды", Color(0xFF5D76CB),Color(0xFFCC5086), painterResource(R.drawable.message_without_notification),30,30)
+        CategoryItem("Финансы", Color(0xFF5D76CB), Color(0xFFDAA636),painterResource(R.drawable.message_without_notification),30,30)
+        CategoryItem("История\nпросмотров", Color(0xFF5D76CB), Color(0xFF21936F),painterResource(R.drawable.history_icon),40,40)
+        CategoryItem("Каталог", Color(0xFF5D76CB), Color(0xFF1D36D7),painterResource(R.drawable.category_icon),30,44)
     }
 }
 
 @Composable
-fun CategoryItem(text: String, color1: Color, color2: Color, icon: ImageVector) {
+fun CategoryItem(
+    text: String,
+    color1: Color,
+    color2: Color,
+    painter: Painter,
+    width:Int,
+    height:Int) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -70,7 +81,11 @@ fun CategoryItem(text: String, color1: Color, color2: Color, icon: ImageVector) 
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = Color.White)
+            Box(modifier = Modifier
+                .width(fw(width))
+                .height(fh(height))){
+            Image(painter = painter, contentDescription = null)
+            }
         }
         Spacer(modifier = Modifier.height(fh(4)))
         Box(

@@ -1,5 +1,7 @@
 package com.fortgame.ksynic
 
+import android.graphics.ColorFilter
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -20,6 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fortgame.ksynic.theme.*
@@ -56,22 +60,22 @@ fun BottomNavigationBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             BottomNavIcon(
-                icon = Icons.Outlined.Home,
+                painter = painterResource(R.drawable.home_menu_icon),
                 isSelected = selectedItem == BottomNavItem.Home,
                 onClick = { onItemSelected(BottomNavItem.Home) }
             )
             BottomNavIcon(
-                icon = Icons.Outlined.ShoppingCart,
+                painter = painterResource(R.drawable.shop_menu_icon),
                 isSelected = selectedItem == BottomNavItem.Cart,
                 onClick = { onItemSelected(BottomNavItem.Cart) }
             )
             BottomNavIcon(
-                icon = Icons.Outlined.FavoriteBorder,
+                painter = painterResource(R.drawable.lover_menu_icon),
                 isSelected = selectedItem == BottomNavItem.Favorites,
                 onClick = { onItemSelected(BottomNavItem.Favorites) }
             )
             BottomNavIcon(
-                icon = Icons.Outlined.Person,
+                painter = painterResource(R.drawable.profile_menu_icon),
                 isSelected = selectedItem == BottomNavItem.Profile,
                 onClick = { onItemSelected(BottomNavItem.Profile) }
             )
@@ -81,20 +85,20 @@ fun BottomNavigationBar(
 
 @Composable
 private fun BottomNavIcon(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    painter: Painter,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val tint = if (isSelected) BrandPurple else Color.Gray
+    val tint = if (isSelected) BrandPurple else Color(0xFF000000)
     Box(
         modifier = Modifier.size(fh(40)), // зона нажатия чуть больше 30px-иконки
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = icon,
+        Image(
+            painter=painter,
             contentDescription = null,
-            tint = tint,
-            modifier = Modifier.size(fh(30))
+            modifier = Modifier.size(fh(30)),
+            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(tint)
         )
     }
 }

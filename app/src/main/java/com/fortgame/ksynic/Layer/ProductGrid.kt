@@ -40,9 +40,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fortgame.ksynic.Layer.Atom.ProductImageCarousel
 import com.fortgame.ksynic.theme.DiscountRed
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
+import com.fortgame.ksynic.R
 
 // ----------------------------------------------------------------
 // Карточки товаров
@@ -102,17 +104,14 @@ fun ProductCard(
     Card(
         modifier = Modifier
             .width(fw(210))
-            .height(fh(420)),
-        shape = RoundedCornerShape(14.dp),
+            .height(fh(460)),
+        shape = RoundedCornerShape(15.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        //elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         // Ипользуем Box, чтобы накладывать слои (Z-index)
         Box(modifier = Modifier.fillMaxSize()) {
 
-            // --- СЛОЙ 1: ГРАДИЕНТ (ФОН) ---
-            // Он лежит внизу Box, поэтому отрисовывается первым.
-            // Мы выравниваем его по низу карточки.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -141,17 +140,19 @@ fun ProductCard(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(fh(240))
+                        .height(fh(280))
                         .background(
                             Color(0xFFE5E5E5),
                             RoundedCornerShape(topStart = 14.dp, topEnd = 14.dp)
                         )
                 ) {
-                    Text(
-                        text = "Изображение",
-                        color = Color(0xFF888888),
-                        fontSize = 12.sp,
-                        modifier = Modifier.align(Alignment.Center)
+                    ProductImageCarousel(
+                        images = listOf(
+                            R.drawable.image_for_product_3,
+                            R.drawable.image_for_product_2,
+                            R.drawable.image_for_product_1,
+                        ),
+                        modifier = Modifier.fillMaxSize() // Говорим карусели занять всё место в родительском Box
                     )
                     // Иконка лайка
                     Icon(
@@ -272,37 +273,8 @@ fun ProductCard(
                             .height(fh(35)),
                         contentAlignment = Alignment.BottomStart
                     ) {
-                        // --- СЛОЙ 1: ВРЕМЯ  ---
-                        if (isTimeLimited) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(start = fw(30))
-                                    .width(fw(150))
-                                    .height(fh(20))
-                                    .shadow(
-                                        elevation = 5.dp,
-                                        shape = RoundedCornerShape(5.dp),
-                                        clip = false,
-                                        spotColor = Color.Black.copy(alpha = 0.3f),
-                                        ambientColor = Color.Black.copy(alpha = 0.3f)
-                                    )
-                                    .background(
-                                        color = Color.White,
-                                        shape = RoundedCornerShape(5.dp)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "Время ограничено",
-                                    fontSize = 7.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.Black,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
 
-                        // --- СЛОЙ 2: СКИДКА (Рисуем второй, чтобы был СВЕРХУ) ---
+                        // ---  СКИДКА ---
                         if (discount != 0) {
                             Surface(
                                 modifier = Modifier

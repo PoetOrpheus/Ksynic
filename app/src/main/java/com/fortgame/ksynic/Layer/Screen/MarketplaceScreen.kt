@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.fortgame.ksynic.BottomNavItem
 import com.fortgame.ksynic.BottomNavigationBar
@@ -33,7 +34,7 @@ fun MarketplaceScreen() {
                 onItemSelected = { selectedTab = it }
             )
         },
-        containerColor = BackgroundLight
+        containerColor = Color(0xFFF2F2F2)
     ) { paddingValues ->
         // Основной контент с прокруткой
         Column(
