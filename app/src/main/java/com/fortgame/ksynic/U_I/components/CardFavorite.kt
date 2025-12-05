@@ -1,9 +1,7 @@
 package com.fortgame.ksynic.U_I.components
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,56 +35,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fortgame.ksynic.R
 import com.fortgame.ksynic.U_I.components.Atom.ProductImageCarousel
 import com.fortgame.ksynic.theme.DiscountRed
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
-import com.fortgame.ksynic.R
-
-// ----------------------------------------------------------------
-// Карточки товаров
-// ----------------------------------------------------------------
-@Composable
-fun ProductGrid() {
-    // Один ряд из двух карточек, как на макете
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = fw(10)),
-        horizontalArrangement = Arrangement.spacedBy(fw(10))
-    ) {
-        // Товар 1: кеды
-        ProductCard(
-            title = "Кеды adidas Sportswear Hoops 3.0",
-            price = 3743,
-            rating = 4.9,
-            reviews = 457,
-            imageUrl = null,
-            isTimeLimited = false,
-            colorBottom = Color(0xFF000000),
-            colorText=Color(0xFF000000)
-        )
-
-        // Товар 2: Часы
-        ProductCard(
-            title = "Часы наручные Кварцевые",
-            price = 4200,
-            oldPrice = 21000,
-            discount = 80,
-            rating = 5.0,
-            reviews = 23,
-            imageUrl = null,
-            isTimeLimited = true,
-            colorBottom = Color(0xFFCC3333),
-            colorText=Color(0xFFCC3333)
-        )
-
-
-    }
-}
 
 @Composable
-fun ProductCard(
+fun CardFavorite(
     title: String,
     price: Int,
     oldPrice: Int = 0,
@@ -260,35 +216,33 @@ fun ProductCard(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(fh(5)))
-
-                    // Скидка и таймер
+                    Spacer(modifier = Modifier.height(fh(10)))
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(fh(35)),
-                        contentAlignment = Alignment.BottomStart
-                    ) {
+                        modifier=Modifier
+                            .width(fw(180))
+                            .height(fh(25))
+                            .background(Color(0xFF5D76CB), RoundedCornerShape(fh(11))),
+                        contentAlignment = Alignment.Center,
 
-                        // ---  СКИДКА ---
-                        if (discount != 0) {
-                            Surface(
+                    ) {
+                        Row() {
+                            Image(
+                                painter = painterResource(R.drawable.korzina_for_favorite),
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(fw(10)))
+                            Box(
                                 modifier = Modifier
-                                    .width(fw(60))
-                                    .height(fh(35))
-                                    .align(Alignment.BottomStart), // Прижимаем влево
-                                color = Color.White,
-                                shape = RoundedCornerShape(10.dp),
-                                shadowElevation = 4.dp
+                                    .width(fw(66)),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Text(
-                                        text = "-$discount%",
-                                        color = DiscountRed,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 14.sp
-                                    )
-                                }
+                                Text(
+                                    text = "3 декабря",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color.White
+
+                                )
                             }
                         }
                     }
@@ -301,6 +255,17 @@ fun ProductCard(
 
 @Composable
 @Preview
-private fun ProductGirdPreview(){
-    ProductGrid()
+private fun CardFavoritePreview(){
+    CardFavorite(
+        title = "Часы наручные Кварцевые",
+        price = 4200,
+        oldPrice = 21000,
+        discount = 80,
+        rating = 5.0,
+        reviews = 23,
+        imageUrl = null,
+        isTimeLimited = true,
+        colorBottom = Color(0xFFCC3333),
+        colorText = Color(0xFFCC3333)
+    )
 }

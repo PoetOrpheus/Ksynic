@@ -13,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fortgame.ksynic.U_I.components.CardFavorite
+import com.fortgame.ksynic.U_I.components.ProductCard
 import com.fortgame.ksynic.U_I.components.SettingsFavoriteRow
 import com.fortgame.ksynic.U_I.components.TopHeaderWithoutSearch
 import com.fortgame.ksynic.utils.fh
@@ -41,11 +43,57 @@ fun FavoriteScreen() {
         ) {
             // Здесь будет отображаться список избранных товаров (например, ProductGrid/ProductCard)
             item {
-                // Временно: сообщение, если избранного нет
-                Text(
-                    text = "Здесь пока нет избранных товаров.",
-                    modifier = Modifier.padding(top = 50.dp)
-                )
+                Row() {
+                    // Временно: сообщение, если избранного нет
+                    CardFavorite(
+                        title = "Кеды adidas Sportswear Hoops 3.0",
+                        price = 3743,
+                        rating = 4.9,
+                        reviews = 457,
+                        imageUrl = null,
+                        isTimeLimited = false,
+                        colorBottom = Color(0xFF000000),
+                        colorText = Color(0xFF000000)
+                    )
+
+                    // Товар 2: Часы
+                    CardFavorite(
+                        title = "Часы наручные Кварцевые",
+                        price = 4200,
+                        oldPrice = 21000,
+                        discount = 80,
+                        rating = 5.0,
+                        reviews = 23,
+                        imageUrl = null,
+                        isTimeLimited = true,
+                        colorBottom = Color(0xFFCC3333),
+                        colorText = Color(0xFFCC3333)
+                    )
+                    CardFavorite(
+                        title = "Кеды adidas Sportswear Hoops 3.0",
+                        price = 3743,
+                        rating = 4.9,
+                        reviews = 457,
+                        imageUrl = null,
+                        isTimeLimited = false,
+                        colorBottom = Color(0xFF000000),
+                        colorText = Color(0xFF000000)
+                    )
+
+                    // Товар 2: Часы
+                    CardFavorite(
+                        title = "Часы наручные Кварцевые",
+                        price = 4200,
+                        oldPrice = 21000,
+                        discount = 80,
+                        rating = 5.0,
+                        reviews = 23,
+                        imageUrl = null,
+                        isTimeLimited = true,
+                        colorBottom = Color(0xFFCC3333),
+                        colorText = Color(0xFFCC3333)
+                    )
+                }
             }
         }
     }

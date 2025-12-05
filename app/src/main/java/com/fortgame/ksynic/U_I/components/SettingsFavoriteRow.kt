@@ -2,6 +2,7 @@
 
 package com.fortgame.ksynic.U_I.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,6 +10,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,8 +30,12 @@ import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 import com.fortgame.ksynic.theme.BrandPurple // Предполагаем наличие фирменного цвета BrandPurple
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun SettingsFavoriteRow() {
+
+    var isInStockEnableby by remember { mutableStateOf(false) }
+    var isSaleEnable by remember { mutableStateOf(false) }
 
     // Вся строка с отступами слева и справа
     Row(
@@ -108,7 +118,7 @@ fun SettingsFavoriteRow() {
             modifier = Modifier.height(fh(30)),
             contentAlignment = Alignment.Center
         ) {
-            Switch(checked = false, onCheckedChange = {})
+            Switch(checked = isInStockEnableby, onCheckedChange = {isInStockEnableby=!isInStockEnableby})
         }
 
         Spacer(modifier = Modifier.width(fw(20))) // Пробел между Переключалкой и По скидке
@@ -134,7 +144,7 @@ fun SettingsFavoriteRow() {
             modifier = Modifier.height(fh(30)),
             contentAlignment = Alignment.Center
         ) {
-            Switch(checked = true, onCheckedChange = {})
+            Switch(checked = isSaleEnable, onCheckedChange = {isSaleEnable=!isSaleEnable})
         }
 
 
