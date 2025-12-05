@@ -3,6 +3,8 @@ package com.fortgame.ksynic.U_I.Screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,6 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fortgame.ksynic.U_I.components.SettingsFavoriteRow
+import com.fortgame.ksynic.U_I.components.TopHeaderWithoutSearch
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -20,16 +24,13 @@ fun FavoriteScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF2F2F2)) // Фон как на MarketplaceScreen
-            .padding(horizontal = 16.dp)
     ) {
+        TopHeaderWithoutSearch()
         // Заголовок "Избранное"
-        Spacer(modifier = Modifier.height(fh(20)))
-        Text(
-            text = "Избранное",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
-        )
+        Spacer(modifier = Modifier.height(fh(10)))
+
+        SettingsFavoriteRow()
+
         Spacer(modifier = Modifier.height(fh(10)))
 
         // Сетка/Список товаров
