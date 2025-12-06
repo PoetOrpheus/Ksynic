@@ -2,7 +2,6 @@ package com.fortgame.ksynic.U_I.ProfileScreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,8 +38,7 @@ fun ProfileMenu(
         modifier = Modifier
             .fillMaxWidth()
             .height(90.dp)
-            .padding(horizontal = 15.dp)
-            .background(Color.White,RoundedCornerShape(10.dp)),
+            .padding(horizontal = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -60,7 +58,6 @@ fun ProfileMenu(
             title = "Избранное",
             subtitle = "$countFavorite товаров",
             modifier = Modifier.weight(1f)
-
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -84,15 +81,21 @@ fun ProfileMenuItem(
 ) {
     Box(
         modifier = modifier
-            .width(130.dp)
-            .height(67.dp)
+            .shadow(
+                elevation = 5.dp,
+                shape = RoundedCornerShape(20.dp),
+                clip = false,
+                ambientColor = Color.Black.copy(alpha = 0.25f),
+                spotColor = Color.Black.copy(alpha = 0.25f)
+            )
+            .width(120.dp)
+            .height(70.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(Color.White)
             .padding(vertical = 10.dp, horizontal = 10.dp),
         contentAlignment = Alignment.CenterStart
     ) {
         Column(
-            //horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             // Иконка
@@ -103,7 +106,6 @@ fun ProfileMenuItem(
                 Image(
                     painter = painterResource(id = iconRes),
                     contentDescription = null,
-                    //modifier = Modifier.size(18.dp)
                 )
             }
 
