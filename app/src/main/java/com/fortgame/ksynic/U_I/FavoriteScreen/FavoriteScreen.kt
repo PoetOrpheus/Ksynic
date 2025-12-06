@@ -1,19 +1,17 @@
 // FavoriteScreen.kt
-package com.fortgame.ksynic.U_I.Screen
+package com.fortgame.ksynic.U_I.FavoriteScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import com.fortgame.ksynic.U_I.components.CardFavorite
-import com.fortgame.ksynic.U_I.components.SettingsFavoriteRow
-import com.fortgame.ksynic.U_I.components.TopHeaderWithoutSearch
+import com.fortgame.ksynic.U_I.FavoriteScreen.components.CardFavorite
+import com.fortgame.ksynic.U_I.FavoriteScreen.components.SettingsFavoriteRow
+import com.fortgame.ksynic.U_I.TopHeaderWithoutSearch
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -34,9 +32,9 @@ fun FavoriteScreen() {
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(horizontal = fw(15), vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(fw(12)),
-            verticalArrangement = Arrangement.spacedBy(fh(16)),
+            contentPadding = PaddingValues(horizontal = fw(10), vertical = fh(10)),
+            horizontalArrangement = Arrangement.spacedBy(fw(10)),
+            verticalArrangement = Arrangement.spacedBy(fh(10)),
             modifier = Modifier.fillMaxSize()
         ) {
             items(listOf(

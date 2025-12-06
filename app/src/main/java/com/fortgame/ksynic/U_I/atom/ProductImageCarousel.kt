@@ -1,4 +1,4 @@
-package com.fortgame.ksynic.U_I.components.Atom
+package com.fortgame.ksynic.U_I.atom
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image

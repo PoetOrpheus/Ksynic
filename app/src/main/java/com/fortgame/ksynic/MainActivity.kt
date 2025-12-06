@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import android.graphics.Color as AndroidColor
 import androidx.core.view.WindowInsetsControllerCompat
-import com.fortgame.ksynic.U_I.Screen.MainScreen
+import com.fortgame.ksynic.U_I.MainScreen.MainScreen
 import com.fortgame.ksynic.theme.*
 
 class MainActivity : ComponentActivity() {

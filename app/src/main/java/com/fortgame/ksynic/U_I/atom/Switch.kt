@@ -1,7 +1,7 @@
 // File: Switch.kt
 // Путь: src/main/kotlin/com/fortgame/ksynic/U_I/components/Atom/Switch.kt
 
-package com.fortgame.ksynic.U_I.components.Atom
+package com.fortgame.ksynic.U_I.atom
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -96,11 +97,11 @@ private fun SwitchPreview() {
         verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            androidx.compose.material3.Text("Выкл", color = Color.Gray)
+            Text("Выкл", color = Color.Gray)
             Spacer(Modifier.width(16.dp))
             Switch(checked = checked, onCheckedChange = { checked = it })
             Spacer(Modifier.width(16.dp))
-            androidx.compose.material3.Text("Вкл", color = BrandPurple)
+            Text("Вкл", color = BrandPurple)
         }
 
         // Тест разных состояний

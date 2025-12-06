@@ -1,5 +1,4 @@
-package com.fortgame.ksynic.U_I.components
-
+package com.fortgame.ksynic.U_I.FavoriteScreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,18 +10,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,56 +35,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.fortgame.ksynic.U_I.components.Atom.ProductImageCarousel
-import com.fortgame.ksynic.theme.DiscountRed
+import com.fortgame.ksynic.R
+import com.fortgame.ksynic.U_I.atom.ProductImageCarousel
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
-import com.fortgame.ksynic.R
 
-// ----------------------------------------------------------------
-// Карточки товаров
-// ----------------------------------------------------------------
+// CardFavorite.kt — КЛЮЧЕВЫЕ ИСПРАВЛЕНИЯ
 @Composable
-fun ProductGrid() {
-    // Один ряд из двух карточек, как на макете
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = fw(10)),
-        horizontalArrangement = Arrangement.spacedBy(fw(10))
-    ) {
-        // Товар 1: кеды
-        ProductCard(
-            title = "Кеды adidas Sportswear Hoops 3.0",
-            price = 3743,
-            rating = 4.9,
-            reviews = 457,
-            imageUrl = null,
-            isTimeLimited = false,
-            colorBottom = Color(0xFF000000),
-            colorText=Color(0xFF000000)
-        )
-
-        // Товар 2: Часы
-        ProductCard(
-            title = "Часы наручные Кварцевые",
-            price = 4200,
-            oldPrice = 21000,
-            discount = 80,
-            rating = 5.0,
-            reviews = 23,
-            imageUrl = null,
-            isTimeLimited = true,
-            colorBottom = Color(0xFFCC3333),
-            colorText=Color(0xFFCC3333)
-        )
-
-
-    }
-}
-
-@Composable
-fun ProductCard(
+fun CardFavorite(
     title: String,
     price: Int,
     oldPrice: Int = 0,
@@ -102,11 +58,9 @@ fun ProductCard(
         modifier = Modifier
             .width(fw(210))
             .height(fh(460)),
-        shape = RoundedCornerShape(15.dp),
+        shape = RoundedCornerShape(fw(16)),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        //elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        // Ипользуем Box, чтобы накладывать слои (Z-index)
         Box(modifier = Modifier.fillMaxSize()) {
 
             Box(
@@ -128,12 +82,9 @@ fun ProductCard(
                     )
             )
 
-            // --- СЛОЙ 2: КОНТЕНТ ---
-            // Отрисовывается поверх градиента
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                // Область "картинки"
+            Column(modifier = Modifier.fillMaxSize()) {
+
+                // Картинка
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -149,17 +100,39 @@ fun ProductCard(
                             R.drawable.image_for_product_2,
                             R.drawable.image_for_product_1,
                         ),
-                        modifier = Modifier.fillMaxSize() // Говорим карусели занять всё место в родительском Box
+                        modifier = Modifier.fillMaxSize()
                     )
                     // Иконка лайка
                     Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
+                        imageVector = Icons.Outlined.Favorite,
                         contentDescription = null,
-                        tint = Color.Gray,
+                        tint = Color(0xFFCC3333),
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(8.dp)
                     )
+
+                    // Скидка (теперь в ПРАВОМ НИЖНЕМ углу, как на скриншоте)
+                    if (discount > 0) {
+                        Box(
+                            modifier = Modifier
+                                .width(fw(60))
+                                .height(fh(35))
+                                .align(Alignment.BottomEnd)
+                                .offset(y = (-fh(20))) // Сдвиг вверх от низа
+                                .background(
+                                    Color.White,
+                                    RoundedCornerShape(topStart = fw(10), bottomStart = fw(10))),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "-$discount%",
+                                color = colorText,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.ExtraBold
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(fh(5)))
@@ -260,39 +233,26 @@ fun ProductCard(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(fh(5)))
+                    Spacer(Modifier.height(fh(12)))
 
-                    // Скидка и таймер
-                    Box(
+                    // КНОПКА «3 декабря» — теперь прижата к низу!
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(fh(35)),
-                        contentAlignment = Alignment.BottomStart
+                            .height(fh(25))
+                            .background(colorBottom, RoundedCornerShape(fw(10))),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-
-                        // ---  СКИДКА ---
-                        if (discount != 0) {
-                            Surface(
-                                modifier = Modifier
-                                    .width(fw(60))
-                                    .height(fh(35))
-                                    .align(Alignment.BottomStart), // Прижимаем влево
-                                color = Color.White,
-                                shape = RoundedCornerShape(10.dp),
-                                shadowElevation = 4.dp
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Text(
-                                        text = "-$discount%",
-                                        color = DiscountRed,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 14.sp
-                                    )
-                                }
-                            }
-                        }
+                        Image(painter = painterResource(R.drawable.korzina_for_favorite), contentDescription = null, modifier = Modifier.size(fw(18)))
+                        Spacer(Modifier.width(fw(10)))
+                        Text(
+                            text = "3 декабря",
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
-                    Spacer(modifier = Modifier.height(fh(10)))
                 }
             }
         }
@@ -301,6 +261,17 @@ fun ProductCard(
 
 @Composable
 @Preview
-private fun ProductGirdPreview(){
-    ProductGrid()
+private fun CardFavoritePreview(){
+    CardFavorite(
+        title = "Часы наручные Кварцевые",
+        price = 4200,
+        oldPrice = 21000,
+        discount = 80,
+        rating = 5.0,
+        reviews = 23,
+        imageUrl = null,
+        isTimeLimited = true,
+        colorBottom = Color(0xFFCC3333),
+        colorText = Color(0xFFCC3333)
+    )
 }

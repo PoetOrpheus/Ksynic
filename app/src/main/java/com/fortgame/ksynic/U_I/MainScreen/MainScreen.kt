@@ -1,4 +1,4 @@
-package com.fortgame.ksynic.U_I.Screen
+package com.fortgame.ksynic.U_I.MainScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,9 +23,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.Navigation.BottomNavItem
 import com.fortgame.ksynic.Navigation.BottomNavigationBar
-import com.fortgame.ksynic.U_I.components.CategoriesRow
-import com.fortgame.ksynic.U_I.components.ProductGrid
-import com.fortgame.ksynic.U_I.components.TopHeaderSection
+import com.fortgame.ksynic.U_I.ProfileScreen.ProfileScreen
+import com.fortgame.ksynic.U_I.FavoriteScreen.FavoriteScreen
+import com.fortgame.ksynic.U_I.MainScreen.components.CategoriesRow
+import com.fortgame.ksynic.U_I.MainScreen.components.ProductGrid
+import com.fortgame.ksynic.U_I.TopHeaderSection
 import com.fortgame.ksynic.utils.fh
 
 @Composable
@@ -45,6 +47,7 @@ fun MainScreen() {
             when (selectedTab) {
                 BottomNavItem.Home -> MarketplaceContent()
                 BottomNavItem.Favorites -> FavoriteScreen()
+                BottomNavItem.Profile -> ProfileScreen()
 
                 // Проверяем другие пункты меню (Cart и Profile)
                 // Если они нажимаются, должно появиться это сообщение:
