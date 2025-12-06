@@ -27,6 +27,7 @@ import com.fortgame.ksynic.U_I.ProfileScreen.ProfileScreen
 import com.fortgame.ksynic.U_I.FavoriteScreen.FavoriteScreen
 import com.fortgame.ksynic.U_I.MainScreen.components.CategoriesRow
 import com.fortgame.ksynic.U_I.MainScreen.components.ProductGrid
+import com.fortgame.ksynic.U_I.ShopCartScreen.ShopCartScreen
 import com.fortgame.ksynic.U_I.TopHeaderSection
 import com.fortgame.ksynic.utils.fh
 
@@ -48,6 +49,7 @@ fun MainScreen() {
                 BottomNavItem.Home -> MarketplaceContent()
                 BottomNavItem.Favorites -> FavoriteScreen()
                 BottomNavItem.Profile -> ProfileScreen()
+                BottomNavItem.ShopCart -> ShopCartScreen()
 
                 // Проверяем другие пункты меню (Cart и Profile)
                 // Если они нажимаются, должно появиться это сообщение:

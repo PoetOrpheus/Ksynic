@@ -125,7 +125,9 @@ fun ProfileScreen() {
             item{
                 Spacer(modifier = Modifier.height(fh(10)))
                 BottomProfileMenuNavigation()
+                Spacer(modifier=Modifier.height(fw(30)))
             }
+
         }
     }
 }

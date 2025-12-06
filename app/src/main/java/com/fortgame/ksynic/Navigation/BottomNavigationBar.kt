@@ -60,8 +60,8 @@ fun BottomNavigationBar(
             )
             BottomNavIcon(
                 painter = painterResource(R.drawable.shop_menu_icon),
-                isSelected = selectedItem == BottomNavItem.Cart,
-                onClick = { onItemSelected(BottomNavItem.Cart) }
+                isSelected = selectedItem == BottomNavItem.ShopCart,
+                onClick = { onItemSelected(BottomNavItem.ShopCart) }
             )
             BottomNavIcon(
                 painter = painterResource(R.drawable.lover_menu_icon),
