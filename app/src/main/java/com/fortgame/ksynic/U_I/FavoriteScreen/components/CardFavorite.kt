@@ -198,37 +198,37 @@ fun CardFavorite(
                     // Цены
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = fw(57)),
-                        verticalAlignment = Alignment.Bottom
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.Absolute.Right
                     ) {
                         Box(
                             modifier = Modifier
-                                .width(fw(55))
                                 .height(fh(10)),
-                            contentAlignment = Alignment.CenterEnd
+                            contentAlignment = Alignment.BottomEnd
                         ) {
                             if (oldPrice != 0) {
                                 Text(
                                     text = "$oldPrice ₽",
                                     style = TextStyle(textDecoration = TextDecoration.LineThrough),
                                     color = Color.Gray,
-                                    fontSize = 8.sp
+                                    fontSize = 8.sp,
+                                    lineHeight = 9.sp
                                 )
                             }
                         }
                         Spacer(modifier = Modifier.width(fw(5)))
                         Box(
                             modifier = Modifier
-                                .width(fw(63))
                                 .height(fh(20)),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.CenterStart
                         ) {
                             Text(
                                 text = "$price ₽",
                                 color = colorText,
                                 fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 16.sp
                             )
                         }
                     }
