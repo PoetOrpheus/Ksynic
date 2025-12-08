@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,7 +38,6 @@ fun TopHeaderWithReturn() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(fh(50))
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(Color(0xFF5D76CB), Color(0xFFFCB4D5)),
@@ -85,8 +86,8 @@ private fun IconHeader(
 
     Box(
         modifier = Modifier
-            .width(fw(30))
-            .height(fh(30))
+            .width(fw(35))
+            .height(fh(35))
             .background(Color.White, RoundedCornerShape(10.dp)),
         contentAlignment = Alignment.Center
     ) {

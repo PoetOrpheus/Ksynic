@@ -3,6 +3,7 @@ package com.fortgame.ksynic.U_I.MainScreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,12 +42,16 @@ import com.fortgame.ksynic.theme.DiscountRed
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.U_I.ProductDetailScreen.ProductDetailScreen
 
 // ----------------------------------------------------------------
 // Карточки товаров
 // ----------------------------------------------------------------
 @Composable
-fun ProductGrid() {
+fun ProductGrid(
+    onProductClick: () -> Unit = {} // ДОБАВЬТЕ этот параметр
+
+) {
     // Один ряд из двух карточек, как на макете
     Row(
         modifier = Modifier
@@ -63,7 +68,8 @@ fun ProductGrid() {
             imageUrl = null,
             isTimeLimited = false,
             colorBottom = Color(0xFF000000),
-            colorText=Color(0xFF000000)
+            colorText=Color(0xFF000000),
+            onClick = onProductClick // Передаем функцию
         )
 
         // Товар 2: Часы
@@ -77,7 +83,8 @@ fun ProductGrid() {
             imageUrl = null,
             isTimeLimited = true,
             colorBottom = Color(0xFFCC3333),
-            colorText=Color(0xFFCC3333)
+            colorText=Color(0xFFCC3333),
+            onClick = onProductClick // Передаем функцию
         )
 
 
@@ -96,11 +103,14 @@ fun ProductCard(
     isTimeLimited: Boolean = false,
     colorBottom:Color=Color.White,
     colorText:Color,
+    onClick: () -> Unit = {} // ДОБАВЬТЕ этот параметр
+
 ) {
     Card(
         modifier = Modifier
             .width(fw(210))
-            .height(fh(460)),
+            .height(fh(460))
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(15.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         //elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)

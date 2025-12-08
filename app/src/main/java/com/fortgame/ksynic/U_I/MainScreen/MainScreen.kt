@@ -27,6 +27,7 @@ import com.fortgame.ksynic.U_I.ProfileScreen.ProfileScreen
 import com.fortgame.ksynic.U_I.FavoriteScreen.FavoriteScreen
 import com.fortgame.ksynic.U_I.MainScreen.components.CategoriesRow
 import com.fortgame.ksynic.U_I.MainScreen.components.ProductGrid
+import com.fortgame.ksynic.U_I.ProductDetailScreen.ProductDetailScreen // ДОБАВЬТЕ этот импорт
 import com.fortgame.ksynic.U_I.ShopCartScreen.ShopCartScreen
 import com.fortgame.ksynic.U_I.TopHeaderSection
 import com.fortgame.ksynic.utils.fh
@@ -34,32 +35,42 @@ import com.fortgame.ksynic.utils.fh
 @Composable
 fun MainScreen() {
     var selectedTab by remember { mutableStateOf<BottomNavItem>(BottomNavItem.Home) }
+    var showProductDetail by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
 
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(
-                selectedItem = selectedTab,
-                onItemSelected = { selectedTab = it }
-            )
+            if (!showProductDetail) { // Скрываем навигацию на экране деталей
+                BottomNavigationBar(
+                    selectedItem = selectedTab,
+                    onItemSelected = { selectedTab = it }
+                )
+            }
         },
         containerColor = Color(0xFFF2F2F2)
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
-            when (selectedTab) {
-                BottomNavItem.Home -> MarketplaceContent()
-                BottomNavItem.Favorites -> FavoriteScreen()
-                BottomNavItem.Profile -> ProfileScreen()
-                BottomNavItem.ShopCart -> ShopCartScreen()
+            if (showProductDetail) {
+                // Показываем экран деталей товара
+                ProductDetailScreen(
+                    onBackClick = { showProductDetail = false } // Функция для возврата
+                )
+            } else {
+                when (selectedTab) {
+                    BottomNavItem.Home -> MarketplaceContent(
+                        onProductClick = { showProductDetail = true } // Передаем функцию
+                    )
+                    BottomNavItem.Favorites -> FavoriteScreen()
+                    BottomNavItem.Profile -> ProfileScreen()
+                    BottomNavItem.ShopCart -> ShopCartScreen()
 
-                // Проверяем другие пункты меню (Cart и Profile)
-                // Если они нажимаются, должно появиться это сообщение:
-                else -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = "Заглушка для: ${selectedTab.name}", // Видим название выбранной вкладки
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                    else -> {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(
+                                text = "Заглушка для: ${selectedTab.name}",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
@@ -68,26 +79,19 @@ fun MainScreen() {
 }
 
 @Composable
-private fun MarketplaceContent() {
+private fun MarketplaceContent(
+    onProductClick: () -> Unit = {} // ДОБАВЬТЕ этот параметр
+) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
-        // Верхняя секция с градиентом
         TopHeaderSection()
-
-        // Категории (иконки)
         CategoriesRow()
         Spacer(modifier = Modifier.height(fh(10)))
-
-        // Сетка товаров
-        ProductGrid()
-        Spacer(modifier = Modifier.height(fh(10)))
+        ProductGrid(onProductClick = onProductClick) // Передаем функцию дальше
     }
 }
 
-
-
-// Для превью в Android Studio
 @Preview(showBackground = true)
 @Composable
 fun MainPreview() {

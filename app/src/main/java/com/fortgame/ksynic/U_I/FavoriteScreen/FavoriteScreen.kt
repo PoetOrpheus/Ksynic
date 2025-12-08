@@ -69,6 +69,6 @@ data class FavoriteItem(
     val rating: Double,
     val reviews: Int,
     val isTimeLimited: Boolean,
-    val colorBottom: Color = Color(0xFF5D76CB),
-    val colorText: Color = Color(0xFF5D76CB)
+    val colorBottom: Color = Color(0xFF1F75FE),
+    val colorText: Color = Color(0xFF1F75FE)
 )

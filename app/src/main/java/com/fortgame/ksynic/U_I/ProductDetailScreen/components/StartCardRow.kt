@@ -26,11 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,20 +48,23 @@ fun StartCardRow() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .height(fh(80))
             .background(Color.White, RoundedCornerShape(10.dp)),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
         // Отзывы
         Column(Modifier
             .width(fw(161))
             .height(fh(60))
-            .background(Color.White)
+
             .shadow(
-                1.dp,
-                RoundedCornerShape(10.dp),
-                spotColor = Color(0x4D000000).copy(0.3f)
-            ),
+                elevation = 5.dp, // Figma: Blur 5
+                shape = RoundedCornerShape(10.dp),
+                spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
+            )
+            .background(Color.White),
 
         ){
             Row(
@@ -111,12 +116,12 @@ fun StartCardRow() {
         Column(Modifier
             .width(fw(90))
             .height(fh(60))
-            .background(Color.White)
             .shadow(
-                1.dp,
-                RoundedCornerShape(10.dp),
-                spotColor = Color(0x4D000000).copy(0.3f)
-            ),
+                elevation = 5.dp, // Figma: Blur 5
+                shape = RoundedCornerShape(10.dp),
+                spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
+            )
+            .background(Color.White),
 
             ){
             Row(
@@ -171,23 +176,26 @@ fun StartCardRow() {
 
 @Composable
 private fun PicturesBlock(
-    count: Int = 7
+    count: Int = 6
 ) {
     if (count == 1) {
+        Box(){
         Image(
-            painterResource(R.drawable.watch_2),
+            painterResource(R.drawable.watch_1),
             null,
+            contentScale = ContentScale.Crop,
 
             modifier = Modifier
                 .width(fw(60))
                 .height(fh(60))
-                .border(
-                    width = 2.dp,
-                    color = Color(0xFFF2F2F2),
-                    RoundedCornerShape(10.dp),
+                .shadow(
+                    elevation = 5.dp, // Figma: Blur 5
+                    shape = RoundedCornerShape(10.dp),
+                    spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                 ),
-            contentScale = ContentScale.Crop,
+
         )
+        }
     } else if (count==2){
         Row(
             Modifier
@@ -195,32 +203,32 @@ private fun PicturesBlock(
                 .height(fh(60))
         ){
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
                     .width(fw(60))
                     .height(fh(60))
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
             Spacer(Modifier.width(fw(5)))
 
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
                     .width(fw(60))
                     .height(fh(60))
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
@@ -233,48 +241,46 @@ private fun PicturesBlock(
                 .height(fh(60))
         ){
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
                     .width(fw(60))
                     .height(fh(60))
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
-                    .padding(start=fw(39))
+                    .padding(start = fw(39))
                     .width(fw(60))
                     .height(fh(60))
-
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
-                    .padding(start=fw(78))
+                    .padding(start = fw(78))
                     .width(fw(60))
                     .height(fh(60))
-
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
@@ -288,64 +294,61 @@ private fun PicturesBlock(
                 .height(fh(60))
         ){
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
                     .width(fw(60))
                     .height(fh(60))
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
-                    .padding(start=fw(26))
+                    .padding(start = fw(26))
                     .width(fw(60))
                     .height(fh(60))
-
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
-                    .padding(start=fw(52))
+                    .padding(start = fw(52))
                     .width(fw(60))
                     .height(fh(60))
-
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
-                    .padding(start=fw(78))
+                    .padding(start = fw(78))
                     .width(fw(60))
                     .height(fh(60))
-
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
@@ -358,78 +361,77 @@ private fun PicturesBlock(
                 .height(fh(60))
         ){
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
                     .width(fw(60))
                     .height(fh(60))
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
-                    .padding(start=fw(26))
+                    .padding(start = fw(26))
                     .width(fw(60))
                     .height(fh(60))
-
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
             Image(
-                painterResource(R.drawable.watch_2),
+                painterResource(R.drawable.watch_1),
                 null,
 
                 modifier = Modifier
-                    .padding(start=fw(52))
+                    .padding(start = fw(52))
                     .width(fw(60))
                     .height(fh(60))
-
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentScale = ContentScale.Crop,
             )
             Box(
                 modifier = Modifier
-                    .padding(start=fw(78))
+                    .padding(start = fw(78))
                     .width(fw(60))
                     .height(fh(60))
-                    //.background(Color(0xBFF2F2F2))
-
-                    .border(
-                        width = 2.dp,
-                        color = Color(0xFFF2F2F2),
-                        RoundedCornerShape(10.dp),
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     ),
                 contentAlignment = Alignment.Center
-            ){
-            Image(
-                painterResource(R.drawable.watch_2),
-                null,
-                contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(Color(0xBFF2F2F2)),
-                modifier=Modifier.fillMaxSize()
-            )}
-            Text(
-                text="+ ${count-1}",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 16.sp
-            )
+            ) {
+                Image(
+                    painterResource(R.drawable.watch_1),
+                    null,
+                    contentScale = ContentScale.Crop,
+                    colorFilter = ColorFilter.tint(Color(0xBFF2F2F2).copy(alpha = 0.7f),
+                        BlendMode.SrcOver),
+                    modifier = Modifier.fillMaxSize()
+                )
+                Text(
+                    text = "+ ${count - 1}",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 16.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
