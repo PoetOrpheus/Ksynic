@@ -96,17 +96,50 @@ fun CardCart(
                 }
             }
 
-            // Слой с выбором
+// ... внутри Box (верхняя часть карточки) ...
+
+// Слой с выбором (Selector Checkbox)
             Box(
-                modifier=Modifier
-                    .width(fw(35))
-                    .height(fh(35))
-                    .padding(5.dp)
-                    .border(4.dp,Color.Gray,)
-                        //RoundedCornerShape())
-                    .background(Color.White,
-                        RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp, bottomEnd = 10.dp))
-            ){}
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    // Отступ 5.dp совпадает с padding картинки товара, чтобы визуально "сесть" на её угол
+                    .padding(top = 5.dp, start = 5.dp)
+                    .size(35.dp) // Точный размер 35px по Figma
+                    .background(
+                        Color.White,
+                        // Специфичная форма: BL (BottomStart) острый, остальные по 10dp
+                        RoundedCornerShape(
+                            topStart = 10.dp,
+                            topEnd = 10.dp,
+                            bottomEnd = 10.dp,
+                            bottomStart = 0.dp
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                // Внутренний квадрат (Синий чекбокс)
+                // "Border 4px" из Figma здесь реализован как padding, создавая белый просвет
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(5.dp) // Отступ 4px со всех сторон
+                        .clip(RoundedCornerShape(6.dp)) // Скругление самого синего квадратика
+                        .background(Color(0xCC5D76CB)) // Цвет "выбранного" состояния (синий)
+                    // Если нужно состояние "не выбрано", меняйте цвет на Color(0xFFF2F2F2)
+                    ,
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Иконка галочки
+                    // Убедитесь, что у вас есть векторная иконка или картинка для галочки
+                    // Icon(painter = painterResource(R.drawable.ic_check), contentDescription = null, tint = Color.White)
+                    // Или Image, если используете растр:
+                    Image(
+                        painter = painterResource(R.drawable.check_icon), // Замените на ваш ресурс
+                        contentDescription = "Selected",
+                        modifier = Modifier.size(14.dp) // Примерный размер галочки
+                    )
+                }
+            }
 
             // СЛОЙ 2: ГРАДИЕНТ СПРАВА
             Box(

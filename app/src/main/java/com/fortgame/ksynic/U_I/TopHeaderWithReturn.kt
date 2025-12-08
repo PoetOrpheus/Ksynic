@@ -2,10 +2,12 @@ package com.fortgame.ksynic.U_I
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,8 +31,9 @@ import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
-fun TopHeaderWithoutSearch() {
-    Box(
+fun TopHeaderWithReturn() {
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(fh(50))
@@ -44,45 +48,60 @@ fun TopHeaderWithoutSearch() {
                     bottomEnd = 20.dp
                 )
             )
+            .padding(horizontal = fw(10)),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            modifier = Modifier.padding(
-                start = fw(15),
-                end = fw(15),
-                top = fh(10)
+
+        Box(
+            modifier=Modifier
+                .width(fw(30))
+                .height(fh(30)),
+            contentAlignment = Alignment.Center
+
+        ){
+            Image(
+                painterResource(R.drawable.return_icon),
+                null
             )
-        ) {
-            // Строка адреса
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "ПВЗ: ул. Королева, 5",
-                    //font=Font.Inter,
-                    color = Color.White,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                    modifier = Modifier.weight(1f)
-                )
-                // Иконка сообщений
-                Image(
-                    painter = painterResource(R.drawable.message_without_notification),
-                    contentDescription = "Месседжер",
-                    modifier = Modifier
-                        .width(fw(40))
-                        .height(fh(30))
-                    //.padding(top = fh(10), end = fw(15))
-                )
-
-            }
-
-
+        }
+        Row(
+            modifier=Modifier
+                .padding(horizontal = fw(15), vertical = fh(10))
+        ){
+            IconHeader(R.drawable.question_header_section)
+            Spacer(Modifier.width(fw(15)))
+            IconHeader(R.drawable.share)
+            Spacer(Modifier.width(fw(15)))
+            IconHeader(R.drawable.lover_for_header_section)
         }
     }
 }
 
 @Composable
-@Preview
-private fun TopHeaderWithoutSearchPreview(){
-    Box(modifier = Modifier.fillMaxSize()){
-        TopHeaderWithoutSearch()
+private fun IconHeader(
+    image: Int=R.drawable.share
+) {
+
+    Box(
+        modifier = Modifier
+            .width(fw(30))
+            .height(fh(30))
+            .background(Color.White, RoundedCornerShape(10.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painterResource(image),
+            null
+        )
     }
+}
+
+
+
+@Composable
+@Preview
+private fun TopHeaderWithReturnPreview() {
+    TopHeaderWithReturn()
+   // IconHeader()
 }

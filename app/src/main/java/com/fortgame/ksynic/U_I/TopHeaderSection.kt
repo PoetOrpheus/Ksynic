@@ -52,6 +52,10 @@ fun TopHeaderSection() {
                     colors = listOf(Color(0xFF5D76CB), Color(0xFFFCB4D5)),
                     start = Offset(0f, 0f),  // Левый верхний
                     end = Offset(600f, 600f), // Правый нижний (или используйте Offset.Infinite)
+                ),
+                RoundedCornerShape(
+                    bottomStart = 20.dp,
+                    bottomEnd = 20.dp
                 )
             )
     ) {
