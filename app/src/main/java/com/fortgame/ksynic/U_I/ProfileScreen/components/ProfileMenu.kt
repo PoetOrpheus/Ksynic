@@ -54,7 +54,7 @@ fun ProfileMenu(
 
         // Избранное
         ProfileMenuItem(
-            iconRes = R.drawable.lover_profile_menu,
+            iconRes = R.drawable.lover,
             title = "Избранное",
             subtitle = "$countFavorite товаров",
             modifier = Modifier.weight(1f)

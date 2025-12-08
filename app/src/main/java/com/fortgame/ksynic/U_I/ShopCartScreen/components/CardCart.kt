@@ -2,155 +2,226 @@ package com.fortgame.ksynic.U_I.ShopCartScreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.U_I.atom.CounterCart
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
 fun CardCart(
-    price:Int = 4200,
+    price: Int = 4200,
     oldPrice: Int = 21000,
-    textProduct:String = "Часы наручные Кварцевые",
-    sale:Int = 80,
-    color: Color = Color(0xFFCC3333),
+    textProduct: String = "Часы наручные Кварцевые",
+    sale: Int = 80,
+    color: Color = Color(0xFFCC3333), // Акцентный цвет (Красный)
+    isLover:Boolean = true
 ) {
+    // --- ОСНОВНАЯ СТРУКТУРА: COLUMN ---
     Column(
         modifier = Modifier
-            .height(fh(210))
-            .width(fw(420))
-            .background(Color.White, RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp))
+            .fillMaxWidth()
     ) {
-        Row(
-            modifier=Modifier
+        // --- 1. ВЕРХНЯЯ ЧАСТЬ (ИЗОБРАЖЕНИЕ, ТЕКСТ, СКИДКА) ---
+        Box(
+            modifier = Modifier
                 .height(fh(150))
+                .fillMaxWidth()
         ) {
-            Image(
-                painter = painterResource(R.drawable.image_for_product_3),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier=Modifier
-                    .width(fw(150))
-                    .height(fh(150))
-                    .padding(start = fw(5), top = fh(5))
-                    .clip(RoundedCornerShape(10.dp))
-            )
-            Column(
-                modifier=Modifier
-                    .width(fw(150))
-                    .fillMaxHeight()
-                    .padding(top = fh(10), start = fw(10))
-            ) {
-                Box(
-                    modifier=Modifier
-                        .fillMaxWidth()
-                        .height(fh(30)),
-                    contentAlignment = Alignment.CenterStart
-                ){
+            // ... (КОД ИЗ ПРЕДЫДУЩЕГО ОТВЕТА ДЛЯ ИЗОБРАЖЕНИЯ, ТЕКСТА И ГРАДИЕНТА) ...
+
+            // СЛОЙ 1: КОНТЕНТ (Картинка и Текст)
+            Row(modifier = Modifier.fillMaxSize()) {
+                Image(
+                    painter = painterResource(R.drawable.image_for_product_3),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(fw(150))
+                        .height(fh(150))
+                        .padding(all = 5.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                )
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(top = fh(15), start = fw(10), end = fw(60))
+                ) {
                     Text(
-                        text="$price ₽",
+                        text = "$price ₽",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color=color,
+                        color = color,
                         lineHeight = 22.sp
                     )
-                }
-                Spacer(Modifier.height(fh(5  )))
-
-                Box(
-                    modifier=Modifier
-                        .fillMaxWidth()
-                        .height(fh(20)),
-                    contentAlignment = Alignment.TopStart
-                ){
+                    Spacer(Modifier.height(fh(5)))
                     Text(
                         text = "$oldPrice ₽",
                         style = TextStyle(textDecoration = TextDecoration.LineThrough),
-                        color = Color.Gray,
-                        fontSize = 10.sp,
-                        lineHeight = 12.sp
+                        color = Color(0xFF999999),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                    Spacer(Modifier.height(fh(15)))
+                    Text(
+                        text = textProduct,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        lineHeight = 19.sp,
+                        color = Color.Black
                     )
                 }
-                Spacer(Modifier.height(fh(20)))
-
-                Text(
-                    text=textProduct,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    lineHeight = 18.sp
-
-                )
             }
 
-            Spacer(modifier = Modifier.width(fw(40)))
+            // Слой с выбором
+            Box(
+                modifier=Modifier
+                    .width(fw(35))
+                    .height(fh(35))
+                    .padding(5.dp)
+                    .border(4.dp,Color.Gray,)
+                        //RoundedCornerShape())
+                    .background(Color.White,
+                        RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp, bottomEnd = 10.dp))
+            ){}
+
+            // СЛОЙ 2: ГРАДИЕНТ СПРАВА
             Box(
                 modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .width(fw(100))
                     .fillMaxHeight()
-                    .fillMaxWidth()
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
-                                // Начинаем с полностью прозрачного белого, чтобы был плавный переход
-                                Color.White.copy(alpha = -1f),
-                                // Переход в светло-красный
-                                Color(0xFFFFECEC),
-                                // Внизу насыщенный красный (из вашего кода), но чуть прозрачнее для мягкости
-                                color
+                                Color.White.copy(alpha = 0.0f),
+                                color.copy(alpha = 0.1f),
+                                color.copy(alpha = 0.8f)
                             )
                         )
                     )
-                ) {
+            )
 
+            // СЛОЙ 3: ПЛАШКА СКИДКИ
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = fh(15), end = fw(15))
+                    .width(fw(60))
+                    .height(fh(30))
+                    .background(Color.White, RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = color)) {
+                            append("-$sale")
+                        }
+                        withStyle(style = SpanStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold, color = color)) {
+                            append(" %")
+                        }
+                    }
+                )
+            }
+        } // Конец Box для верхней части
+
+        // --- 2. НИЖНЯЯ ЧАСТЬ (ACTION BAR С СЧЕТЧИКОМ) ---
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(fh(60)) // Высота для строки действий
+                .padding(horizontal = fw(15)),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                modifier=Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Box(
-                    modifier=Modifier
-                        .width(fw(60))
+                    modifier = Modifier
                         .height(fh(30))
-                        .padding(top=fh(10))
-                        .background(Color.White,RoundedCornerShape(10.dp)),
+                        .width(fw(30))
+                        .background(
+                             if (isLover) Color(0xFFFFD4D4) else Color.White,
+                            RoundedCornerShape(10.dp)),
                     contentAlignment = Alignment.Center
-                ){
-                    Text(
-                        text="-$sale %",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        lineHeight = 18.sp,
-                        color=color
-
+                ) {
+                    Image(
+                        painterResource(if (isLover) R.drawable.lover else R.drawable.unlover),
+                        contentDescription = "Favorite"
                     )
                 }
+                Spacer(Modifier.width(fw(20)))
+                Box(
+                    modifier = Modifier
+                        .height(fh(30))
+                        .width(fw(30))
+                        .background(Color.White, RoundedCornerShape(10.dp))
+                        .border(1.dp, Color(0xFFDCDCDC), RoundedCornerShape(10.dp)),                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painterResource(R.drawable.cart),
+                        contentDescription = "Delete"
+                    ) // Возможно, это иконка мусорки
+                }
 
+                Spacer(Modifier.width(fw(20)))
+                // --- СЧЕТЧИК (ВАШ ЗАПРОС) ---
+                CounterCart(count = 1)
+            }
+
+            // Кнопка "Купить" / Другой элемент (для примера)
+            Box(
+                modifier=Modifier
+                    .height(fh(30))
+                    .width(fw(130))
+                    .border(1.dp, Color(0xFFDCDCDC), RoundedCornerShape(10.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Купить",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Black,
+                    lineHeight = 18.sp
+                )
             }
         }
-    }
+    } // Конец Column
 }
+
+
 
 @Composable
 @Preview
 private fun CartCardPreview() {
-    CardCart()
+    Box(modifier = Modifier
+        .padding(10.dp)
+        .background(Color(0xFFF2F2F2))) {
+        CardCart()
+    }
 }
