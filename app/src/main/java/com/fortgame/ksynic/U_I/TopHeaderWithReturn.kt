@@ -2,6 +2,7 @@ package com.fortgame.ksynic.U_I
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +34,9 @@ import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
-fun TopHeaderWithReturn() {
+fun TopHeaderWithReturn(
+    onBackClick: () -> Unit = {}
+) {
 
     Row(
         modifier = Modifier
@@ -57,7 +60,8 @@ fun TopHeaderWithReturn() {
         Box(
             modifier=Modifier
                 .width(fw(30))
-                .height(fh(30)),
+                .height(fh(30))
+                .clickable(onClick = onBackClick),
             contentAlignment = Alignment.Center
 
         ){

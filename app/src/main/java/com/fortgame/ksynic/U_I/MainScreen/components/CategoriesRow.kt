@@ -2,6 +2,7 @@ package com.fortgame.ksynic.U_I.MainScreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,10 @@ import com.fortgame.ksynic.utils.fw
 // Категории (Кружочки)
 // ----------------------------------------------------------------
 @Composable
-fun CategoriesRow() {
+fun CategoriesRow(
+    onHistoryClick: () -> Unit = {}, // ДОБАВЬТЕ этот параметр
+    onCanBeSeller: () -> Unit = {} // ДОБАВЬТЕ этот параметр
+    ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,10 +47,10 @@ fun CategoriesRow() {
             .padding(top = fh(10)),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        CategoryItem("Стать\nпродавцом", Color(0xFF5D76CB),Color(0xFFD23E41), painterResource(R.drawable.seller_icon), 30,30)
+        CategoryItem("Стать\nпродавцом", Color(0xFF5D76CB),Color(0xFFD23E41), painterResource(R.drawable.seller_icon), 30,30, onCanBeSeller)
         CategoryItem("Магазины\nи бренды", Color(0xFF5D76CB),Color(0xFFCC5086), painterResource(R.drawable.shops_and_brans),30,30)
         CategoryItem("Финансы", Color(0xFF5D76CB), Color(0xFFDAA636),painterResource(R.drawable.finances_icon_home),30,30)
-        CategoryItem("История\nпросмотров", Color(0xFF5D76CB), Color(0xFF21936F),painterResource(R.drawable.history_icon),40,40)
+        CategoryItem("История\nпросмотров", Color(0xFF5D76CB), Color(0xFF21936F),painterResource(R.drawable.history_icon),40,40, onHistoryClick)
         CategoryItem("Каталог", Color(0xFF5D76CB), Color(0xFF1D36D7),painterResource(R.drawable.category_icon),30,44)
     }
 }
@@ -58,7 +62,9 @@ fun CategoryItem(
     color2: Color,
     painter: Painter,
     width:Int,
-    height:Int) {
+    height:Int,
+    onClick:()-> Unit = {}
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -74,7 +80,8 @@ fun CategoryItem(
                     brush = Brush.verticalGradient(
                         colors = listOf(color1, color2)
                     )
-                ),
+                )
+                .clickable(onClick = onClick),
             contentAlignment = Alignment.Center
         ) {
             Box(modifier = Modifier

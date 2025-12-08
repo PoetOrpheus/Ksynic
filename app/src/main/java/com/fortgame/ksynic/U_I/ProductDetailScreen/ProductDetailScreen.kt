@@ -62,7 +62,7 @@ fun ProductDetailScreen(
 ) {
     Box(modifier = Modifier
         .background(BgGray)) {
-        TopHeaderWithReturn()
+        TopHeaderWithReturn(onBackClick)
 
         LazyColumn(
             modifier = Modifier
