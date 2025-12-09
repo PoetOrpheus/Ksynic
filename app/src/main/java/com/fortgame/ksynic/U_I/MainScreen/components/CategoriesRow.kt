@@ -38,7 +38,8 @@ import com.fortgame.ksynic.utils.fw
 fun CategoriesRow(
     onHistoryClick: () -> Unit = {}, // ДОБАВЬТЕ этот параметр
     onCanBeSeller: () -> Unit = {}, // ДОБАВЬТЕ этот параметр
-    onCategoryClick:() -> Unit = {}
+    onCategoryClick:() -> Unit = {},
+    onBrandsClick:() -> Unit = {}
     ) {
     Row(
         modifier = Modifier
@@ -49,7 +50,7 @@ fun CategoriesRow(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         CategoryItem("Стать\nпродавцом", Color(0xFF5D76CB),Color(0xFFD23E41), painterResource(R.drawable.seller_icon), 30,30, onCanBeSeller)
-        CategoryItem("Магазины\nи бренды", Color(0xFF5D76CB),Color(0xFFCC5086), painterResource(R.drawable.shops_and_brans),30,30)
+        CategoryItem("Магазины\nи бренды", Color(0xFF5D76CB),Color(0xFFCC5086), painterResource(R.drawable.shops_and_brans),30,30, onBrandsClick)
         CategoryItem("Финансы", Color(0xFF5D76CB), Color(0xFFDAA636),painterResource(R.drawable.finances_icon_home),30,30)
         CategoryItem("История\nпросмотров", Color(0xFF5D76CB), Color(0xFF21936F),painterResource(R.drawable.history_icon),40,40, onHistoryClick)
         CategoryItem("Каталог", Color(0xFF5D76CB), Color(0xFF1D36D7),painterResource(R.drawable.category_icon),30,44, onCategoryClick)
