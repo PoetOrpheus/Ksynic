@@ -34,6 +34,7 @@ import com.fortgame.ksynic.U_I.MainScreen.components.ProductGrid
 import com.fortgame.ksynic.U_I.ProductDetailScreen.ProductDetailScreen // ДОБАВЬТЕ этот импорт
 import com.fortgame.ksynic.U_I.ShopCartScreen.ShopCartScreen
 import com.fortgame.ksynic.U_I.TopHeaderSection
+import com.fortgame.ksynic.U_I.WatingReviewsScreen.WatingReviewScreen
 import com.fortgame.ksynic.utils.fh
 
 @Composable
@@ -44,12 +45,13 @@ fun MainScreen() {
     var showCanBeSeller by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
     var showCategory by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
     var showBrands by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
+    var showWaitingReview by remember{mutableStateOf(false)}
 
 
 
     Scaffold(
         bottomBar = {
-            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showBrands) { // Скрываем навигацию на экране деталей
+            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showBrands and !showWaitingReview) { // Скрываем навигацию на экране деталей
                 BottomNavigationBar(
                     selectedItem = selectedTab,
                     onItemSelected = { selectedTab = it }
@@ -87,6 +89,12 @@ fun MainScreen() {
                 )
             }
 
+            else if (showWaitingReview){
+                WatingReviewScreen(
+                    onBackClick = {showWaitingReview = false}
+                )
+            }
+
             else {
                 when (selectedTab) {
                     BottomNavItem.Home -> MarketplaceContent(
@@ -97,7 +105,9 @@ fun MainScreen() {
                         onBrandsClick = {showBrands=true}
                         )
                     BottomNavItem.Favorites -> FavoriteScreen()
-                    BottomNavItem.Profile -> ProfileScreen()
+                    BottomNavItem.Profile -> ProfileScreen(
+                        onReviewClick = {showWaitingReview=true}
+                    )
                     BottomNavItem.ShopCart -> ShopCartScreen()
 
                     else -> {

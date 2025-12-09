@@ -30,7 +30,7 @@ import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(onReviewClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +49,7 @@ fun ProfileScreen() {
             item { Profile() }
 
             // Меню профиля
-            item { ProfileMenu(23, 4, 5) }
+            item { ProfileMenu(23, 4, 5 , onReviewClick) }
 
             // --- СЕКЦИЯ "МОЖНО ЗАБИРАТЬ" ---
             item {
@@ -135,5 +135,5 @@ fun ProfileScreen() {
 @Composable
 @Preview
 private fun ProfileScreenPreview(){
-    ProfileScreen()
+    ProfileScreen({})
 }

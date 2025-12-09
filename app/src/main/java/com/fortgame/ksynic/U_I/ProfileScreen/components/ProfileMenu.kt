@@ -2,6 +2,7 @@ package com.fortgame.ksynic.U_I.ProfileScreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +33,8 @@ import com.fortgame.ksynic.R
 fun ProfileMenu(
     countSell: Int,
     countFavorite: Int,
-    countReviews: Int
+    countReviews: Int,
+    onReviewClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -47,7 +49,8 @@ fun ProfileMenu(
             iconRes = R.drawable.profile_menu_sell,
             title = "Покупки",
             subtitle = "$countSell заказа",
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            onReviewClick = onReviewClick
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -57,7 +60,8 @@ fun ProfileMenu(
             iconRes = R.drawable.lover,
             title = "Избранное",
             subtitle = "$countFavorite товаров",
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            onReviewClick = onReviewClick
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -67,7 +71,8 @@ fun ProfileMenu(
             iconRes = R.drawable.star_profile_menu,
             title = "Ждут отзыва",
             subtitle = "$countReviews товаров",
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            onReviewClick
         )
     }
 }
@@ -77,7 +82,8 @@ fun ProfileMenuItem(
     iconRes: Int,
     title: String,
     subtitle: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onReviewClick: () -> Unit={}
 ) {
     Box(
         modifier = modifier
@@ -92,7 +98,8 @@ fun ProfileMenuItem(
             .height(70.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(Color.White)
-            .padding(vertical = 10.dp, horizontal = 10.dp),
+            .padding(vertical = 10.dp, horizontal = 10.dp)
+            .clickable(onClick = onReviewClick),
         contentAlignment = Alignment.CenterStart
     ) {
         Column(
@@ -138,6 +145,7 @@ private fun ProfileMenuPreview() {
     ProfileMenu(
         countSell = 23,
         countFavorite = 4,
-        countReviews = 5
+        countReviews = 5,
+        onReviewClick = {}
     )
 }
