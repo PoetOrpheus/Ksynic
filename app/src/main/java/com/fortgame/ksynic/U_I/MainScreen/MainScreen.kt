@@ -26,6 +26,7 @@ import com.fortgame.ksynic.Navigation.BottomNavigationBar
 import com.fortgame.ksynic.U_I.BrandsScreen.BrandsScreen
 import com.fortgame.ksynic.U_I.CanBeSeller.CanBeSeller
 import com.fortgame.ksynic.U_I.CatalogScreen.CatalogScreen
+import com.fortgame.ksynic.U_I.EditingProfileScreen.EditingProfileScreen
 import com.fortgame.ksynic.U_I.ProfileScreen.ProfileScreen
 import com.fortgame.ksynic.U_I.FavoriteScreen.FavoriteScreen
 import com.fortgame.ksynic.U_I.HistoryScreen.HistoryScreen
@@ -46,12 +47,13 @@ fun MainScreen() {
     var showCategory by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
     var showBrands by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
     var showWaitingReview by remember{mutableStateOf(false)}
+    var showEditingProfile by remember{mutableStateOf(false)}
 
 
 
     Scaffold(
         bottomBar = {
-            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showBrands and !showWaitingReview) { // Скрываем навигацию на экране деталей
+            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showBrands and !showWaitingReview and !showEditingProfile) { // Скрываем навигацию на экране деталей
                 BottomNavigationBar(
                     selectedItem = selectedTab,
                     onItemSelected = { selectedTab = it }
@@ -95,6 +97,12 @@ fun MainScreen() {
                 )
             }
 
+            else if (showEditingProfile){
+                EditingProfileScreen(
+                    onBackClick = {showEditingProfile=false}
+                )
+            }
+
             else {
                 when (selectedTab) {
                     BottomNavItem.Home -> MarketplaceContent(
@@ -106,7 +114,9 @@ fun MainScreen() {
                         )
                     BottomNavItem.Favorites -> FavoriteScreen()
                     BottomNavItem.Profile -> ProfileScreen(
-                        onReviewClick = {showWaitingReview=true}
+                        onReviewClick = {showWaitingReview=true},
+                        onEditingClick = {showEditingProfile=true}
+
                     )
                     BottomNavItem.ShopCart -> ShopCartScreen()
 
@@ -130,9 +140,9 @@ private fun MarketplaceContent(
     onProductClick: () -> Unit = {}, // ДОБАВЬТЕ этот параметр
     onHistoryClick: () -> Unit = {}, // ДОБАВЬТЕ этот параметр
     onCanBeSeller: () -> Unit = {}, // ДОБАВЬТЕ этот параметр
-    onCategoryClick:() -> Unit = {},
-    onBrandsClick:() -> Unit = {}
-    ) {
+    onCategoryClick: () -> Unit = {},
+    onBrandsClick: () -> Unit = {},
+) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {

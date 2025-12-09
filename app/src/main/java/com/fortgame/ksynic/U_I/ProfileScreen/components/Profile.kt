@@ -1,9 +1,8 @@
 package com.fortgame.ksynic.U_I.ProfileScreen.components
 
-import androidx.annotation.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +32,7 @@ import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
-fun Profile(){
+fun Profile(onEditingClick: () -> Unit={}) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -83,7 +82,7 @@ fun Profile(){
                 ProfileInfo(text="г. Тверь")
 
                 // Редактировать
-                ProfileInfo(text="Редактировать", color=Color(0xFF5D76CB))
+                ProfileInfo(text="Редактировать", color=Color(0xFF5D76CB), onClick=onEditingClick)
             }
         }
         Spacer(Modifier.width(fw(10)))
@@ -129,14 +128,16 @@ fun ProfileInfo(
     size: TextUnit = 10.sp,
     lineHeight: TextUnit=12.sp,
     weight: FontWeight= FontWeight.Light,
-    color:Color = Color.Black
+    color:Color = Color.Black,
+    onClick: () -> Unit = {}
 ){
     Text(
         text=text,
         fontSize = size,
         fontWeight = weight,
         color=color,
-        lineHeight=lineHeight
+        lineHeight=lineHeight,
+        modifier=Modifier.clickable(onClick=onClick)
     )
 }
 

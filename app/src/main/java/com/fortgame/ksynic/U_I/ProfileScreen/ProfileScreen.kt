@@ -30,7 +30,7 @@ import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
-fun ProfileScreen(onReviewClick: () -> Unit) {
+fun ProfileScreen(onReviewClick: () -> Unit, onEditingClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,7 +46,7 @@ fun ProfileScreen(onReviewClick: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(fh(10))
         ) {
             // Профиль пользователя
-            item { Profile() }
+            item { Profile(onEditingClick) }
 
             // Меню профиля
             item { ProfileMenu(23, 4, 5 , onReviewClick) }
@@ -135,5 +135,5 @@ fun ProfileScreen(onReviewClick: () -> Unit) {
 @Composable
 @Preview
 private fun ProfileScreenPreview(){
-    ProfileScreen({})
+    ProfileScreen({},{})
 }
