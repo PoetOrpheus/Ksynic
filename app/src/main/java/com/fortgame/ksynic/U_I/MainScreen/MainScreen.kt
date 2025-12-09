@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.Navigation.BottomNavItem
 import com.fortgame.ksynic.Navigation.BottomNavigationBar
 import com.fortgame.ksynic.U_I.CanBeSeller.CanBeSeller
+import com.fortgame.ksynic.U_I.CatalogScreen.CatalogScreen
 import com.fortgame.ksynic.U_I.ProfileScreen.ProfileScreen
 import com.fortgame.ksynic.U_I.FavoriteScreen.FavoriteScreen
 import com.fortgame.ksynic.U_I.HistoryScreen.HistoryScreen
@@ -40,6 +41,8 @@ fun MainScreen() {
     var showProductDetail by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
     var showHistory by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
     var showCanBeSeller by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
+    var showCategory by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
+
 
 
     Scaffold(
@@ -71,13 +74,19 @@ fun MainScreen() {
                     onBackClick = { showCanBeSeller = false } ,// Функция для возврата
                 )
             }
+            else if(showCategory){
+                CatalogScreen(
+                    onBackClick = {showCategory = false}
+                )
+            }
 
             else {
                 when (selectedTab) {
                     BottomNavItem.Home -> MarketplaceContent(
                         onProductClick = { showProductDetail = true }, // Передаем функцию
                         onHistoryClick = { showHistory = true }, // Передаем функцию
-                        onCanBeSeller = {showCanBeSeller=true}
+                        onCanBeSeller = {showCanBeSeller=true},
+                        onCategoryClick = {showCategory=true}
                         )
                     BottomNavItem.Favorites -> FavoriteScreen()
                     BottomNavItem.Profile -> ProfileScreen()
@@ -103,12 +112,13 @@ private fun MarketplaceContent(
     onProductClick: () -> Unit = {}, // ДОБАВЬТЕ этот параметр
     onHistoryClick: () -> Unit = {}, // ДОБАВЬТЕ этот параметр
     onCanBeSeller: () -> Unit = {}, // ДОБАВЬТЕ этот параметр
+    onCategoryClick:() -> Unit = {}
     ) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
         TopHeaderSection()
-        CategoriesRow(onHistoryClick = onHistoryClick, onCanBeSeller=onCanBeSeller)
+        CategoriesRow(onHistoryClick = onHistoryClick, onCanBeSeller=onCanBeSeller, onCategoryClick =onCategoryClick )
         Spacer(modifier = Modifier.height(fh(10)))
         ProductGrid(onProductClick = onProductClick) // Передаем функцию дальше
     }
