@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,17 +44,18 @@ fun CardCart(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(Color.White)
     ) {
-        // --- 1. ВЕРХНЯЯ ЧАСТЬ (ИЗОБРАЖЕНИЕ, ТЕКСТ, СКИДКА) ---
         Box(
             modifier = Modifier
                 .height(fh(150))
                 .fillMaxWidth()
         ) {
-            // ... (КОД ИЗ ПРЕДЫДУЩЕГО ОТВЕТА ДЛЯ ИЗОБРАЖЕНИЯ, ТЕКСТА И ГРАДИЕНТА) ...
-
             // СЛОЙ 1: КОНТЕНТ (Картинка и Текст)
-            Row(modifier = Modifier.fillMaxSize()) {
+            Row(modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = fw(5), vertical = fh(5))
+            ){
                 Image(
                     painter = painterResource(R.drawable.image_for_product_3),
                     contentDescription = null,
@@ -61,49 +63,88 @@ fun CardCart(
                     modifier = Modifier
                         .width(fw(150))
                         .height(fh(150))
-                        .padding(all = 5.dp)
                         .clip(RoundedCornerShape(10.dp))
                 )
                 Column(
                     modifier = Modifier
-                        .weight(1f)
                         .fillMaxHeight()
-                        .padding(top = fh(15), start = fw(10), end = fw(60))
+                        .padding(horizontal = fw(10))
                 ) {
-                    Text(
-                        text = "$price ₽",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = color,
-                        lineHeight = 22.sp
-                    )
+                    
+                    // Цена
+                    Row(
+                        Modifier
+                            .height(fh(30))
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "$price ₽",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = color,
+                            lineHeight = 22.sp
+                        )
+                        // СЛОЙ 3: ПЛАШКА СКИДКИ
+                        Box(
+                            modifier = Modifier
+                                .width(fw(60))
+                                .height(fh(30))
+                                .shadow(
+                                    elevation = 5.dp, // Figma: Blur 5
+                                    shape = RoundedCornerShape(10.dp),
+                                    spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
+                                )
+                                .background(Color.White),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                               text="- $sale %",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                lineHeight = 16.sp,
+                                color=color
+
+                            )
+                        }
+                    }
                     Spacer(Modifier.height(fh(5)))
-                    Text(
-                        text = "$oldPrice ₽",
-                        style = TextStyle(textDecoration = TextDecoration.LineThrough),
-                        color = Color(0xFF999999),
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Normal
-                    )
-                    Spacer(Modifier.height(fh(15)))
+
+                    // Старая цена
+                    Box(
+                        Modifier
+                            .height(fh(20))
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "$oldPrice ₽",
+                            style = TextStyle(textDecoration = TextDecoration.LineThrough),
+                            color = Color(0xFF999999),
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Normal
+                        )
+                    }
+                    Spacer(Modifier.height(fh(20)))
+                    Box(
+                        Modifier
+                            .width(fw(150))
+                            .height(fh(70))
+                    ){
                     Text(
                         text = textProduct,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Normal,
                         lineHeight = 19.sp,
                         color = Color.Black
-                    )
+                    )}
                 }
             }
 
-// ... внутри Box (верхняя часть карточки) ...
-
-// Слой с выбором (Selector Checkbox)
             Box(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     // Отступ 5.dp совпадает с padding картинки товара, чтобы визуально "сесть" на её угол
-                    .padding(top = 5.dp, start = 5.dp)
                     .size(35.dp) // Точный размер 35px по Figma
                     .background(
                         Color.White,
@@ -140,45 +181,6 @@ fun CardCart(
                     )
                 }
             }
-
-            // СЛОЙ 2: ГРАДИЕНТ СПРАВА
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .width(fw(100))
-                    .fillMaxHeight()
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = 0.0f),
-                                color.copy(alpha = 0.1f),
-                                color.copy(alpha = 0.8f)
-                            )
-                        )
-                    )
-            )
-
-            // СЛОЙ 3: ПЛАШКА СКИДКИ
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = fh(15), end = fw(15))
-                    .width(fw(60))
-                    .height(fh(30))
-                    .background(Color.White, RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = SpanStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, color = color)) {
-                            append("-$sale")
-                        }
-                        withStyle(style = SpanStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold, color = color)) {
-                            append(" %")
-                        }
-                    }
-                )
-            }
         } // Конец Box для верхней части
 
         // --- 2. НИЖНЯЯ ЧАСТЬ (ACTION BAR С СЧЕТЧИКОМ) ---
@@ -199,8 +201,9 @@ fun CardCart(
                         .height(fh(30))
                         .width(fw(30))
                         .background(
-                             if (isLover) Color(0xFFFFD4D4) else Color.White,
-                            RoundedCornerShape(10.dp)),
+                            if (isLover) Color(0xFFFFD4D4) else Color.White,
+                            RoundedCornerShape(10.dp)
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(

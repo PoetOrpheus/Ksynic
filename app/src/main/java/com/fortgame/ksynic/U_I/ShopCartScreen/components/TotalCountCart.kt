@@ -32,7 +32,7 @@ fun TotalCountCart(
 ){
     Column(
         modifier=Modifier
-            .padding(horizontal = fw(40), vertical = (fh(10)))
+            .padding(horizontal = fw(40))
             .background(Color.White)
 
     ){
@@ -44,9 +44,9 @@ fun TotalCountCart(
         ){
             Text(
                 text="Заказ",
-                fontSize = 25.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Medium,
-                lineHeight = 27.sp
+                lineHeight = 24.sp
             )
         }
         Spacer(Modifier.height(fh(10)))
@@ -82,9 +82,9 @@ fun TotalCountCart(
             ){
                 Text(
                     text="Итого",
-                    fontSize = 25.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Medium,
-                    lineHeight = 27.sp
+                    lineHeight = 24.sp
                 )
             }
 
@@ -96,9 +96,9 @@ fun TotalCountCart(
             ){
                 Text(
                     text="$finalPrice ₽",
-                    fontSize = 25.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    lineHeight = 27.sp,
+                    lineHeight = 24.sp,
                     color = Color(0xFF50C878)
                 )
             }
@@ -126,9 +126,9 @@ private fun ParametrTotal(
         ){
             Text(
                 text,
-                fontSize = 15.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
-                lineHeight = 17.sp
+                lineHeight = 14.sp
 
             )
         }
@@ -141,9 +141,9 @@ private fun ParametrTotal(
         ){
             Text(
                 text="$price ₽",
-                fontSize = 15.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
-                lineHeight = 17.sp,
+                lineHeight = 14.sp,
                 color=colorPrice
             )
         }

@@ -3,6 +3,7 @@ package com.fortgame.ksynic.U_I.ShopCartScreen
 import android.R.attr.onClick
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -50,13 +52,27 @@ fun ShopCartScreen() {
                 .clip(RoundedCornerShape(10.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CardCart()
+            LazyColumn(
+                Modifier.height(fh(465))
+            ) {
+                items(4){
+                    CardCart()
+                    Box(
+                        Modifier.height(fh(2)).fillMaxWidth().background(Color(0xFFF2F2F2))
+                    )
+                }
+
+            }
+
+
+
+            // Офорить заказ + итоговый результат
             Spacer(Modifier.height(fh(20)))
             // todo: Проверить цвета кнопки по нажатию и так далее
             Button(
                 modifier = Modifier
-                    .height(fh(50))
-                    .width(fw(380)),
+                    .height(fh(40))
+                    .width(fw(340)),
                 colors = ButtonColors(containerColor = Color(0xFF50C878),
                     contentColor = Color.White,
                     disabledContentColor = Color.Blue,
@@ -71,31 +87,27 @@ fun ShopCartScreen() {
             ) {
                 Text(
                     text="Оформить заказ",
-                    fontSize = 25.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    lineHeight = 27.sp
+                    lineHeight = 17.sp
 
                 )
             }
-            Spacer(Modifier.height(fh(10)))
 
             Box(
                 modifier=Modifier
-                    .width(fw(300))
-                    .height(fh(50)),
+                    .width(fw(340))
+                    .height(fh(40)),
                 contentAlignment = Alignment.Center
             ){
                 Text(
                     text="Далее можно выбрать место доставки и способ оплаты",
-                    fontSize = 16.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,
-                    lineHeight = 18.sp,
+                    lineHeight = 12.sp,
                     textAlign = TextAlign.Center
                 )
             }
-
-            Spacer(Modifier.height(fh(10)))
-
             TotalCountCart()
         }
     }
