@@ -90,7 +90,7 @@ fun ProductMainCard(
             Image(
                 painter = painterResource(images[page]),
                 contentDescription = "Product Image",
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize()
             )
         }

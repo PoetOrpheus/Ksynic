@@ -21,7 +21,8 @@ data class Product(
     val seller: Seller? = null, // Информация о продавце
     val brand: Brand? = null, // Информация о бренде
     val description: String? = null, // Описание продукта
-    val variants: List<ProductVariant> = emptyList(), // Варианты продукта (размер, цвет и т.д.)
+    val variants: List<ProductVariant> = emptyList(), // Варианты продукта (цвет, материал и т.д., но НЕ размеры)
+    val sizes: List<ProductSize> = emptyList(), // Размеры продукта
     val specifications: List<ProductSpecification> = emptyList(), // Характеристики продукта
     val quantity: Int = 1 // Количество в корзине (для корзины)
 ) {
@@ -71,6 +72,15 @@ data class Brand(
 data class ProductSpecification(
     val name: String, // Название характеристики (например, "Материал", "Размер")
     val value: String // Значение характеристики (например, "Кожа", "42x30x10 см")
+)
+
+/**
+ * Модель размера продукта
+ */
+data class ProductSize(
+    val id: String,
+    val value: String, // Значение размера (например, "40", "M", "XL")
+    val isAvailable: Boolean = true // Доступен ли размер
 )
 
 /**

@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -32,6 +33,7 @@ fun ProductImageCarousel(
 
     Box(
         modifier = modifier
+            .background(Color(0xFFE5E5E5))
     ) {
         HorizontalPager(
             state = pagerState,
@@ -40,7 +42,7 @@ fun ProductImageCarousel(
             Image(
                 painter = painterResource(id = images[page]),
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -50,6 +52,11 @@ fun ProductImageCarousel(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .clip(RoundedCornerShape(topStart = fw(6), topEnd = fw(6)))
+                .shadow(
+                    elevation = 5.dp, // Figma: Blur 5
+                    shape = RoundedCornerShape(topStart = fw(6), topEnd = fw(6)),
+                    spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
+                )
                 .background(Color.White)
                 .padding(horizontal = 2.dp)
                 .height(fh(8)),
@@ -83,9 +90,9 @@ fun ProductImageCarousel(
 private fun ProductImageCarouselPreview(){
     ProductImageCarousel(
         images = listOf(
-            R.drawable.image_for_product_3,
-            R.drawable.image_for_product_2,
             R.drawable.image_for_product_1,
+            R.drawable.image_for_product_2,
+            R.drawable.image_for_product_3,
         ),
         modifier = Modifier.fillMaxSize()
     )

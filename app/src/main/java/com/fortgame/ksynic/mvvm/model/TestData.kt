@@ -112,7 +112,7 @@ object TestProducts {
         rating = 4.9,
         reviewsCount = 457,
         images = emptyList(), // В реальном приложении здесь будут URL изображений
-        imagesRes = listOf(R.drawable.image_for_product_1, R.drawable.adidas_1_1, R.drawable.adidas_1), // Карусель изображений продукта
+        imagesRes = listOf(R.drawable.adidas_1_1, R.drawable.adidas_1, R.drawable.adidas_2, R.drawable.adidas_2_1), // Карусель изображений продукта
         isTimeLimited = false,
         accentColor = Color(0xFF000000), // Черный цвет
         isFavorite = false,
@@ -125,29 +125,27 @@ object TestProducts {
             ProductSpecification("Страна производства", "Китай"),
             ProductSpecification("Вес", "350 г")
         ),
+        sizes = listOf(
+            ProductSize(id = "size_1_1", value = "40", isAvailable = true),
+            ProductSize(id = "size_1_2", value = "41", isAvailable = true),
+            ProductSize(id = "size_1_3", value = "42", isAvailable = true),
+            ProductSize(id = "size_1_4", value = "43", isAvailable = false)
+        ),
         variants = listOf(
             ProductVariant(
                 id = "variant_1_1",
-                name = "Размер", 
-                value = "40", 
+                name = "Цвет", 
+                value = "Черный", 
                 isAvailable = true, 
-                imagesRes = listOf(R.drawable.adidas_2, R.drawable.adidas_2_1)
+                imagesRes = listOf(R.drawable.adidas_1, R.drawable.adidas_1_1)
             ),
             ProductVariant(
                 id = "variant_1_2", 
-                name = "Размер", 
-                value = "41", 
+                name = "Цвет", 
+                value = "Белый", 
                 isAvailable = true, 
-                imagesRes = listOf(R.drawable.image_for_product_1, R.drawable.watch_2)
+                imagesRes = listOf(R.drawable.adidas_2, R.drawable.adidas_2_1)
             ),
-            ProductVariant(
-                id = "variant_1_3", 
-                name = "Размер", 
-                value = "42", 
-                isAvailable = true, 
-                imagesRes = listOf(R.drawable.watch_2, R.drawable.watch_1)
-            ),
-            ProductVariant(id = "variant_1_4", name = "Размер", value = "43", isAvailable = false)
         ),
         quantity = 1
     )
@@ -162,13 +160,13 @@ object TestProducts {
         rating = 5.0,
         reviewsCount = 23,
         images = emptyList(),
-        imagesRes = listOf(R.drawable.watch_1, R.drawable.watch_2), // Карусель изображений продукта
+        imagesRes = listOf(R.drawable.watch_cvarch_1, R.drawable.watch_cvarch_2, R.drawable.watch_cvarch_1_2, R.drawable.watch_cvarch_3), // Карусель изображений продукта
         isTimeLimited = true,
         accentColor = Color(0xFFCC3333), // Красный цвет
         isFavorite = false,
         seller = TestSellers.watchMaster,
         brand = TestBrands.calvinKlein,
-        description = "Элегантные кварцевые наручные часы. Классический дизайн и надежный механизм.",
+        description = "Элегантность и стиль — важные аспекты мужского образа, и часы являются его незаменимым атрибутом. Эти часы наручные мужские идеально подходят для современных мужчин, стремящихся подчеркнуть свою индивидуальность. Они отлично смотрятся как в повседневной жизни, так и на официальных мероприятиях.\nКаждая деталь этих мужских часов наручных выполнена с вниманием и качеством, что делает их не только красивыми, но и надежными. Если вы ищете наручные часы мужские, которые способны выдерживать эксплуатацию в различных условиях, обратите внимание на модель с водонепроницаемыми характеристиками. Часы наручные мужские водонепроницаемые понравятся тем, кто ведет активный образ жизни, ведь они защищены от воздействия воды и пыли.\nБренд Calvin Klein символизирует стиль и инновации. Часы Calvin Klein мужские привлекают внимание своим лаконичным дизайном и высоким качеством материалов. Они станут отличным дополнением как к деловому костюму, так и к повседневной одежде. Мужские часы от Calvin Klein — это выбор мужчин, ценящих комфорт и утонченность.\nНе упустите возможность стать обладателем этих великолепных часов. Идеальные часы для работы, отдыха и встреч с друзьями ждут вас! Сделайте шаг к своему стилю уже сегодня!",
         specifications = listOf(
             ProductSpecification("Тип механизма", "Кварцевый"),
             ProductSpecification("Материал корпуса", "Нержавеющая сталь"),
@@ -176,9 +174,19 @@ object TestProducts {
             ProductSpecification("Диаметр корпуса", "40 мм")
         ),
         variants = listOf(
-            ProductVariant(id = "variant_2_1", name = "Цвет", value = "Черный", isAvailable = true),
-            ProductVariant(id = "variant_2_2", name = "Цвет", value = "Серебристый", isAvailable = true),
-            ProductVariant(id = "variant_2_3", name = "Цвет", value = "Золотистый", isAvailable = false)
+            ProductVariant(
+                id = "variant_2_1",
+                name = "Цвет",
+                value = "Черный",
+                isAvailable = true,
+                imagesRes = listOf(R.drawable.watch_cvarch_1, R.drawable.watch_cvarch_1_2)),
+            ProductVariant(
+                id = "variant_2_2",
+                name = "Цвет",
+                value = "Золотистый",
+                isAvailable = true,
+                imagesRes = listOf(R.drawable.watch_cvarch_2)),
+            ProductVariant(id = "variant_3", name = "Цвет", value = "Серебристый", isAvailable = false, imagesRes = listOf(R.drawable.watch_cvarch_3))
         ),
         quantity = 1
     )
@@ -193,7 +201,7 @@ object TestProducts {
         rating = 4.9,
         reviewsCount = 457,
         images = emptyList(),
-        imagesRes = listOf(R.drawable.watch_1, R.drawable.watch_2, R.drawable.watch_3), // Карусель изображений продукта
+        imagesRes = listOf(R.drawable.watch_calvin, R.drawable.watch_calvin_1), // Карусель изображений продукта
         isTimeLimited = true,
         accentColor = Color(0xFFCC3333), // Красный цвет
         isFavorite = true,
@@ -216,21 +224,14 @@ object TestProducts {
                 name = "Цвет", 
                 value = "Серый", 
                 isAvailable = true,
-                imagesRes = listOf(R.drawable.watch_1, R.drawable.watch_2) // Карусель изображений варианта (с разных сторон)
+                imagesRes = listOf(R.drawable.watch_calvin) // Карусель изображений варианта (с разных сторон)
             ),
             ProductVariant(
                 id = "variant_3_2", 
                 name = "Цвет", 
                 value = "Чёрный", 
                 isAvailable = true,
-                imagesRes = listOf(R.drawable.watch_2, R.drawable.watch_3, R.drawable.watch_1)
-            ),
-            ProductVariant(
-                id = "variant_3_3", 
-                name = "Цвет", 
-                value = "Серебристый", 
-                isAvailable = true,
-                imagesRes = listOf(R.drawable.watch_3, R.drawable.watch_1, R.drawable.watch_2)
+                imagesRes = listOf(R.drawable.watch_calvin_1)
             )
         ),
         quantity = 2
@@ -246,7 +247,7 @@ object TestProducts {
         rating = 4.8,
         reviewsCount = 1234,
         images = emptyList(),
-        imagesRes = listOf(R.drawable.watch_1, R.drawable.watch_2, R.drawable.watch_3), // Карусель изображений продукта
+        imagesRes = listOf(R.drawable.iphone_1, R.drawable.iphone_2, R.drawable.iphone3), // Карусель изображений продукта
         isTimeLimited = false,
         accentColor = Color(0xFF007AFF), // Синий цвет Apple
         isFavorite = false,
@@ -262,11 +263,12 @@ object TestProducts {
             ProductSpecification("ОС", "iOS 17"),
             ProductSpecification("Вес", "187 г")
         ),
+        sizes = emptyList(), // iPhone не имеет размеров
         variants = listOf(
-            ProductVariant(id = "variant_4_1", name = "Цвет", value = "Титановый синий", isAvailable = true),
-            ProductVariant(id = "variant_4_2", name = "Цвет", value = "Титановый белый", isAvailable = true),
-            ProductVariant(id = "variant_4_3", name = "Цвет", value = "Титановый черный", isAvailable = true),
-            ProductVariant(id = "variant_4_4", name = "Память", value = "128GB", isAvailable = true),
+            ProductVariant(id = "variant_4_1", name = "Цвет", value = "Титановый синий", isAvailable = true, imagesRes = listOf(R.drawable.iphone_1)),
+            ProductVariant(id = "variant_4_2", name = "Цвет", value = "Титановый белый", isAvailable = true,  imagesRes = listOf(R.drawable.iphone_2)),
+            ProductVariant(id = "variant_4_3", name = "Цвет", value = "Титановый черный", isAvailable = true,  imagesRes = listOf(R.drawable.iphone3)),
+            ProductVariant(id = "variant_4_5", name = "Память", value = "128GB", isAvailable = true),
             ProductVariant(id = "variant_4_5", name = "Память", value = "256GB", isAvailable = true),
             ProductVariant(id = "variant_4_6", name = "Память", value = "512GB", isAvailable = false)
         ),
@@ -297,14 +299,16 @@ object TestProducts {
             ProductSpecification("Вес", "320 г"),
             ProductSpecification("Тип застежки", "Шнуровка")
         ),
+        sizes = listOf(
+            ProductSize(id = "size_5_1", value = "39", isAvailable = true),
+            ProductSize(id = "size_5_2", value = "40", isAvailable = true),
+            ProductSize(id = "size_5_3", value = "41", isAvailable = true),
+            ProductSize(id = "size_5_4", value = "42", isAvailable = true),
+            ProductSize(id = "size_5_5", value = "43", isAvailable = false)
+        ),
         variants = listOf(
-            ProductVariant(id = "variant_5_1", name = "Размер", value = "39", isAvailable = true),
-            ProductVariant(id = "variant_5_2", name = "Размер", value = "40", isAvailable = true),
-            ProductVariant(id = "variant_5_3", name = "Размер", value = "41", isAvailable = true),
-            ProductVariant(id = "variant_5_4", name = "Размер", value = "42", isAvailable = true),
-            ProductVariant(id = "variant_5_5", name = "Размер", value = "43", isAvailable = false),
-            ProductVariant(id = "variant_5_6", name = "Цвет", value = "Черный/Белый", isAvailable = true),
-            ProductVariant(id = "variant_5_7", name = "Цвет", value = "Красный/Белый", isAvailable = true)
+            ProductVariant(id = "variant_5_1", name = "Цвет", value = "Черный/Белый", isAvailable = true),
+            ProductVariant(id = "variant_5_2", name = "Цвет", value = "Красный/Белый", isAvailable = true)
         ),
         quantity = 1
     )

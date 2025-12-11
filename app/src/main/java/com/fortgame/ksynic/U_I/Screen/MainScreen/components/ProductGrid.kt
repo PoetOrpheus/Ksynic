@@ -142,7 +142,7 @@ fun ProductCard(
                         .fillMaxWidth()
                         .height(fh(280))
                         .background(
-                            Color(0xFFE5E5E5),
+                            Color.White,
                             RoundedCornerShape(15.dp)
                         )
                 ) {

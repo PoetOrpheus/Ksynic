@@ -65,10 +65,17 @@ fun ProductDetailScreen(
     product: com.fortgame.ksynic.mvvm.model.Product,
     onBackClick: () -> Unit = {}
 ) {
-    // Состояние выбранного варианта (выбираем первый доступный по умолчанию)
+    // Состояние выбранного варианта (цвет и т.д.) - выбираем первый доступный по умолчанию
     var selectedVariantId by remember {
         mutableStateOf(
             product.variants.firstOrNull { it.isAvailable }?.id
+        )
+    }
+    
+    // Состояние выбранного размера - выбираем первый доступный по умолчанию
+    var selectedSizeId by remember {
+        mutableStateOf(
+            product.sizes.firstOrNull { it.isAvailable }?.id
         )
     }
 
@@ -107,12 +114,17 @@ fun ProductDetailScreen(
                 )
             }
 
-            val hasSize = true
             //Размеры
-            if (hasSize){
+            if (product.sizes.isNotEmpty()){
                 item{
                     Spacer(Modifier.height(fh(10)))
-                    SizeVariants()
+                    SizeVariants(
+                        sizes = product.sizes,
+                        selectedSizeId = selectedSizeId,
+                        onSizeSelected = { sizeId ->
+                            selectedSizeId = sizeId
+                        }
+                    )
                 }
             }
 

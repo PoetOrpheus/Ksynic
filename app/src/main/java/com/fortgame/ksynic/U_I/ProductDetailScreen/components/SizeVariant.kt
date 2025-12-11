@@ -2,6 +2,7 @@ package com.fortgame.ksynic.U_I.ProductDetailScreen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -26,33 +27,60 @@ import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
-fun SizeVariants(){
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .height(fh(30))
-            .padding(horizontal = fw(10)),
-        horizontalArrangement = Arrangement.spacedBy(fw(10))
-    ){
-        Size(text = "34", isSelected = true)
-        Size(text = "35")
-
+fun SizeVariants(
+    sizes: List<com.fortgame.ksynic.mvvm.model.ProductSize> = emptyList(),
+    selectedSizeId: String? = null,
+    onSizeSelected: (String) -> Unit = {}
+){
+    if (sizes.isNotEmpty()) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(fh(30))
+                .padding(horizontal = fw(10)),
+            horizontalArrangement = Arrangement.spacedBy(fw(10))
+        ){
+            sizes.forEach { size ->
+                Size(
+                    text = size.value,
+                    isSelected = size.id == selectedSizeId,
+                    isAvailable = size.isAvailable,
+                    onClick = {
+                        if (size.isAvailable) {
+                            onSizeSelected(size.id)
+                        }
+                    }
+                )
+            }
+        }
     }
 }
 
 @Composable
 private fun Size(
-    text: String="34",
+    text: String = "34",
     isSelected: Boolean = false,
+    isAvailable: Boolean = true,
+    onClick: () -> Unit = {}
 ){
     Box(
-        Modifier.fillMaxHeight().width(fw(60))
+        Modifier
+            .fillMaxHeight()
+            .width(fw(60))
+            .clickable(enabled = isAvailable, onClick = onClick)
             .border(
-                width =3.dp,
-                color = if (isSelected) BlueButton  else Color.Gray.copy(alpha = 0.5f),
+                width = 3.dp,
+                color = when {
+                    isSelected -> BlueButton
+                    !isAvailable -> Color.Gray.copy(alpha = 0.3f)
+                    else -> Color.Gray.copy(alpha = 0.5f)
+                },
                 shape = RoundedCornerShape(10.dp)
             )
-            .background(Color.White, RoundedCornerShape(10.dp)),
+            .background(
+                if (!isAvailable) Color.Gray.copy(alpha = 0.2f) else Color.White,
+                RoundedCornerShape(10.dp)
+            ),
         contentAlignment = Alignment.Center
     ){
         Text(
@@ -60,9 +88,7 @@ private fun Size(
             fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold,
             lineHeight = 14.sp,
-
-
-
+            color = if (isAvailable) Color.Black else Color.Gray
         )
     }
 }

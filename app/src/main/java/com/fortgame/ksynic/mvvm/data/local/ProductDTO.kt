@@ -3,6 +3,7 @@ package com.fortgame.ksynic.mvvm.data.local
 import androidx.compose.ui.graphics.Color
 import com.fortgame.ksynic.mvvm.model.Brand
 import com.fortgame.ksynic.mvvm.model.Product
+import com.fortgame.ksynic.mvvm.model.ProductSize
 import com.fortgame.ksynic.mvvm.model.ProductSpecification
 import com.fortgame.ksynic.mvvm.model.ProductVariant
 import com.fortgame.ksynic.mvvm.model.Seller
@@ -29,6 +30,7 @@ data class ProductDTO(
     val brand: BrandDTO? = null,
     val description: String? = null,
     val variants: List<ProductVariantDTO> = emptyList(),
+    val sizes: List<ProductSizeDTO> = emptyList(),
     val specifications: List<ProductSpecificationDTO> = emptyList(),
     val quantity: Int = 1
 ) {
@@ -50,6 +52,7 @@ data class ProductDTO(
             brand = brand?.toBrand(),
             description = description,
             variants = variants.map { it.toProductVariant() },
+            sizes = sizes.map { it.toProductSize() },
             specifications = specifications.map { it.toProductSpecification() },
             quantity = quantity
         )
@@ -74,6 +77,7 @@ data class ProductDTO(
                 brand = product.brand?.let { BrandDTO.fromBrand(it) },
                 description = product.description,
                 variants = product.variants.map { ProductVariantDTO.fromProductVariant(it) },
+                sizes = product.sizes.map { ProductSizeDTO.fromProductSize(it) },
                 specifications = product.specifications.map { ProductSpecificationDTO.fromProductSpecification(it) },
                 quantity = product.quantity
             )
@@ -133,6 +137,30 @@ data class BrandDTO(
                 id = brand.id,
                 name = brand.name,
                 logoUrl = brand.logoUrl
+            )
+        }
+    }
+}
+
+data class ProductSizeDTO(
+    val id: String,
+    val value: String,
+    val isAvailable: Boolean = true
+) {
+    fun toProductSize(): ProductSize {
+        return ProductSize(
+            id = id,
+            value = value,
+            isAvailable = isAvailable
+        )
+    }
+    
+    companion object {
+        fun fromProductSize(size: ProductSize): ProductSizeDTO {
+            return ProductSizeDTO(
+                id = size.id,
+                value = size.value,
+                isAvailable = size.isAvailable
             )
         }
     }

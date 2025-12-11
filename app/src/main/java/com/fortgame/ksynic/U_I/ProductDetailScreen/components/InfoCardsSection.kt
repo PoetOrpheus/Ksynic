@@ -20,8 +20,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -136,6 +139,10 @@ private fun Info(
     description: String? = null,
     onShowTextClick: () -> Unit
 ){
+    val maxHeight = fh(160)
+    val paddingDp = fh(10) // Вычисляем padding до использования в with(density)
+    val density = LocalDensity.current
+    var shouldShowExpandButton by remember { mutableStateOf(false) }
 
     Box(
         modifier= if (showText){
@@ -144,9 +151,36 @@ private fun Info(
         } else {
             Modifier
                 .fillMaxWidth()
-                .height(fh(160))
+                .height(maxHeight)
         },
     ){
+        // Скрытый Text для измерения полной высоты текста (без ограничения по высоте)
+        if (!showText) {
+            Text(
+                text = description ?: "Описание товара отсутствует",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                lineHeight = 14.sp,
+                modifier = Modifier
+                    .padding(horizontal = fw(10))
+                    .fillMaxWidth()
+                    .alpha(0f), // Скрытый для измерения
+                onTextLayout = { textLayoutResult: TextLayoutResult ->
+                    // Получаем полную высоту текста в пикселях
+                    val fullTextHeightPx = textLayoutResult.size.height.toFloat()
+                    
+                    // Конвертируем maxHeight и padding из dp в пиксели
+                    val maxHeightPx = with(density) { maxHeight.toPx() }
+                    val paddingPx = with(density) { paddingDp.toPx() }
+                    val availableHeightPx = maxHeightPx - paddingPx
+                    
+                    // Проверяем, больше ли текст чем доступная высота
+                    shouldShowExpandButton = fullTextHeightPx > availableHeightPx
+                }
+            )
+        }
+        
+        // Видимый Text для отображения
         Text(
             text = description ?: "Описание товара отсутствует",
             fontSize = 12.sp,
@@ -155,7 +189,7 @@ private fun Info(
             modifier = Modifier
                 .padding(horizontal = fw(10))
         )
-        if (!showText){
+        if (!showText && shouldShowExpandButton){
             Box(
                 Modifier
                     .fillMaxWidth()

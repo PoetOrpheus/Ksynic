@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,13 +44,13 @@ fun VariantItemRow(
     onVariantSelected: (String) -> Unit = {}
 ) {
     if (variants.isNotEmpty()) {
-        Row(
-            Modifier
+        LazyRow(
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(fw(10))
         ) {
-            variants.forEach { variant ->
+            items(variants) { variant ->
                 VariantItem(
                     variant = variant,
                     isSelected = variant.id == selectedVariantId,
@@ -91,7 +93,7 @@ fun VariantItem(
                 Image(
                     painter = painterResource(id = firstImageRes),
                     contentDescription = variant.value,
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
