@@ -3,6 +3,7 @@ package com.fortgame.ksynic.mvvm.data.local
 import androidx.compose.ui.graphics.Color
 import com.fortgame.ksynic.mvvm.model.Brand
 import com.fortgame.ksynic.mvvm.model.Product
+import com.fortgame.ksynic.mvvm.model.ProductSpecification
 import com.fortgame.ksynic.mvvm.model.ProductVariant
 import com.fortgame.ksynic.mvvm.model.Seller
 
@@ -28,6 +29,7 @@ data class ProductDTO(
     val brand: BrandDTO? = null,
     val description: String? = null,
     val variants: List<ProductVariantDTO> = emptyList(),
+    val specifications: List<ProductSpecificationDTO> = emptyList(),
     val quantity: Int = 1
 ) {
     fun toProduct(): Product {
@@ -48,6 +50,7 @@ data class ProductDTO(
             brand = brand?.toBrand(),
             description = description,
             variants = variants.map { it.toProductVariant() },
+            specifications = specifications.map { it.toProductSpecification() },
             quantity = quantity
         )
     }
@@ -71,6 +74,7 @@ data class ProductDTO(
                 brand = product.brand?.let { BrandDTO.fromBrand(it) },
                 description = product.description,
                 variants = product.variants.map { ProductVariantDTO.fromProductVariant(it) },
+                specifications = product.specifications.map { ProductSpecificationDTO.fromProductSpecification(it) },
                 quantity = product.quantity
             )
         }
@@ -129,6 +133,27 @@ data class BrandDTO(
                 id = brand.id,
                 name = brand.name,
                 logoUrl = brand.logoUrl
+            )
+        }
+    }
+}
+
+data class ProductSpecificationDTO(
+    val name: String,
+    val value: String
+) {
+    fun toProductSpecification(): ProductSpecification {
+        return ProductSpecification(
+            name = name,
+            value = value
+        )
+    }
+    
+    companion object {
+        fun fromProductSpecification(specification: ProductSpecification): ProductSpecificationDTO {
+            return ProductSpecificationDTO(
+                name = specification.name,
+                value = specification.value
             )
         }
     }

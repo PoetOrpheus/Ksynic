@@ -45,6 +45,7 @@ import com.fortgame.ksynic.U_I.ProductDetailScreen.components.BrandBlock
 import com.fortgame.ksynic.U_I.ProductDetailScreen.components.InfoCardsSection
 import com.fortgame.ksynic.U_I.ProductDetailScreen.components.ProductMainCard
 import com.fortgame.ksynic.U_I.ProductDetailScreen.components.SellerBlock
+import com.fortgame.ksynic.U_I.ProductDetailScreen.components.SizeVariants
 import com.fortgame.ksynic.U_I.ProductDetailScreen.components.StartCardRow
 import com.fortgame.ksynic.U_I.ProductDetailScreen.components.VariantItem
 import com.fortgame.ksynic.U_I.ProductDetailScreen.components.VariantItemRow
@@ -106,6 +107,15 @@ fun ProductDetailScreen(
                 )
             }
 
+            val hasSize = true
+            //Размеры
+            if (hasSize){
+                item{
+                    Spacer(Modifier.height(fh(10)))
+                    SizeVariants()
+                }
+            }
+
             // 3. Варианты, Рейтинг, Табы, Описание
             item {
                 Spacer(Modifier.height(fh(10)))
@@ -119,7 +129,10 @@ fun ProductDetailScreen(
             // 4. Описание и характеристики
             item {
                 Spacer(Modifier.height(fh(10)))
-                InfoCardsSection(description = product.description)
+                InfoCardsSection(
+                    description = product.description,
+                    specifications = product.specifications
+                )
             }
 
             // Продавец

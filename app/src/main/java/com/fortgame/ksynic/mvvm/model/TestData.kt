@@ -119,6 +119,12 @@ object TestProducts {
         seller = TestSellers.sportStyle,
         brand = TestBrands.adidas,
         description = "Спортивные кеды Adidas Sportswear Hoops 3.0. Удобная подошва и современный дизайн.",
+        specifications = listOf(
+            ProductSpecification("Материал верха", "Текстиль, синтетика"),
+            ProductSpecification("Материал подошвы", "Резина"),
+            ProductSpecification("Страна производства", "Китай"),
+            ProductSpecification("Вес", "350 г")
+        ),
         variants = listOf(
             ProductVariant(
                 id = "variant_1_1",
@@ -163,6 +169,12 @@ object TestProducts {
         seller = TestSellers.watchMaster,
         brand = TestBrands.calvinKlein,
         description = "Элегантные кварцевые наручные часы. Классический дизайн и надежный механизм.",
+        specifications = listOf(
+            ProductSpecification("Тип механизма", "Кварцевый"),
+            ProductSpecification("Материал корпуса", "Нержавеющая сталь"),
+            ProductSpecification("Водостойкость", "30 м"),
+            ProductSpecification("Диаметр корпуса", "40 мм")
+        ),
         variants = listOf(
             ProductVariant(id = "variant_2_1", name = "Цвет", value = "Черный", isAvailable = true),
             ProductVariant(id = "variant_2_2", name = "Цвет", value = "Серебристый", isAvailable = true),
@@ -188,6 +200,16 @@ object TestProducts {
         seller = TestSellers.operatorZamesov,
         brand = TestBrands.calvinKlein,
         description = "Премиальные мужские наручные часы Calvin Klein. Черный корпус, кожаный ремешок. Водостойкость 50м.",
+        specifications = listOf(
+            ProductSpecification("Бренд", "Calvin Klein"),
+            ProductSpecification("Тип механизма", "Кварцевый"),
+            ProductSpecification("Материал корпуса", "Нержавеющая сталь"),
+            ProductSpecification("Материал ремешка", "Кожа"),
+            ProductSpecification("Водостойкость", "50 м"),
+            ProductSpecification("Диаметр корпуса", "42 мм"),
+            ProductSpecification("Толщина корпуса", "8 мм"),
+            ProductSpecification("Циферблат", "Черный с люминесцентными стрелками")
+        ),
         variants = listOf(
             ProductVariant(
                 id = "variant_3_1", 
@@ -231,6 +253,15 @@ object TestProducts {
         seller = TestSellers.techShop,
         brand = TestBrands.apple,
         description = "Новый iPhone 15 Pro с чипом A17 Pro, камерой Pro и дисплеем ProMotion.",
+        specifications = listOf(
+            ProductSpecification("Диагональ экрана", "6.1 дюйма"),
+            ProductSpecification("Процессор", "Apple A17 Pro"),
+            ProductSpecification("Объем памяти", "256 ГБ"),
+            ProductSpecification("Камера", "48 Мп + 12 Мп + 12 Мп"),
+            ProductSpecification("Батарея", "До 23 часов видео"),
+            ProductSpecification("ОС", "iOS 17"),
+            ProductSpecification("Вес", "187 г")
+        ),
         variants = listOf(
             ProductVariant(id = "variant_4_1", name = "Цвет", value = "Титановый синий", isAvailable = true),
             ProductVariant(id = "variant_4_2", name = "Цвет", value = "Титановый белый", isAvailable = true),
@@ -259,6 +290,13 @@ object TestProducts {
         seller = TestSellers.fashionStore,
         brand = TestBrands.nike,
         description = "Кроссовки Nike Air Max 270 с технологией Air для максимального комфорта при беге и ходьбе.",
+        specifications = listOf(
+            ProductSpecification("Материал верха", "Синтетическая кожа, текстиль"),
+            ProductSpecification("Технология подошвы", "Air Max"),
+            ProductSpecification("Страна производства", "Вьетнам"),
+            ProductSpecification("Вес", "320 г"),
+            ProductSpecification("Тип застежки", "Шнуровка")
+        ),
         variants = listOf(
             ProductVariant(id = "variant_5_1", name = "Размер", value = "39", isAvailable = true),
             ProductVariant(id = "variant_5_2", name = "Размер", value = "40", isAvailable = true),

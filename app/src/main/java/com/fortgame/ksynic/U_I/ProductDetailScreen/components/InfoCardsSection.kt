@@ -38,10 +38,11 @@ import com.fortgame.ksynic.utils.fw
 
 @Composable
 fun InfoCardsSection(
-    description: String? = null
+    description: String? = null,
+    specifications: List<com.fortgame.ksynic.mvvm.model.ProductSpecification> = emptyList()
 ){
     var showText by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
-    var select by remember { mutableStateOf(false) }
+    var select by remember { mutableStateOf(true) }
 
     Column(
         Modifier
@@ -64,9 +65,15 @@ fun InfoCardsSection(
                         spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     )
                     .background(
-                       color= if (select) Color(0xFF5D76CB) else Color.White)
+                        color = if (select) Color(0xFF5D76CB) else Color.White
+                    )
                     .clickable(
-                        onClick = if (!select) {{select=!select}} else {{}}),
+                        onClick = if (!select) {
+                            { select = !select }
+                        } else {
+                            {}
+                        }
+                    ),
                 contentAlignment = Alignment.Center
             ){
                 Text(
@@ -91,10 +98,14 @@ fun InfoCardsSection(
                         spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     )
                     .background(
-                     color= if(!select) Color(0xFF5D76CB) else Color.White
+                        color = if (!select) Color(0xFF5D76CB) else Color.White
                     )
                     .clickable(
-                        onClick= if (select) {{select=!select}} else {{}}
+                        onClick = if (select) {
+                            { select = !select }
+                        } else {
+                            {}
+                        }
                     ),
                 contentAlignment = Alignment.Center
 
@@ -113,7 +124,7 @@ fun InfoCardsSection(
         if (select)
             Info(showText, description, onShowTextClick = { showText = true })
         else
-            CharacteristicsColumn()
+            CharacteristicsColumn(specifications = specifications)
 
     }
 }
@@ -131,7 +142,9 @@ private fun Info(
             Modifier
                 .fillMaxWidth()
         } else {
-            Modifier.fillMaxWidth().height(fh(160))
+            Modifier
+                .fillMaxWidth()
+                .height(fh(160))
         },
     ){
         Text(
@@ -166,23 +179,28 @@ private fun Info(
                     Box(
                         Modifier
                             .fillMaxHeight()
-                            .width(fw(400)),
+                            .width(fw(390)),
                         contentAlignment = Alignment.CenterEnd
                     ){
                         Text(
                             text="Развернуть",
                             fontSize = 18.sp,
                             color=Color.White,
-                            fontWeight = FontWeight.SemiBold,
-                            lineHeight = 20.sp,
+                            fontWeight = FontWeight.Normal,
+                            lineHeight = 18.sp,
                         )
                     }
-                    Spacer(Modifier.width(fw(4)))
-                    Image(
-                        painter = painterResource(R.drawable.down_icon),
-                        null,
-                        Modifier.align(Alignment.CenterVertically)
-                    )
+                    Spacer(Modifier.width(fw(10)))
+                    Box(
+                        Modifier.height(fh(20)).width(fw(20)).align(Alignment.CenterVertically),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.down),
+                            null,
+                            //Modifier.align(Alignment.CenterVertically)
+                        )
+                    }
                 }
             }
         }
@@ -190,26 +208,40 @@ private fun Info(
 }
 
 @Composable
-private fun CharacteristicsColumn(){
-    LazyColumn (){
-        item{
-            Characteristic()
-            Box(Modifier.height(fh(2)).fillMaxWidth().background(Color(0xFFD9D9D9)))
-        }
-        item{
-            Characteristic()
-            Box(Modifier.height(fh(2)).fillMaxWidth().background(Color(0xFFD9D9D9)))
-        }
-        item{
-            Characteristic()
-            Box(Modifier.height(fh(2)).fillMaxWidth().background(Color(0xFFD9D9D9)))
-        }
-        item{
-            Characteristic()
-            Box(Modifier.height(fh(2)).fillMaxWidth().background(Color(0xFFD9D9D9)))
+private fun CharacteristicsColumn(
+    specifications: List<com.fortgame.ksynic.mvvm.model.ProductSpecification>
+){
+    Column (){
+        if (specifications.isNotEmpty()) {
+            specifications.forEachIndexed { index, specification ->
+                Characteristic(
+                    name = specification.name,
+                    value = specification.value
+                )
+                // Добавляем разделитель между характеристиками, кроме последней
+                if (index < specifications.size - 1) {
+                    Box(Modifier
+                        .height(fh(2))
+                        .fillMaxWidth()
+                        .background(Color(0xFFD9D9D9)))
+                }
+            }
+        } else {
+            // Если характеристик нет, показываем сообщение
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = fw(10), vertical = fh(20)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Характеристики не указаны",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+            }
         }
     }
-
 }
 
 @Preview
@@ -219,11 +251,17 @@ private fun Characteristic(
     value: String = "value"
 ){
     Row(
-        Modifier.height(fh(30)).fillMaxWidth().padding(horizontal = fw(10)).background(Color.White)
+        Modifier
+            .height(fh(30))
+            .fillMaxWidth()
+            .padding(horizontal = fw(10))
+            .background(Color.White)
     ){
 
         Box(
-            Modifier.fillMaxHeight().width(fw(120)),
+            Modifier
+                .fillMaxHeight()
+                .width(fw(120)),
             contentAlignment = Alignment.CenterStart
         ){
             Text(
@@ -236,7 +274,9 @@ private fun Characteristic(
         Spacer(Modifier.width(fw(10)))
 
         Box(
-            Modifier.fillMaxHeight().fillMaxWidth(),
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(),
             contentAlignment = Alignment.CenterStart
         ){
             Text(

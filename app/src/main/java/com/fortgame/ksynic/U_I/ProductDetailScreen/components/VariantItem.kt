@@ -76,11 +76,10 @@ fun VariantItem(
                 .height(fh(93))
                 .fillMaxWidth()
                 .border(
-                    width = if (isSelected) 2.dp else 1.dp,
+                    width = 3.dp,
                     color = if (isSelected) BlueButton else if (variant.isAvailable) Color.LightGray else Color.Gray.copy(alpha = 0.5f),
                     shape = RoundedCornerShape(8.dp)
                 )
-                .padding(2.dp)
                 .clip(RoundedCornerShape(6.dp))
                 .background(
                     if (!variant.isAvailable) Color.Gray.copy(alpha = 0.3f) else Color.Transparent

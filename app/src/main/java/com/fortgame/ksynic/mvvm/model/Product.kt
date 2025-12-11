@@ -22,6 +22,7 @@ data class Product(
     val brand: Brand? = null, // Информация о бренде
     val description: String? = null, // Описание продукта
     val variants: List<ProductVariant> = emptyList(), // Варианты продукта (размер, цвет и т.д.)
+    val specifications: List<ProductSpecification> = emptyList(), // Характеристики продукта
     val quantity: Int = 1 // Количество в корзине (для корзины)
 ) {
     /**
@@ -62,6 +63,14 @@ data class Brand(
     val id: String,
     val name: String,
     val logoUrl: String? = null // URL логотипа бренда
+)
+
+/**
+ * Модель характеристики продукта (пара ключ-значение)
+ */
+data class ProductSpecification(
+    val name: String, // Название характеристики (например, "Материал", "Размер")
+    val value: String // Значение характеристики (например, "Кожа", "42x30x10 см")
 )
 
 /**
