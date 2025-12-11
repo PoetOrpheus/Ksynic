@@ -1,8 +1,11 @@
 package com.fortgame.ksynic.mvvm.repository
 
+import android.content.Context
+import com.fortgame.ksynic.mvvm.data.local.LocalDataStore
 import com.fortgame.ksynic.mvvm.model.Product
 import com.fortgame.ksynic.mvvm.model.TestProducts
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 /**
  * Реализация репозитория продуктов
@@ -12,37 +15,91 @@ import kotlinx.coroutines.delay
  * После интеграции с реальным API замените логику на работу с API/БД
  * ====================================================================
  */
-class ProductRepositoryImpl : ProductRepository {
+class ProductRepositoryImpl(
+    private val context: Context? = null
+) : ProductRepository {
     
-    // Имитация хранилища избранных продуктов (для тестирования)
-    // TODO: Заменить на реальное хранилище (SharedPreferences, Room, DataStore и т.д.)
+    private val localDataStore = context?.let { LocalDataStore(it) }
     private val favoriteProductIds = mutableSetOf<String>()
+    private var isFavoritesInitialized = false
 
     override suspend fun getAllProducts(): List<Product> {
-        // Имитация задержки сети
+        // Сначала инициализируем избранные из локального хранилища (важно сделать это до работы с кэшем)
+        initializeFavoritesFromLocalStorage()
+        
+        // Затем пытаемся загрузить из кэша
+        val cachedProducts = localDataStore?.getCachedProducts()
+        if (cachedProducts != null && !localDataStore.shouldRefreshCache()) {
+            // Используем кэшированные данные, обновляя их с учетом избранных
+            // (избранные уже инициализированы выше)
+            // НЕ добавляем задержку при загрузке из кэша для мгновенного отображения
+            return updateProductsWithFavorites(cachedProducts)
+        }
+        
+        // Имитация задержки сети (загрузка с сервера) - только если кэш отсутствует или устарел
         delay(500)
         
         // ====================================================================
         // ТЕСТОВЫЕ ДАННЫЕ - УДАЛИТЬ ПОСЛЕ ИНТЕГРАЦИИ С API
         // ====================================================================
-        // Инициализируем favoriteProductIds на основе исходных данных, если еще не инициализирован
-        if (favoriteProductIds.isEmpty()) {
+        val products = TestProducts.allProducts
+        
+        val productsWithFavorites = updateProductsWithFavorites(products)
+        
+        // Сохраняем в кэш (избранные уже инициализированы выше)
+        localDataStore?.cacheProducts(productsWithFavorites)
+        
+        return productsWithFavorites
+        // TODO: Заменить на реальный запрос к API
+        // return apiService.getProducts()
+    }
+    
+    /**
+     * Инициализировать избранные из локального хранилища
+     */
+    private suspend fun initializeFavoritesFromLocalStorage() {
+        if (!isFavoritesInitialized && localDataStore != null) {
+            val savedFavorites = localDataStore.getFavoriteProductIds()
+            favoriteProductIds.clear()
+            favoriteProductIds.addAll(savedFavorites)
+            
+            // Если сохраненных избранных нет, инициализируем из тестовых данных
+            if (favoriteProductIds.isEmpty()) {
+                TestProducts.allProducts.forEach { product ->
+                    if (product.isFavorite) {
+                        favoriteProductIds.add(product.id)
+                    }
+                }
+                // Сохраняем начальные избранные
+                localDataStore.saveFavoriteProductIds(favoriteProductIds)
+            }
+            
+            isFavoritesInitialized = true
+        } else if (!isFavoritesInitialized) {
+            // Если нет LocalDataStore, используем только тестовые данные
             TestProducts.allProducts.forEach { product ->
                 if (product.isFavorite) {
                     favoriteProductIds.add(product.id)
                 }
             }
+            isFavoritesInitialized = true
         }
-        
-        return TestProducts.allProducts.map { product ->
-            // Обновляем состояние избранного для каждого продукта на основе favoriteProductIds
+    }
+    
+    /**
+     * Обновить продукты с учетом избранных
+     */
+    private fun updateProductsWithFavorites(products: List<Product>): List<Product> {
+        return products.map { product ->
             product.copy(isFavorite = favoriteProductIds.contains(product.id))
         }
-        // TODO: Заменить на реальный запрос к API
-        // return apiService.getProducts()
     }
+    
 
     override suspend fun getProductById(id: String): Product? {
+        // Инициализируем избранные, если еще не инициализированы
+        initializeFavoritesFromLocalStorage()
+        
         // Имитация задержки сети
         delay(300)
         
@@ -56,6 +113,9 @@ class ProductRepositoryImpl : ProductRepository {
     }
 
     override suspend fun getProductsByCategory(categoryId: String): List<Product> {
+        // Инициализируем избранные, если еще не инициализированы
+        initializeFavoritesFromLocalStorage()
+        
         // Имитация задержки сети
         delay(400)
         
@@ -64,14 +124,16 @@ class ProductRepositoryImpl : ProductRepository {
         // ====================================================================
         // В реальном приложении здесь будет фильтрация по категории
         // Пока возвращаем все продукты
-        return TestProducts.allProducts.map { product ->
-            product.copy(isFavorite = favoriteProductIds.contains(product.id))
-        }
+        val products = TestProducts.allProducts
+        return updateProductsWithFavorites(products)
         // TODO: Заменить на реальный запрос к API
         // return apiService.getProductsByCategory(categoryId)
     }
 
     override suspend fun searchProducts(query: String): List<Product> {
+        // Инициализируем избранные, если еще не инициализированы
+        initializeFavoritesFromLocalStorage()
+        
         // Имитация задержки сети
         delay(400)
         
@@ -79,20 +141,20 @@ class ProductRepositoryImpl : ProductRepository {
         // ТЕСТОВЫЕ ДАННЫЕ - УДАЛИТЬ ПОСЛЕ ИНТЕГРАЦИИ С API
         // ====================================================================
         val lowerQuery = query.lowercase()
-        return TestProducts.allProducts
-            .filter { product ->
-                product.name.lowercase().contains(lowerQuery) ||
-                product.brand?.name?.lowercase()?.contains(lowerQuery) == true ||
-                product.description?.lowercase()?.contains(lowerQuery) == true
-            }
-            .map { product ->
-                product.copy(isFavorite = favoriteProductIds.contains(product.id))
-            }
+        val filteredProducts = TestProducts.allProducts.filter { product ->
+            product.name.lowercase().contains(lowerQuery) ||
+            product.brand?.name?.lowercase()?.contains(lowerQuery) == true ||
+            product.description?.lowercase()?.contains(lowerQuery) == true
+        }
+        return updateProductsWithFavorites(filteredProducts)
         // TODO: Заменить на реальный запрос к API
         // return apiService.searchProducts(query)
     }
 
     override suspend fun getFavoriteProducts(): List<Product> {
+        // Инициализируем избранные, если еще не инициализированы
+        initializeFavoritesFromLocalStorage()
+        
         // Имитация задержки сети
         delay(300)
         
@@ -114,6 +176,10 @@ class ProductRepositoryImpl : ProductRepository {
         // ТЕСТОВЫЕ ДАННЫЕ - УДАЛИТЬ ПОСЛЕ ИНТЕГРАЦИИ С API
         // ====================================================================
         favoriteProductIds.add(productId)
+        
+        // Сохраняем в локальное хранилище
+        localDataStore?.saveFavoriteProductIds(favoriteProductIds)
+        
         return true
         // TODO: Заменить на реальный запрос к API
         // return apiService.addToFavorites(productId)
@@ -127,6 +193,10 @@ class ProductRepositoryImpl : ProductRepository {
         // ТЕСТОВЫЕ ДАННЫЕ - УДАЛИТЬ ПОСЛЕ ИНТЕГРАЦИИ С API
         // ====================================================================
         favoriteProductIds.remove(productId)
+        
+        // Сохраняем в локальное хранилище
+        localDataStore?.saveFavoriteProductIds(favoriteProductIds)
+        
         return true
         // TODO: Заменить на реальный запрос к API
         // return apiService.removeFromFavorites(productId)

@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fortgame.ksynic.Navigation.BottomNavItem
 import com.fortgame.ksynic.Navigation.BottomNavigationBar
@@ -158,7 +159,9 @@ private fun MarketplaceContent(
     onCanBeSeller: () -> Unit = {},
     onCategoryClick: () -> Unit = {},
     onBrandsClick: () -> Unit = {},
-    viewModel: ProductViewModel = viewModel(factory = ViewModelFactory())
+    viewModel: ProductViewModel = viewModel(
+        factory = ViewModelFactory.getInstance(LocalContext.current)
+    )
 ) {
     // Получаем состояние продуктов из ViewModel
     val productsState by viewModel.productsState.collectAsState()

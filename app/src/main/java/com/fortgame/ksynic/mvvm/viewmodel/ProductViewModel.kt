@@ -43,7 +43,13 @@ class ProductViewModel(
 
         viewModelScope.launch {
             isLoadingProducts = true
-            _productsState.value = UiState.Loading
+            
+            // При принудительной перезагрузке всегда показываем Loading
+            // При первой загрузке тоже показываем (но кэш загрузится быстро)
+            if (forceReload || !hasLoadedProducts) {
+                _productsState.value = UiState.Loading
+            }
+            
             try {
                 val products = productRepository.getAllProducts()
                 _productsState.value = UiState.Success(products)
@@ -176,6 +182,7 @@ class ProductViewModel(
                 }
             }
             _productsState.value = UiState.Success(updatedProducts)
+            // Кэш обновится при следующей загрузке, или можно обновить его здесь через репозиторий
         }
     }
 }

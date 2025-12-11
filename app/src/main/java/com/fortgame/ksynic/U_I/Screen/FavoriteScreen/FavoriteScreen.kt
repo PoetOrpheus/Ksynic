@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fortgame.ksynic.mvvm.model.Product
 import com.fortgame.ksynic.mvvm.ui.state.UiState
@@ -29,7 +30,9 @@ import com.fortgame.ksynic.utils.fh
 @Composable
 fun FavoriteScreen(
     onProductClick: (Product) -> Unit = {},
-    viewModel: ProductViewModel = viewModel(factory = ViewModelFactory())
+    viewModel: ProductViewModel = viewModel(
+        factory = ViewModelFactory.getInstance(LocalContext.current)
+    )
 ) {
     // Получаем состояние избранных продуктов из ViewModel
     val favoriteProductsState by viewModel.favoriteProductsState.collectAsState()
