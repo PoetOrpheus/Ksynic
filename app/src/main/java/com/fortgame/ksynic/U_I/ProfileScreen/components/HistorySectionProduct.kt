@@ -57,7 +57,7 @@ fun HistorySectionProduct(){
             )
 
             Image(
-                painter = painterResource(R.drawable.profile_right_1),
+                painter = painterResource(R.drawable.circle_right),
                 contentDescription = null,
             )
         }
