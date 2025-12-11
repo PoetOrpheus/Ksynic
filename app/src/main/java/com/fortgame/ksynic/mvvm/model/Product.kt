@@ -13,7 +13,8 @@ data class Product(
     val discount: Int? = null, // Скидка в процентах (опционально)
     val rating: Double = 0.0, // Рейтинг от 0.0 до 5.0
     val reviewsCount: Int = 0, // Количество отзывов
-    val images: List<String> = emptyList(), // Список URL изображений или путей к ресурсам
+    val images: List<String> = emptyList(), // Список URL изображений продукта (для реальных данных)
+    val imagesRes: List<Int> = emptyList(), // Список drawable ресурсов изображений продукта для карусели (для тестовых данных)
     val isTimeLimited: Boolean = false, // Ограниченное по времени предложение
     val accentColor: Color = Color(0xFF000000), // Акцентный цвет продукта
     val isFavorite: Boolean = false, // В избранном
@@ -70,6 +71,23 @@ data class ProductVariant(
     val id: String,
     val name: String, // Название варианта (например, "Размер: L" или "Цвет: Красный")
     val value: String, // Значение варианта
-    val isAvailable: Boolean = true // Доступен ли вариант
-)
+    val isAvailable: Boolean = true, // Доступен ли вариант
+    val imagesRes: List<Int> = emptyList(), // Список drawable ресурсов изображений варианта для карусели (для тестовых данных)
+    val imagesUrl: List<String> = emptyList() // Список URL изображений варианта для карусели (для реальных данных)
+) {
+    /**
+     * Получить первое изображение варианта (для миниатюры в списке вариантов)
+     */
+    fun getFirstImageRes(): Int? = imagesRes.firstOrNull()
+    
+    /**
+     * Получить первый URL изображения варианта (для миниатюры в списке вариантов)
+     */
+    fun getFirstImageUrl(): String? = imagesUrl.firstOrNull()
+    
+    /**
+     * Проверяет, есть ли изображения у варианта
+     */
+    fun hasImages(): Boolean = imagesRes.isNotEmpty() || imagesUrl.isNotEmpty()
+}
 

@@ -28,8 +28,20 @@ import com.fortgame.ksynic.R
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
+/**
+ * Форматирует количество заказов для отображения (например, 3400 -> "3.4k")
+ */
+private fun formatOrdersCount(count: Int): String {
+    return when {
+        count >= 1000 -> String.format("%.1fk", count / 1000.0)
+        else -> count.toString()
+    }
+}
+
 @Composable
-fun SellerBlock(){
+fun SellerBlock(
+    seller: com.fortgame.ksynic.mvvm.model.Seller
+){
     Column(
         Modifier
             .fillMaxWidth()
@@ -89,7 +101,7 @@ fun SellerBlock(){
                     contentAlignment = Alignment.CenterStart
                 ){
                     Text(
-                        text="Оператор замесов",
+                        text = seller.name,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         lineHeight = 16.sp,
@@ -136,7 +148,7 @@ fun SellerBlock(){
                     contentAlignment = Alignment.Center
                 ){
                     Text(
-                        text="4.9",
+                        text = String.format("%.1f", seller.rating),
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
                         lineHeight = 10.sp,
@@ -206,7 +218,7 @@ fun SellerBlock(){
             Spacer(Modifier.width(fw(10)))
 
             Text(
-                text="3.4k",
+                text = formatOrdersCount(seller.ordersCount),
                 fontSize=10.sp,
                 color=Color(0xFF727272),
                 lineHeight = 10.sp,
@@ -227,7 +239,7 @@ fun SellerBlock(){
             Spacer(Modifier.width(fw(10)))
 
             Text(
-                "543",
+                text = seller.reviewsCount.toString(),
                 fontSize = 10.sp,
                 color=Color(0xFF727272),
                 lineHeight = 10.sp
@@ -242,5 +254,7 @@ fun SellerBlock(){
 @Composable
 @Preview
 private fun SellerBlockPreview(){
-    SellerBlock()
+    SellerBlock(
+        seller = com.fortgame.ksynic.mvvm.model.TestSellers.operatorZamesov
+    )
 }

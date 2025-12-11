@@ -29,7 +29,9 @@ import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
-fun BrandBlock(){
+fun BrandBlock(
+    brand: com.fortgame.ksynic.mvvm.model.Brand
+){
     Column(
         Modifier
             .fillMaxWidth()
@@ -90,7 +92,7 @@ fun BrandBlock(){
                     contentAlignment = Alignment.CenterStart
                 ){
                     Text(
-                        text="Calvin Klein",
+                        text = brand.name,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         lineHeight = 16.sp,
@@ -113,5 +115,7 @@ fun BrandBlock(){
 @Composable
 @Preview
 private fun BrandBlockPreview(){
-    BrandBlock()
+    BrandBlock(
+        brand = com.fortgame.ksynic.mvvm.model.TestBrands.calvinKlein
+    )
 }

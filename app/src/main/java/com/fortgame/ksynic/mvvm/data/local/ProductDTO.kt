@@ -20,6 +20,7 @@ data class ProductDTO(
     val rating: Double = 0.0,
     val reviewsCount: Int = 0,
     val images: List<String> = emptyList(),
+    val imagesRes: List<Int> = emptyList(), // Drawable ресурсы изображений продукта
     val isTimeLimited: Boolean = false,
     val accentColorValue: ULong, // Храним Color как Long (ARGB значение)
     val isFavorite: Boolean = false,
@@ -39,6 +40,7 @@ data class ProductDTO(
             rating = rating,
             reviewsCount = reviewsCount,
             images = images,
+            imagesRes = imagesRes,
             isTimeLimited = isTimeLimited,
             accentColor = Color(accentColorValue),
             isFavorite = isFavorite,
@@ -61,6 +63,7 @@ data class ProductDTO(
                 rating = product.rating,
                 reviewsCount = product.reviewsCount,
                 images = product.images,
+                imagesRes = product.imagesRes,
                 isTimeLimited = product.isTimeLimited,
                 accentColorValue = product.accentColor.value,
                 isFavorite = product.isFavorite,
@@ -135,14 +138,18 @@ data class ProductVariantDTO(
     val id: String,
     val name: String,
     val value: String,
-    val isAvailable: Boolean = true
+    val isAvailable: Boolean = true,
+    val imagesRes: List<Int> = emptyList(), // Список drawable ресурсов изображений варианта
+    val imagesUrl: List<String> = emptyList() // Список URL изображений варианта
 ) {
     fun toProductVariant(): ProductVariant {
         return ProductVariant(
             id = id,
             name = name,
             value = value,
-            isAvailable = isAvailable
+            isAvailable = isAvailable,
+            imagesRes = imagesRes,
+            imagesUrl = imagesUrl
         )
     }
     
@@ -152,7 +159,9 @@ data class ProductVariantDTO(
                 id = variant.id,
                 name = variant.name,
                 value = variant.value,
-                isAvailable = variant.isAvailable
+                isAvailable = variant.isAvailable,
+                imagesRes = variant.imagesRes,
+                imagesUrl = variant.imagesUrl
             )
         }
     }

@@ -30,10 +30,12 @@ class ProductRepositoryImpl(
         // Затем пытаемся загрузить из кэша
         val cachedProducts = localDataStore?.getCachedProducts()
         if (cachedProducts != null && !localDataStore.shouldRefreshCache()) {
+            // Восстанавливаем imageRes из оригинальных тестовых данных, если они отсутствуют
+            val restoredProducts = restoreVariantsImageRes(cachedProducts)
             // Используем кэшированные данные, обновляя их с учетом избранных
             // (избранные уже инициализированы выше)
             // НЕ добавляем задержку при загрузке из кэша для мгновенного отображения
-            return updateProductsWithFavorites(cachedProducts)
+            return updateProductsWithFavorites(restoredProducts)
         }
         
         // Имитация задержки сети (загрузка с сервера) - только если кэш отсутствует или устарел
@@ -92,6 +94,50 @@ class ProductRepositoryImpl(
     private fun updateProductsWithFavorites(products: List<Product>): List<Product> {
         return products.map { product ->
             product.copy(isFavorite = favoriteProductIds.contains(product.id))
+        }
+    }
+    
+    /**
+     * Восстанавливает imageRes для вариантов продукта из оригинальных тестовых данных
+     * Это необходимо, так как при кэшировании drawable ресурсы не сохраняются
+     */
+    private fun restoreVariantsImageRes(products: List<Product>): List<Product> {
+        val originalProducts = TestProducts.allProducts.associateBy { it.id }
+        
+        return products.map { product ->
+            val originalProduct = originalProducts[product.id]
+            if (originalProduct != null) {
+                // Создаем Map оригинальных вариантов по id для быстрого поиска
+                val originalVariantsMap = originalProduct.variants.associateBy { it.id }
+                
+                // Восстанавливаем imagesRes и imagesUrl для каждого варианта
+                val restoredVariants = product.variants.map { variant ->
+                    val originalVariant = originalVariantsMap[variant.id]
+                    if (originalVariant != null) {
+                        // Всегда восстанавливаем imagesRes и imagesUrl из оригинала (они могут потеряться при кэшировании)
+                        variant.copy(
+                            imagesRes = originalVariant.imagesRes.ifEmpty { variant.imagesRes },
+                            imagesUrl = originalVariant.imagesUrl.ifEmpty { variant.imagesUrl }
+                        )
+                    } else {
+                        variant
+                    }
+                }
+                
+                // Также восстанавливаем imagesRes продукта
+                val restoredImagesRes = if (product.imagesRes.isEmpty()) {
+                    originalProduct.imagesRes.ifEmpty { product.imagesRes }
+                } else {
+                    product.imagesRes
+                }
+                
+                product.copy(
+                    variants = restoredVariants,
+                    imagesRes = restoredImagesRes
+                )
+            } else {
+                product
+            }
         }
     }
     

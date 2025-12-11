@@ -146,12 +146,13 @@ fun ProductCard(
                             RoundedCornerShape(15.dp)
                         )
                 ) {
+                    // Используем изображения из продукта для карусели
+                    val productImages = product.imagesRes.ifEmpty {
+                        // Если у продукта нет изображений, используем дефолтное
+                        listOf(R.drawable.watch_1)
+                    }
                     ProductImageCarousel(
-                        images = listOf(
-                            R.drawable.image_for_product_3,
-                            R.drawable.image_for_product_2,
-                            R.drawable.image_for_product_1,
-                        ),
+                        images = productImages,
                         modifier = Modifier.fillMaxSize() // Говорим карусели занять всё место в родительском Box
                     )
                     // Иконка лайка с обработчиком клика

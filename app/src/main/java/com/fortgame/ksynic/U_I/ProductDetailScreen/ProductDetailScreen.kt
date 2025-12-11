@@ -19,6 +19,10 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,9 +61,16 @@ val BlueButton = Color(0xFF5D76CB)
 
 @Composable
 fun ProductDetailScreen(
-    onBackClick: () -> Unit = {} // ДОБАВЬТЕ этот параметр
-
+    product: com.fortgame.ksynic.mvvm.model.Product,
+    onBackClick: () -> Unit = {}
 ) {
+    // Состояние выбранного варианта (выбираем первый доступный по умолчанию)
+    var selectedVariantId by remember {
+        mutableStateOf(
+            product.variants.firstOrNull { it.isAvailable }?.id
+        )
+    }
+
     Box(modifier = Modifier
         .background(BgGray)) {
         TopHeaderWithReturn(onBackClick)
@@ -77,38 +88,54 @@ fun ProductDetailScreen(
             // 2. Карточка товара (Фото + Цена)
             item {
                 Spacer(Modifier.height(fh(10)))
-                ProductMainCard()
+                ProductMainCard(
+                    product = product,
+                    selectedVariantId = selectedVariantId
+                )
             }
 
             // Варианты
             item{
                 Spacer(Modifier.height(fh(10)))
-                VariantItemRow()
+                VariantItemRow(
+                    variants = product.variants,
+                    selectedVariantId = selectedVariantId,
+                    onVariantSelected = { variantId ->
+                        selectedVariantId = variantId
+                    }
+                )
             }
 
             // 3. Варианты, Рейтинг, Табы, Описание
             item {
                 Spacer(Modifier.height(fh(10)))
-                StartCardRow()
+                StartCardRow(
+                    rating = product.rating,
+                    reviewsCount = product.reviewsCount
+                )
             }
 
 
             // 4. Описание
             item {
                 Spacer(Modifier.height(fh(10)))
-                InfoCardsSection()
+                InfoCardsSection(description = product.description)
             }
 
             // Продавец
             item{
                 Spacer(Modifier.height(fh(10)))
-                SellerBlock()
+                if (product.seller != null) {
+                    SellerBlock(seller = product.seller)
+                }
             }
 
             // Бренд
             item{
                 Spacer(Modifier.height(fh(10)))
-                BrandBlock()
+                if (product.brand != null) {
+                    BrandBlock(brand = product.brand)
+                }
                 Spacer(Modifier.height(fh(20)))
             }
 /*
@@ -123,5 +150,8 @@ fun ProductDetailScreen(
 @Preview
 @Composable
 fun ProductScreenPreview() {
-    ProductDetailScreen()
+    ProductDetailScreen(
+        product = com.fortgame.ksynic.mvvm.model.TestProducts.calvinKleinWatch,
+        onBackClick = {}
+    )
 }

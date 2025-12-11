@@ -50,11 +50,12 @@ import com.fortgame.ksynic.utils.fh
 @Composable
 fun MainScreen() {
     var selectedTab by remember { mutableStateOf<BottomNavItem>(BottomNavItem.Home) }
-    var showProductDetail by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
-    var showHistory by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
-    var showCanBeSeller by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
-    var showCategory by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
-    var showBrands by remember { mutableStateOf(false) } // ДОБАВЬТЕ это состояние
+    var showProductDetail by remember { mutableStateOf(false) }
+    var selectedProduct by remember { mutableStateOf<Product?>(null) } // Сохраняем выбранный продукт
+    var showHistory by remember { mutableStateOf(false) }
+    var showCanBeSeller by remember { mutableStateOf(false) }
+    var showCategory by remember { mutableStateOf(false) }
+    var showBrands by remember { mutableStateOf(false) }
     var showWaitingReview by remember{mutableStateOf(false)}
     var showEditingProfile by remember{mutableStateOf(false)}
 
@@ -72,10 +73,14 @@ fun MainScreen() {
         containerColor = Color(0xFFF2F2F2)
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
-            if (showProductDetail) {
-                // Показываем экран деталей товара
+            if (showProductDetail && selectedProduct != null) {
+                // Показываем экран деталей товара с выбранным продуктом
                 ProductDetailScreen(
-                    onBackClick = { showProductDetail = false } // Функция для возврата
+                    product = selectedProduct!!,
+                    onBackClick = { 
+                        showProductDetail = false
+                        selectedProduct = null
+                    }
                 )
             }
             else if (showHistory){
@@ -116,7 +121,7 @@ fun MainScreen() {
                 when (selectedTab) {
                     BottomNavItem.Home -> MarketplaceContent(
                         onProductClick = { product -> 
-                            // TODO: Сохранить выбранный продукт для экрана деталей
+                            selectedProduct = product
                             showProductDetail = true 
                         },
                         onHistoryClick = { showHistory = true },
@@ -126,7 +131,7 @@ fun MainScreen() {
                     )
                     BottomNavItem.Favorites -> FavoriteScreen(
                         onProductClick = { product ->
-                            // TODO: Сохранить выбранный продукт для экрана деталей
+                            selectedProduct = product
                             showProductDetail = true
                         }
                     )

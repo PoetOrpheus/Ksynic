@@ -1,7 +1,9 @@
 package com.fortgame.ksynic.U_I.ProductDetailScreen.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,29 +36,40 @@ import com.fortgame.ksynic.utils.fw
 
 
 @Composable
-fun VariantItemRow() {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(fw(10))
+fun VariantItemRow(
+    variants: List<com.fortgame.ksynic.mvvm.model.ProductVariant> = emptyList(),
+    selectedVariantId: String? = null,
+    onVariantSelected: (String) -> Unit = {}
+) {
+    if (variants.isNotEmpty()) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(fw(10))
         ) {
-        VariantItem(isSelected = true, imageRes = R.drawable.watch_1, colorText = "Серый")
-        VariantItem(isSelected = false, imageRes = R.drawable.watch_2, colorText="Чёрный") // Замените на черный вариант
-        VariantItem(isSelected = false, imageRes = R.drawable.watch_3, colorText="Серебристый") // Замените на серебряный
+            variants.forEach { variant ->
+                VariantItem(
+                    variant = variant,
+                    isSelected = variant.id == selectedVariantId,
+                    onClick = { onVariantSelected(variant.id) }
+                )
+            }
+        }
     }
 }
 
 @Composable
 fun VariantItem(
-    isSelected: Boolean=true,
-    imageRes:Int=R.drawable.watch_1,
-    colorText:String="Серый"
+    variant: com.fortgame.ksynic.mvvm.model.ProductVariant,
+    isSelected: Boolean = false,
+    onClick: () -> Unit = {}
 ) {
     Column(
         Modifier
             .height(fh(113))
             .width(fw(70))
+            .clickable(enabled = variant.isAvailable, onClick = onClick)
     ) {
         Box(
             modifier = Modifier
@@ -64,29 +77,50 @@ fun VariantItem(
                 .fillMaxWidth()
                 .border(
                     width = if (isSelected) 2.dp else 1.dp,
-                    color = if (isSelected) BlueButton else Color.LightGray,
+                    color = if (isSelected) BlueButton else if (variant.isAvailable) Color.LightGray else Color.Gray.copy(alpha = 0.5f),
                     shape = RoundedCornerShape(8.dp)
                 )
                 .padding(2.dp)
                 .clip(RoundedCornerShape(6.dp))
+                .background(
+                    if (!variant.isAvailable) Color.Gray.copy(alpha = 0.3f) else Color.Transparent
+                )
         ) {
-            Image(
-                painter = painterResource(imageRes),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
+            // Отображаем первое изображение варианта для миниатюры
+            val firstImageRes = variant.getFirstImageRes()
+            if (firstImageRes != null) {
+                Image(
+                    painter = painterResource(id = firstImageRes),
+                    contentDescription = variant.value,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                // Если изображений нет, показываем текстовое значение
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = variant.value,
+                        fontSize = 10.sp,
+                        color = if (variant.isAvailable) Color.Black else Color.Gray
+                    )
+                }
+            }
         }
 
+        // Текст под изображением
         Box(
             Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ){
             Text(
-                text=colorText,
+                text = variant.value,
                 fontSize = 8.sp,
                 fontWeight = FontWeight.Normal,
-                lineHeight = 10.sp
+                lineHeight = 10.sp,
+                color = if (variant.isAvailable) Color.Black else Color.Gray
             )
         }
 

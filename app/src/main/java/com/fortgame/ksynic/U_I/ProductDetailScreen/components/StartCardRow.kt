@@ -41,8 +41,23 @@ import com.fortgame.ksynic.U_I.ProductDetailScreen.BlueButton
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
+/**
+ * Форматирует количество отзывов для отображения (например, 1337 -> "1 337 отзыв")
+ */
+private fun formatReviewsCount(count: Int): String {
+    val formattedCount = String.format("%,d", count).replace(",", " ")
+    return when {
+        count % 10 == 1 && count % 100 != 11 -> "$formattedCount отзыв"
+        count % 10 in 2..4 && count % 100 !in 12..14 -> "$formattedCount отзыва"
+        else -> "$formattedCount отзывов"
+    }
+}
+
 @Composable
-fun StartCardRow() {
+fun StartCardRow(
+    rating: Double = 4.9,
+    reviewsCount: Int = 1337
+) {
 
     // Статистика (Рейтинг, Вопросы, Фото)
     Row(
@@ -88,7 +103,7 @@ fun StartCardRow() {
                     contentAlignment = Alignment.CenterStart
                 ){
                     Text(
-                        text="4.9",
+                        text = String.format("%.1f", rating),
                         fontSize =16.sp,
                         lineHeight = 16.sp,
                         fontWeight = FontWeight.ExtraBold
@@ -101,7 +116,7 @@ fun StartCardRow() {
                 contentAlignment = Alignment.Center
             ){
                 Text(
-                    text="1 337 отзыв",
+                    text = formatReviewsCount(reviewsCount),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     lineHeight = 18.sp,

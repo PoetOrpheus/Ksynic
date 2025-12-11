@@ -38,20 +38,37 @@ import com.fortgame.ksynic.utils.fw
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductMainCard(
-    productName: String = "Часы наручные Calvin Klein черные мужские ",
-    sale: Int = 80,
-    price: Int = 4200,
-    oldPrice: Int = 21000,
-    accentColor: Color = Color(0xFFCC3333) // Красный цвет из макета
+    product: com.fortgame.ksynic.mvvm.model.Product,
+    selectedVariantId: String? = null // ID выбранного варианта
 ) {
-    // Список изображений
-    val images = listOf(
-        R.drawable.watch_1, // Замените на ваши ресурсы
-        R.drawable.watch_1,
-        R.drawable.watch_1,
-        R.drawable.watch_1,
-        R.drawable.watch_1
-    )
+    val productName = product.name
+    val sale = product.calculateDiscountPercent() ?: 0
+    val price = product.price
+    val oldPrice = product.oldPrice ?: 0
+    val accentColor = product.accentColor
+    
+    // Получаем изображения для карусели:
+    // 1. Если выбран вариант и у него есть изображения - используем изображения варианта
+    // 2. Иначе используем изображения продукта
+    // 3. Если изображений нет - дефолтное изображение
+    val selectedVariant = selectedVariantId?.let { variantId ->
+        product.variants.find { it.id == variantId }
+    }
+    
+    val images = when {
+        selectedVariant?.imagesRes?.isNotEmpty() == true -> {
+            // Используем изображения выбранного варианта
+            selectedVariant.imagesRes
+        }
+        product.imagesRes.isNotEmpty() -> {
+            // Используем изображения продукта
+            product.imagesRes
+        }
+        else -> {
+            // Дефолтное изображение
+            listOf(R.drawable.watch_1)
+        }
+    }
 
     val pagerState = rememberPagerState(pageCount = { images.size })
 
@@ -127,41 +144,43 @@ fun ProductMainCard(
             //verticalAlignment = Alignment.CenterVertically
         ){
 
-            // Скидка и проценты
-            Row(Modifier
-                .height(fh(50))
-                .width(fw(160))
-                .shadow(
-                    elevation = 5.dp, // Figma: Blur 5
-                    shape = RoundedCornerShape(10.dp),
-                    spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
-                )
-                .background(Color.White, RoundedCornerShape(10.dp))
-                .clip(RoundedCornerShape(10.dp)),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                Box(Modifier
-                    .height(fh(50)),
-                    contentAlignment = Alignment.Center){
-                    Text(
-                        text="Скидка",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 16.sp
+            // Скидка и проценты (показываем только если есть скидка)
+            if (sale > 0) {
+                Row(Modifier
+                    .height(fh(50))
+                    .width(fw(160))
+                    .shadow(
+                        elevation = 5.dp, // Figma: Blur 5
+                        shape = RoundedCornerShape(10.dp),
+                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     )
-                }
-                Box(Modifier
-                    .width(fw(70))
-                    .height(fh(50)),
-                    contentAlignment = Alignment.Center){
-                    Text(
-                        text="$sale%",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        lineHeight = 22.sp,
-                        color=accentColor
-                    )
+                    .background(Color.White, RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(10.dp)),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    Box(Modifier
+                        .height(fh(50)),
+                        contentAlignment = Alignment.Center){
+                        Text(
+                            text="Скидка",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            lineHeight = 16.sp
+                        )
+                    }
+                    Box(Modifier
+                        .width(fw(70))
+                        .height(fh(50)),
+                        contentAlignment = Alignment.Center){
+                        Text(
+                            text="$sale%",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            lineHeight = 22.sp,
+                            color=accentColor
+                        )
+                    }
                 }
             }
 
@@ -189,9 +208,9 @@ fun ProductMainCard(
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color(0xFFCC3333).copy(alpha = 0.0f), // Полностью прозрачный (Белый/Прозрачный)
-                                    Color(0xFFCC3333).copy(alpha = 0.1f), // Промежуточный для мягкости
-                                    Color(0xFFCC3333) // Насыщенный красный в самом низу
+                                    accentColor.copy(alpha = 0.0f), // Полностью прозрачный
+                                    accentColor.copy(alpha = 0.1f), // Промежуточный для мягкости
+                                    accentColor // Акцентный цвет продукта
                                 )
                             )
                         )
@@ -214,15 +233,17 @@ fun ProductMainCard(
                         lineHeight = 30.sp
                     )
 
-                    // Старая цена (справа сверху)
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
-                        Text(
-                            text = "$oldPrice ₽",
-                            style = TextStyle(textDecoration = TextDecoration.LineThrough),
-                            color = Color(0xFF999999),
-                            fontSize = 15.sp,
-                            lineHeight = 15.sp
-                        )
+                    // Старая цена (справа сверху) - показываем только если есть старая цена
+                    if (oldPrice > 0) {
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
+                            Text(
+                                text = "$oldPrice ₽",
+                                style = TextStyle(textDecoration = TextDecoration.LineThrough),
+                                color = Color(0xFF999999),
+                                fontSize = 15.sp,
+                                lineHeight = 15.sp
+                            )
+                        }
                     }
                 }
             }
@@ -235,6 +256,9 @@ fun ProductMainCard(
 @Preview
 private fun ProductMainCardPreview() {
     Box(modifier = Modifier.background(Color(0xFFF2F2F2)).padding(10.dp)) {
-        ProductMainCard()
+        ProductMainCard(
+            product = com.fortgame.ksynic.mvvm.model.TestProducts.calvinKleinWatch,
+            selectedVariantId = "variant_3_1"
+        )
     }
 }
