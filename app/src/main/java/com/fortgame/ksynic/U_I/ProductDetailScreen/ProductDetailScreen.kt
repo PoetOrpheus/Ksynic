@@ -116,7 +116,7 @@ fun ProductDetailScreen(
             }
 
 
-            // 4. Описание
+            // 4. Описание и характеристики
             item {
                 Spacer(Modifier.height(fh(10)))
                 InfoCardsSection(description = product.description)
