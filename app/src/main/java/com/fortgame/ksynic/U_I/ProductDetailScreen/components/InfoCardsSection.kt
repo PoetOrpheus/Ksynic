@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -141,18 +143,32 @@ private fun Info(
 ){
     val maxHeight = fh(160)
     val paddingDp = fh(10) // Вычисляем padding до использования в with(density)
+    val bottomPaddingDp = fh(10) // Отступ снизу
     val density = LocalDensity.current
     var shouldShowExpandButton by remember { mutableStateOf(false) }
 
     Box(
-        modifier= if (showText){
-            Modifier
-                .fillMaxWidth()
-        } else {
-            Modifier
-                .fillMaxWidth()
-                .height(maxHeight)
-        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(
+                if (!showText && shouldShowExpandButton) {
+                    // Если текст большой и не развернут - фиксированная высота с обрезкой
+                    Modifier
+                        .height(maxHeight)
+                        .clipToBounds() // Обрезаем содержимое, которое выходит за границы
+                } else {
+                    // Если текст маленький или развернут - без ограничения высоты
+                    Modifier
+                }
+            )
+            .then(
+                // Добавляем отступ снизу когда текст развернут или когда кнопки нет
+                if (showText || (!showText && !shouldShowExpandButton)) {
+                    Modifier.padding(bottom = bottomPaddingDp)
+                } else {
+                    Modifier
+                }
+            )
     ){
         // Скрытый Text для измерения полной высоты текста (без ограничения по высоте)
         if (!showText) {
@@ -275,6 +291,7 @@ private fun CharacteristicsColumn(
                 )
             }
         }
+        Spacer(Modifier.height(fh(10)))
     }
 }
 
