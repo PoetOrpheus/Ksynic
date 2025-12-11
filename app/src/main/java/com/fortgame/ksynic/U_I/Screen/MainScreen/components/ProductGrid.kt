@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
@@ -38,6 +39,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.U_I.atom.ProductImageCarousel
+import com.fortgame.ksynic.mvvm.model.Product
+import com.fortgame.ksynic.mvvm.model.TestProducts
 import com.fortgame.ksynic.theme.DiscountRed
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
@@ -48,67 +51,54 @@ import com.fortgame.ksynic.R
 // ----------------------------------------------------------------
 @Composable
 fun ProductGrid(
-    onProductClick: () -> Unit = {} // ДОБАВЬТЕ этот параметр
-
+    products: List<Product>,
+    onProductClick: (Product) -> Unit = {} // Теперь передаем Product
 ) {
-    // Один ряд из двух карточек, как на макете
-    Row(
+    // Используем обычную Column с Row для создания сетки вместо LazyVerticalGrid
+    // чтобы избежать конфликта со скроллируемым родительским контейнером
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = fw(10)),
-        horizontalArrangement = Arrangement.spacedBy(fw(10))
+            .padding(horizontal = fw(10))
     ) {
-        // Товар 1: кеды
-        ProductCard(
-            title = "Кеды adidas Sportswear Hoops 3.0",
-            price = 3743,
-            rating = 4.9,
-            reviews = 457,
-            imageUrl = null,
-            isTimeLimited = false,
-            colorBottom = Color(0xFF000000),
-            colorText=Color(0xFF000000),
-            onClick = onProductClick // Передаем функцию
-        )
-
-        // Товар 2: Часы
-        ProductCard(
-            title = "Часы наручные Кварцевые",
-            price = 4200,
-            oldPrice = 21000,
-            discount = 80,
-            rating = 5.0,
-            reviews = 23,
-            imageUrl = null,
-            isTimeLimited = true,
-            colorBottom = Color(0xFFCC3333),
-            colorText=Color(0xFFCC3333),
-            onClick = onProductClick // Передаем функцию
-        )
-
-
+        // Разбиваем продукты на пары для отображения в ряд
+        products.chunked(2).forEach { rowProducts ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = fh(10)),
+                horizontalArrangement = Arrangement.spacedBy(fw(10))
+            ) {
+                rowProducts.forEach { product ->
+                    ProductCard(
+                        product = product,
+                        onClick = { onProductClick(product) },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                // Если в ряду только один элемент, добавляем пустое место
+                if (rowProducts.size == 1) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        }
     }
 }
 
 @Composable
 fun ProductCard(
-    title: String,
-    price: Int,
-    oldPrice: Int = 0,
-    discount: Int = 0,
-    rating: Double,
-    reviews: Int,
-    imageUrl: String?,
-    isTimeLimited: Boolean = false,
-    colorBottom:Color=Color.White,
-    colorText:Color,
-    onClick: () -> Unit = {} // ДОБАВЬТЕ этот параметр
-
+    product: Product,
+    onClick: () -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
+    val oldPrice = product.oldPrice ?: 0
+    val discount = product.calculateDiscountPercent() ?: 0
+    val colorBottom = product.accentColor
+    val colorText = product.accentColor
     Card(
-        modifier = Modifier
+        modifier = modifier
             .width(fw(210))
-            .height(fh(460))
+            .height(fh(420))
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(15.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -120,7 +110,7 @@ fun ProductCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(fh(70)) // Высота градиента (примерно под контент)
+                    .height(fh(60)) // Высота градиента (примерно под контент)
                     .align(Alignment.BottomCenter) // Прижимаем к низу
                     .background(
                         brush = Brush.verticalGradient(
@@ -159,15 +149,20 @@ fun ProductCard(
                         ),
                         modifier = Modifier.fillMaxSize() // Говорим карусели занять всё место в родительском Box
                     )
-                    // Иконка лайка
-                    Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
-                        contentDescription = null,
-                        tint = Color.Gray,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(8.dp)
-                    )
+                    Box(
+                        Modifier
+                            .height(fh(30))
+                            .width(fw(30))
+                            .background(Color(0xB2F2F2F2), CircleShape)
+                            .align(Alignment.TopEnd),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        // Иконка лайка
+                        Image(
+                            if (product.isFavorite) painterResource(R.drawable.lover) else painterResource(R.drawable.unlover),
+                            contentDescription = null,
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(fh(5)))
@@ -186,29 +181,42 @@ fun ProductCard(
                         Image(
                             painter = painterResource( R.drawable.otz_icon),
                             contentDescription = "Отзыв",
-                            modifier = Modifier.size(10.dp),
+                            modifier = Modifier.size(fw(10) ),
                         )
                         Spacer(modifier = Modifier.width(fw(5)))
-                        Text(
-                            text = "$reviews отзыва",
-                            fontSize = 10.sp,
-                            color = Color.Gray
-                        )
+                        Box(
+                            Modifier
+                                .height(fh(10))
+                                .width(fw(75))
+                        ) {
+                            Text(
+                                text = "${product.reviewsCount} отзыва",
+                                fontSize = 8.sp,
+                                color = Color.Gray,
+                                lineHeight = 8.sp
+                            )
+                        }
 
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.width(fw(25)))
 
-                        Text(
-                            text = String.format("%.1f", rating),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Box(
+                            Modifier.height(fh(10)).width(fw(50)),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Text(
+                                text = String.format("%.1f", product.rating),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                lineHeight = 10.sp
+                            )
+                        }
                         Spacer(modifier = Modifier.width(fw(5)))
 
-                        Icon(
-                            imageVector = Icons.Default.Star,
+                        Image(
+                            painterResource(R.drawable.star_profile_menu),
                             contentDescription = null,
-                            modifier = Modifier.size(12.dp),
-                            tint = Color(0xFFFFD700)
+                            modifier = Modifier.size(fw(10)),
+                            //tint = Color(0xFFFFD700)
                         )
                     }
 
@@ -216,15 +224,18 @@ fun ProductCard(
 
                     // Название
                     Box(
-                        modifier = Modifier.width(fw(180)),
+                        modifier = Modifier
+                            .width(fw(180))
+                            .height(fh(40)),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Text(
-                            text = title,
+                            text = product.name,
                             maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
+                            overflow = TextOverflow.Clip,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
+                            lineHeight = 14.sp
                         )
                     }
 
@@ -259,11 +270,11 @@ fun ProductCard(
                             contentAlignment = Alignment.CenterStart
                         ) {
                             Text(
-                                text = "$price ₽",
+                                text = "${product.price} ₽",
                                 color = colorText,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
-                                lineHeight = 16.sp
+                                lineHeight = 14.sp
                             )
                         }
                     }
@@ -309,6 +320,9 @@ fun ProductCard(
 
 @Composable
 @Preview
-private fun ProductGirdPreview(){
-    ProductGrid()
+private fun ProductGirdPreview() {
+    // Используем тестовые данные для Preview
+    ProductGrid(
+        products = TestProducts.allProducts.take(4)
+    )
 }

@@ -28,17 +28,30 @@ class ProductViewModel(
     private val _favoriteProductsState = MutableStateFlow<UiState<List<Product>>>(UiState.Idle)
     val favoriteProductsState: StateFlow<UiState<List<Product>>> = _favoriteProductsState.asStateFlow()
 
+    // Флаг для отслеживания, были ли данные загружены
+    private var hasLoadedProducts = false
+    private var isLoadingProducts = false
+
     /**
-     * Загрузить все продукты
+     * Загрузить все продукты (только один раз)
      */
-    fun loadProducts() {
+    fun loadProducts(forceReload: Boolean = false) {
+        // Если данные уже загружены или идет загрузка, и не требуется принудительная перезагрузка - выходим
+        if ((hasLoadedProducts || isLoadingProducts) && !forceReload) {
+            return
+        }
+
         viewModelScope.launch {
+            isLoadingProducts = true
             _productsState.value = UiState.Loading
             try {
                 val products = productRepository.getAllProducts()
                 _productsState.value = UiState.Success(products)
+                hasLoadedProducts = true
             } catch (e: Exception) {
                 _productsState.value = UiState.Error(message = e.message, throwable = e)
+            } finally {
+                isLoadingProducts = false
             }
         }
     }

@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.U_I.Screen.MainScreen.components.ProductGrid
 import com.fortgame.ksynic.U_I.ProductDetailScreen.BgGray
 import com.fortgame.ksynic.U_I.TopHeaderWithReturn
+import com.fortgame.ksynic.mvvm.model.Product
+import com.fortgame.ksynic.mvvm.model.TestProducts
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -26,6 +28,7 @@ fun HistoryScreen(
     onBackClick: () -> Unit = {},
     onProductClick:() -> Unit = {}
 ){
+
     Box(modifier = Modifier
         .background(BgGray)) {
         TopHeaderWithReturn(onBackClick)
@@ -61,7 +64,9 @@ fun HistoryScreen(
 
             // Продукты
             item{
-                ProductGrid(onProductClick = onProductClick) // Передаем функцию дальше
+                ProductGrid(
+                    onProductClick = onProductClick as (Product) -> Unit,
+                    products = TestProducts.allProducts.take(4)) // Передаем функцию дальше
             }
         }
     }
