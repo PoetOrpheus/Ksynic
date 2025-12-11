@@ -4,6 +4,8 @@ package com.fortgame.ksynic.U_I.Screen.MainScreen.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.remember
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,7 +54,8 @@ import com.fortgame.ksynic.R
 @Composable
 fun ProductGrid(
     products: List<Product>,
-    onProductClick: (Product) -> Unit = {} // Теперь передаем Product
+    onProductClick: (Product) -> Unit = {}, // Теперь передаем Product
+    onToggleFavorite: (String) -> Unit = {} // Функция для переключения избранного
 ) {
     // Используем обычную Column с Row для создания сетки вместо LazyVerticalGrid
     // чтобы избежать конфликта со скроллируемым родительским контейнером
@@ -73,6 +76,7 @@ fun ProductGrid(
                     ProductCard(
                         product = product,
                         onClick = { onProductClick(product) },
+                        onFavoriteClick = { onToggleFavorite(product.id) },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -89,6 +93,7 @@ fun ProductGrid(
 fun ProductCard(
     product: Product,
     onClick: () -> Unit = {},
+    onFavoriteClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val oldPrice = product.oldPrice ?: 0
@@ -149,19 +154,35 @@ fun ProductCard(
                         ),
                         modifier = Modifier.fillMaxSize() // Говорим карусели занять всё место в родительском Box
                     )
+                    // Иконка лайка с обработчиком клика
                     Box(
                         Modifier
-                            .height(fh(30))
-                            .width(fw(30))
-                            .background(Color(0xB2F2F2F2), CircleShape)
-                            .align(Alignment.TopEnd),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        // Иконка лайка
-                        Image(
-                            if (product.isFavorite) painterResource(R.drawable.lover) else painterResource(R.drawable.unlover),
-                            contentDescription = null,
-                        )
+                            .height(fh(45))
+                            .width(fw(45))
+                            .align(Alignment.TopEnd)
+                    ){
+                        Box(
+                            Modifier
+                                .height(fh(30))
+                                .width(fw(30))
+                                .background(Color(0xB2F2F2F2), CircleShape)
+                                .clickable(
+                                    indication = null, // Убираем эффект клика, чтобы не мешать основному клику карточки
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    onClick = onFavoriteClick
+                                )
+                                .align(Alignment.TopEnd)
+                                .padding(4.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = painterResource(
+                                    if (product.isFavorite) R.drawable.lover else R.drawable.unlover
+                                ),
+                                contentDescription = if (product.isFavorite) "Убрать из избранного" else "Добавить в избранное",
+                                modifier = Modifier.size(fw(20))
+                            )
+                        }
                     }
                 }
 
@@ -200,7 +221,9 @@ fun ProductCard(
                         Spacer(modifier = Modifier.width(fw(25)))
 
                         Box(
-                            Modifier.height(fh(10)).width(fw(50)),
+                            Modifier
+                                .height(fh(10))
+                                .width(fw(50)),
                             contentAlignment = Alignment.CenterEnd
                         ) {
                             Text(

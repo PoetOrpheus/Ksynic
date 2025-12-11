@@ -25,8 +25,17 @@ class ProductRepositoryImpl : ProductRepository {
         // ====================================================================
         // ТЕСТОВЫЕ ДАННЫЕ - УДАЛИТЬ ПОСЛЕ ИНТЕГРАЦИИ С API
         // ====================================================================
+        // Инициализируем favoriteProductIds на основе исходных данных, если еще не инициализирован
+        if (favoriteProductIds.isEmpty()) {
+            TestProducts.allProducts.forEach { product ->
+                if (product.isFavorite) {
+                    favoriteProductIds.add(product.id)
+                }
+            }
+        }
+        
         return TestProducts.allProducts.map { product ->
-            // Обновляем состояние избранного для каждого продукта
+            // Обновляем состояние избранного для каждого продукта на основе favoriteProductIds
             product.copy(isFavorite = favoriteProductIds.contains(product.id))
         }
         // TODO: Заменить на реальный запрос к API

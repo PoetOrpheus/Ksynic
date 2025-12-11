@@ -115,6 +115,8 @@ class ProductViewModel(
                 if (success) {
                     // Обновляем состояние избранных продуктов
                     loadFavoriteProducts()
+                    // Обновляем список продуктов, чтобы отразить изменение избранного
+                    updateProductFavoriteState(productId, isFavorite = true)
                 }
             } catch (e: Exception) {
                 // Обработка ошибки
@@ -132,10 +134,48 @@ class ProductViewModel(
                 if (success) {
                     // Обновляем состояние избранных продуктов
                     loadFavoriteProducts()
+                    // Обновляем список продуктов, чтобы отразить изменение избранного
+                    updateProductFavoriteState(productId, isFavorite = false)
                 }
             } catch (e: Exception) {
                 // Обработка ошибки
             }
+        }
+    }
+
+    /**
+     * Переключить состояние избранного для продукта
+     */
+    fun toggleFavorite(productId: String) {
+        viewModelScope.launch {
+            val currentState = _productsState.value
+            if (currentState is UiState.Success) {
+                val product = currentState.data.find { it.id == productId }
+                if (product != null) {
+                    if (product.isFavorite) {
+                        removeFromFavorites(productId)
+                    } else {
+                        addToFavorites(productId)
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Обновить состояние избранного для продукта в списке
+     */
+    private fun updateProductFavoriteState(productId: String, isFavorite: Boolean) {
+        val currentState = _productsState.value
+        if (currentState is UiState.Success) {
+            val updatedProducts = currentState.data.map { product ->
+                if (product.id == productId) {
+                    product.copy(isFavorite = isFavorite)
+                } else {
+                    product
+                }
+            }
+            _productsState.value = UiState.Success(updatedProducts)
         }
     }
 }

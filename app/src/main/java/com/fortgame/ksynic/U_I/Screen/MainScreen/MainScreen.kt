@@ -123,7 +123,12 @@ fun MainScreen() {
                         onCategoryClick = { showCategory = true },
                         onBrandsClick = { showBrands = true }
                     )
-                    BottomNavItem.Favorites -> FavoriteScreen()
+                    BottomNavItem.Favorites -> FavoriteScreen(
+                        onProductClick = { product ->
+                            // TODO: Сохранить выбранный продукт для экрана деталей
+                            showProductDetail = true
+                        }
+                    )
                     BottomNavItem.Profile -> ProfileScreen(
                         onReviewClick = {showWaitingReview=true},
                         onEditingClick = {showEditingProfile=true}
@@ -193,7 +198,10 @@ private fun MarketplaceContent(
                 Spacer(modifier = Modifier.height(fh(10)))
                 ProductGrid(
                     products = state.data,
-                    onProductClick = onProductClick
+                    onProductClick = onProductClick,
+                    onToggleFavorite = { productId ->
+                        viewModel.toggleFavorite(productId)
+                    }
                 )
             }
         }
