@@ -31,6 +31,8 @@ import com.fortgame.ksynic.Navigation.BottomNavigationBar
 import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.BrandsScreen.BrandsScreen
 import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.CanBeSeller.CanBeSeller
 import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.CatalogScreen.CatalogScreen
+import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.CatalogScreen.CatalogSubScreen
+import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.CatalogScreen.CategoryProductsScreen
 import com.fortgame.ksynic.U_I.Screen.ProfileScreen.SubScreen.EditingProfileScreen.EditingProfileScreen
 import com.fortgame.ksynic.U_I.Screen.ProfileScreen.ProfileScreen
 import com.fortgame.ksynic.U_I.Screen.FavoriteScreen.FavoriteScreen
@@ -55,6 +57,10 @@ fun MainScreen() {
     var showHistory by remember { mutableStateOf(false) }
     var showCanBeSeller by remember { mutableStateOf(false) }
     var showCategory by remember { mutableStateOf(false) }
+    var showCatalogSubScreen by remember { mutableStateOf(false) }
+    var showCategoryProducts by remember { mutableStateOf(false) }
+    var selectedCategoryName by remember { mutableStateOf<String?>(null) }
+    var selectedSubcategoryName by remember { mutableStateOf<String?>(null) }
     var showBrands by remember { mutableStateOf(false) }
     var showWaitingReview by remember{mutableStateOf(false)}
     var showEditingProfile by remember{mutableStateOf(false)}
@@ -63,7 +69,7 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showBrands and !showWaitingReview and !showEditingProfile) { // Скрываем навигацию на экране деталей
+            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showCatalogSubScreen and !showCategoryProducts and !showBrands and !showWaitingReview and !showEditingProfile) { // Скрываем навигацию на экране деталей
                 BottomNavigationBar(
                     selectedItem = selectedTab,
                     onItemSelected = { selectedTab = it }
@@ -96,7 +102,43 @@ fun MainScreen() {
             }
             else if(showCategory){
                 CatalogScreen(
-                    onBackClick = {showCategory = false}
+                    onBackClick = {showCategory = false},
+                    onCategoryClick = { categoryName ->
+                        selectedCategoryName = categoryName
+                        showCategory = false
+                        showCatalogSubScreen = true 
+                    }
+                )
+            }
+            else if(showCatalogSubScreen){
+                CatalogSubScreen(
+                    onBackClick = { 
+                        showCatalogSubScreen = false
+                        selectedCategoryName = null
+                    },
+                    onSubcategoryClick = { subcategoryName ->
+                        selectedSubcategoryName = subcategoryName
+                        showCatalogSubScreen = false
+                        showCategoryProducts = true
+                    }
+                )
+            }
+            else if(showCategoryProducts){
+                CategoryProductsScreen(
+                    categoryName = selectedCategoryName ?: "",
+                    subcategoryName = selectedSubcategoryName ?: "",
+                    onBackClick = { 
+                        showCategoryProducts = false
+                        selectedSubcategoryName = null
+                        // Возвращаемся к CatalogSubScreen
+                        if (selectedCategoryName != null) {
+                            showCatalogSubScreen = true
+                        }
+                    },
+                    onProductClick = { product ->
+                        selectedProduct = product
+                        showProductDetail = true
+                    }
                 )
             }
             else if(showBrands){

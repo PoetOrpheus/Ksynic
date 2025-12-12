@@ -2,6 +2,7 @@ package com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.CatalogScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,9 +25,19 @@ import com.fortgame.ksynic.U_I.TopHeaderWithReturn
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
+// Названия категорий (соответствуют индексам category_1, category_2...)
+private val categoryNames = listOf(
+    "Мужская одежда", "Женская одежда", "Детская одежда", "Обувь",
+    "Аксессуары", "Сумки", "Часы", "Ювелирные изделия",
+    "Косметика", "Парфюмерия", "Спорт", "Электроника",
+    "Техника", "Мебель", "Дом и сад", "Автотовары",
+    "Книги", "Игрушки", "Продукты", "Другое"
+)
+
 @Composable
 fun CatalogScreen(
     onBackClick:()->Unit = {},
+    onCategoryClick: (String) -> Unit = {},
 ){
     val context = LocalContext.current
     Box(modifier = Modifier
@@ -63,7 +74,11 @@ fun CatalogScreen(
                     }
 
                     if (drawableId != 0) {
-                        CatalogBox(drawableId)
+                        val categoryName = if (index < categoryNames.size) categoryNames[index] else "Категория ${index + 1}"
+                        CatalogBox(
+                            painter = drawableId,
+                            onClick = { onCategoryClick(categoryName) }
+                        )
                     }
                 }
 
@@ -75,12 +90,16 @@ fun CatalogScreen(
 
 @Composable
 private fun CatalogBox(
-    painter: Int
+    painter: Int,
+    onClick: () -> Unit = {}
 ) {
     Image(
         painterResource(painter),
         null,
-        modifier=Modifier.width(fw(120)).height(fh(120))
+        modifier=Modifier
+            .width(fw(120))
+            .height(fh(120))
+            .clickable(onClick = onClick)
     )
 }
 

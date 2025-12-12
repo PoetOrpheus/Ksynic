@@ -1,7 +1,9 @@
 package com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.CatalogScreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -34,6 +36,7 @@ import com.fortgame.ksynic.utils.fw
 @Composable
 fun CatalogSubScreen(
     onBackClick:()->Unit = {},
+    onSubcategoryClick: (String) -> Unit = {},
 ){
     val context = LocalContext.current
     Box(modifier = Modifier
@@ -51,91 +54,91 @@ fun CatalogSubScreen(
         ) {
             item{Spacer(Modifier.height(fh(10)))}
             item{
-                Category("Блузы и рубашки",true)
+                Category("Блузы и рубашки",true, onClick = { onSubcategoryClick("Блузы и рубашки") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Брюки, бриджи и капри")
+                Category("Брюки, бриджи и капри", onClick = { onSubcategoryClick("Брюки, бриджи и капри") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Верхняя одежда")
+                Category("Верхняя одежда", onClick = { onSubcategoryClick("Верхняя одежда") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Джемперы, свитеры и кардиганы")
+                Category("Джемперы, свитеры и кардиганы", onClick = { onSubcategoryClick("Джемперы, свитеры и кардиганы") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Джинсы и джеггинсы")
+                Category("Джинсы и джеггинсы", onClick = { onSubcategoryClick("Джинсы и джеггинсы") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Домашняя одежда")
+                Category("Домашняя одежда", onClick = { onSubcategoryClick("Домашняя одежда") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Комбинезоны")
+                Category("Комбинезоны", onClick = { onSubcategoryClick("Комбинезоны") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Костюмы и комплекты")
+                Category("Костюмы и комплекты", onClick = { onSubcategoryClick("Костюмы и комплекты") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Купальники и пляжная одежда")
+                Category("Купальники и пляжная одежда", onClick = { onSubcategoryClick("Купальники и пляжная одежда") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Лонгсливы")
+                Category("Лонгсливы", onClick = { onSubcategoryClick("Лонгсливы") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Носки, колготки и чулки")
+                Category("Носки, колготки и чулки", onClick = { onSubcategoryClick("Носки, колготки и чулки") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Пиджаки, жакеты и жилеты")
+                Category("Пиджаки, жакеты и жилеты", onClick = { onSubcategoryClick("Пиджаки, жакеты и жилеты") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Платья и сарафаны")
+                Category("Платья и сарафаны", onClick = { onSubcategoryClick("Платья и сарафаны") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Термобелье")
+                Category("Термобелье", onClick = { onSubcategoryClick("Термобелье") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Толстовки, свитшоты и худи")
+                Category("Толстовки, свитшоты и худи", onClick = { onSubcategoryClick("Толстовки, свитшоты и худи") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Туники")
+                Category("Туники", onClick = { onSubcategoryClick("Туники") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Футболки и топы")
+                Category("Футболки и топы", onClick = { onSubcategoryClick("Футболки и топы") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Шорты")
+                Category("Шорты", onClick = { onSubcategoryClick("Шорты") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Юбки")
+                Category("Юбки", onClick = { onSubcategoryClick("Юбки") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Одежда больших размеров")
+                Category("Одежда больших размеров", onClick = { onSubcategoryClick("Одежда больших размеров") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Одежда для беременных")
+                Category("Одежда для беременных", onClick = { onSubcategoryClick("Одежда для беременных") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
             item{
-                Category("Свадебные платья",false,true)
+                Category("Свадебные платья",false,true, onClick = { onSubcategoryClick("Свадебные платья") })
                 Box(Modifier.fillMaxWidth().height(fh(2)).background(Color(0xFFF2F2F2)))
             }
 
@@ -153,6 +156,7 @@ private fun Category(
     text:String="Блузы и рубашки",
     firt:Boolean=false,
     end: Boolean=false,
+    onClick: () -> Unit = {},
 ){
     Row(
         Modifier
@@ -167,7 +171,11 @@ private fun Category(
                     RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
                 }
                 else RoundedCornerShape(0.dp)
-            ),
+            )
+            .clickable(onClick = {
+                onClick()
+                Log.d("TAG", "Category:$text ")
+            }),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ){
