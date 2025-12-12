@@ -31,19 +31,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import android.util.Log
+import androidx.compose.foundation.lazy.items
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import com.fortgame.ksynic.U_I.Screen.ShopCartScreen.components.CardCart
 import com.fortgame.ksynic.U_I.Screen.ShopCartScreen.components.TotalCountCart
 import com.fortgame.ksynic.U_I.TopHeaderWithoutSearch
 import com.fortgame.ksynic.mvvm.model.CartItem
 import com.fortgame.ksynic.mvvm.ui.state.UiState
 import com.fortgame.ksynic.mvvm.viewmodel.CartViewModel
+import com.fortgame.ksynic.mvvm.viewmodel.ProductViewModel
 import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
 fun ShopCartScreen(
-    cartViewModel: CartViewModel = viewModel(factory = ViewModelFactory.getInstance(LocalContext.current))
+    cartViewModel: CartViewModel = viewModel(factory = ViewModelFactory.getInstance(LocalContext.current)),
+    productViewModel: com.fortgame.ksynic.mvvm.viewmodel.ProductViewModel = viewModel(factory = ViewModelFactory.getInstance(LocalContext.current))
 ) {
     val context = LocalContext.current
     val cartState by cartViewModel.cartState.collectAsState()
@@ -103,8 +110,10 @@ fun ShopCartScreen(
                                 else
                                     Modifier
                         ) {
-                            items(cartItems.size) { index ->
-                                val cartItem = cartItems[index]
+                            items(
+                                items = cartItems,
+                                key = { cartItem -> cartItem.id }
+                            ) { cartItem ->
                                 CardCart(
                                     cartItem = cartItem,
                                     onQuantityChange = { newQuantity ->
@@ -115,13 +124,29 @@ fun ShopCartScreen(
                                     },
                                     onToggleSelection = {
                                         cartViewModel.toggleCartItemSelection(cartItem.id)
+                                    },
+                                    onToggleFavorite = {
+                                        // Переключаем избранное через ProductViewModel
+                                        Log.d("ShopCartScreen", "onToggleFavorite: клик по избранному для товара ${cartItem.product.id} (${cartItem.product.name})")
+                                        Log.d("ShopCartScreen", "onToggleFavorite: текущее состояние isFavorite = ${cartItem.product.isFavorite}")
+                                        
+                                        // Используем корутину для ожидания завершения операции
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            // Переключаем избранное и ждем завершения (через suspend функцию)
+                                            val success = productViewModel.toggleFavoriteSync(cartItem.product.id)
+                                            Log.d("ShopCartScreen", "onToggleFavorite: операция завершена, success = $success, обновляем корзину")
+                                            // Обновляем корзину после завершения операции
+                                            cartViewModel.refreshCartState()
+                                        }
                                     }
                                 )
-                                if (index < cartItems.size - 1) {
-                                    Box(
-                                        Modifier.height(fh(2)).fillMaxWidth().background(Color(0xFFF2F2F2))
-                                    )
-                                }
+                            }
+                            
+                            // Добавляем разделители между элементами
+                            items(cartItems.size - 1) { index ->
+                                Box(
+                                    Modifier.height(fh(2)).fillMaxWidth().background(Color(0xFFF2F2F2))
+                                )
                             }
                         }
                     }

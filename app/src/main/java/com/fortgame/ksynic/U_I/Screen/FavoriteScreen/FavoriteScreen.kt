@@ -105,8 +105,8 @@ fun FavoriteScreen(
                             products = state.data,
                             onProductClick = onProductClick,
                             onToggleFavorite = { productId ->
-                                // Удаляем из избранного при клике на иконку лайка
-                                viewModel.removeFromFavorites(productId)
+                                // Переключаем избранное (удаляем из списка избранных)
+                                viewModel.toggleFavorite(productId)
                             }
                         )
                     }

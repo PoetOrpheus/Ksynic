@@ -72,12 +72,26 @@ class CartViewModel(
                 )
                 Log.d("CartViewModel", "addToCart: результат добавления: $success")
                 if (success) {
-                    // Обновляем корзину
-                    Log.d("CartViewModel", "addToCart: обновляем корзину после добавления")
-                    loadCart()
+                    // Оптимизированное обновление - получаем только новые данные
+                    refreshCartState()
                 }
             } catch (e: Exception) {
                 Log.e("CartViewModel", "addToCart: ошибка при добавлении товара", e)
+            }
+        }
+    }
+    
+    /**
+     * Оптимизированное обновление состояния корзины без полной перезагрузки
+     */
+    fun refreshCartState() {
+        viewModelScope.launch {
+            try {
+                val cartItems = productRepository.getCartItems()
+                _cartState.value = UiState.Success(cartItems)
+                updateCartTotal(cartItems)
+            } catch (e: Exception) {
+                Log.e("CartViewModel", "refreshCartState: ошибка", e)
             }
         }
     }
@@ -90,11 +104,11 @@ class CartViewModel(
             try {
                 val success = productRepository.updateCartItemQuantity(cartItemId, quantity)
                 if (success) {
-                    // Обновляем корзину
-                    loadCart()
+                    // Оптимизированное обновление
+                    refreshCartState()
                 }
             } catch (e: Exception) {
-                // Обработка ошибки
+                Log.e("CartViewModel", "updateCartItemQuantity: ошибка", e)
             }
         }
     }
@@ -108,8 +122,8 @@ class CartViewModel(
             try {
                 val success = productRepository.toggleCartItemSelection(cartItemId)
                 if (success) {
-                    // Обновляем корзину
-                    loadCart()
+                    // Оптимизированное обновление
+                    refreshCartState()
                 }
             } catch (e: Exception) {
                 Log.e("CartViewModel", "toggleCartItemSelection: ошибка при переключении выбора", e)
@@ -125,11 +139,11 @@ class CartViewModel(
             try {
                 val success = productRepository.removeFromCart(cartItemId)
                 if (success) {
-                    // Обновляем корзину
-                    loadCart()
+                    // Оптимизированное обновление
+                    refreshCartState()
                 }
             } catch (e: Exception) {
-                // Обработка ошибки
+                Log.e("CartViewModel", "removeFromCart: ошибка", e)
             }
         }
     }

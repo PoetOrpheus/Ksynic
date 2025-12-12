@@ -1,5 +1,6 @@
 package com.fortgame.ksynic.mvvm.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.fortgame.ksynic.mvvm.model.Product
 import com.fortgame.ksynic.mvvm.repository.ProductRepository
@@ -111,24 +112,6 @@ class ProductViewModel(
         }
     }
 
-    /**
-     * Добавить продукт в избранное
-     */
-    fun addToFavorites(productId: String) {
-        viewModelScope.launch {
-            try {
-                val success = productRepository.addToFavorites(productId)
-                if (success) {
-                    // Обновляем состояние избранных продуктов
-                    loadFavoriteProducts()
-                    // Обновляем список продуктов, чтобы отразить изменение избранного
-                    updateProductFavoriteState(productId, isFavorite = true)
-                }
-            } catch (e: Exception) {
-                // Обработка ошибки
-            }
-        }
-    }
 
     /**
      * Удалить продукт из избранного
@@ -138,8 +121,8 @@ class ProductViewModel(
             try {
                 val success = productRepository.removeFromFavorites(productId)
                 if (success) {
-                    // Обновляем состояние избранных продуктов
-                    loadFavoriteProducts()
+                    // Оптимизированное обновление - обновляем только состояние избранных без полной перезагрузки
+                    refreshFavoriteProductsState(productId, false)
                     // Обновляем список продуктов, чтобы отразить изменение избранного
                     updateProductFavoriteState(productId, isFavorite = false)
                 }
@@ -150,21 +133,90 @@ class ProductViewModel(
     }
 
     /**
-     * Переключить состояние избранного для продукта
+     * Добавить продукт в избранное
+     */
+    fun addToFavorites(productId: String) {
+        viewModelScope.launch {
+            try {
+                val success = productRepository.addToFavorites(productId)
+                if (success) {
+                    // Оптимизированное обновление
+                    refreshFavoriteProductsState(productId, true)
+                    // Обновляем список продуктов, чтобы отразить изменение избранного
+                    updateProductFavoriteState(productId, isFavorite = true)
+                }
+            } catch (e: Exception) {
+                // Обработка ошибки
+            }
+        }
+    }
+
+    /**
+     * Оптимизированное обновление состояния избранных продуктов без полной перезагрузки
+     */
+    private suspend fun refreshFavoriteProductsState(productId: String, shouldAdd: Boolean) {
+        val currentState = _favoriteProductsState.value
+        if (currentState is UiState.Success) {
+            val updatedProducts = if (shouldAdd) {
+                // Добавляем товар в избранное (нужно получить продукт из репозитория)
+                val product = productRepository.getProductById(productId)
+                if (product != null && !currentState.data.any { it.id == productId }) {
+                    currentState.data + product.copy(isFavorite = true)
+                } else {
+                    // Обновляем существующий товар
+                    currentState.data.map { 
+                        if (it.id == productId) it.copy(isFavorite = true) else it 
+                    }
+                }
+            } else {
+                // Удаляем товар из избранного
+                currentState.data.filter { it.id != productId }
+            }
+            _favoriteProductsState.value = UiState.Success(updatedProducts)
+        }
+    }
+
+    /**
+     * Переключить состояние избранного для продукта (suspend функция для ожидания завершения)
+     */
+    suspend fun toggleFavoriteSync(productId: String): Boolean {
+        Log.d("ProductViewModel", "toggleFavoriteSync: переключаем избранное для товара $productId")
+        return try {
+            // Получаем текущее состояние избранного из репозитория
+            val product = productRepository.getProductById(productId)
+            val isCurrentlyFavorite = product?.isFavorite ?: false
+            Log.d("ProductViewModel", "toggleFavoriteSync: текущее состояние избранного для $productId = $isCurrentlyFavorite")
+            
+            val success = if (isCurrentlyFavorite) {
+                Log.d("ProductViewModel", "toggleFavoriteSync: удаляем из избранного")
+                productRepository.removeFromFavorites(productId)
+            } else {
+                Log.d("ProductViewModel", "toggleFavoriteSync: добавляем в избранное")
+                productRepository.addToFavorites(productId)
+            }
+            
+            Log.d("ProductViewModel", "toggleFavoriteSync: операция завершена, success = $success")
+            
+            // Обновляем состояние в основном списке, если он загружен
+            updateProductFavoriteState(productId, !isCurrentlyFavorite)
+            
+            // Обновляем состояние избранных продуктов
+            refreshFavoriteProductsState(productId, !isCurrentlyFavorite)
+            
+            Log.d("ProductViewModel", "toggleFavoriteSync: обновлено состояние для $productId, новое значение = ${!isCurrentlyFavorite}")
+            success
+        } catch (e: Exception) {
+            Log.e("ProductViewModel", "toggleFavoriteSync: ошибка при переключении избранного", e)
+            false
+        }
+    }
+
+    /**
+     * Переключить состояние избранного для продукта (async версия для обратной совместимости)
      */
     fun toggleFavorite(productId: String) {
         viewModelScope.launch {
-            val currentState = _productsState.value
-            if (currentState is UiState.Success) {
-                val product = currentState.data.find { it.id == productId }
-                if (product != null) {
-                    if (product.isFavorite) {
-                        removeFromFavorites(productId)
-                    } else {
-                        addToFavorites(productId)
-                    }
-                }
-            }
+            toggleFavoriteSync(productId)
         }
     }
 

@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.fortgame.ksynic.mvvm.model.CartItem
 import com.fortgame.ksynic.mvvm.model.Product
 import com.fortgame.ksynic.mvvm.model.UserProfile
 import com.fortgame.ksynic.mvvm.data.local.ProductDTO
@@ -31,6 +32,7 @@ class LocalDataStore(private val context: Context) {
     private val cachedProductsKey = stringPreferencesKey("cached_products_json")
     private val productsCacheTimestampKey = stringPreferencesKey("products_cache_timestamp")
     private val userProfileKey = stringPreferencesKey("user_profile_json")
+    private val cartItemsKey = stringPreferencesKey("cart_items_json")
     
     /**
      * Получить список ID избранных продуктов
@@ -189,6 +191,74 @@ class LocalDataStore(private val context: Context) {
     suspend fun getUserProfileOrDefault(): UserProfile {
         return getUserProfile() ?: UserProfile.default()
     }
+
+    /**
+     * Сохранить корзину
+     */
+    suspend fun saveCartItems(cartItems: List<CartItem>) {
+        try {
+            // Конвертируем CartItem в упрощенную структуру для сохранения
+            // Сохраняем только ID продуктов и метаданные, так как Product может быть большой
+            val cartItemsData = cartItems.map { item ->
+                CartItemData(
+                    id = item.id,
+                    productId = item.product.id,
+                    selectedVariantId = item.selectedVariantId,
+                    selectedSizeId = item.selectedSizeId,
+                    quantity = item.quantity,
+                    isSelected = item.isSelected
+                )
+            }
+            val cartItemsJson = gson.toJson(cartItemsData)
+            
+            context.dataStore.edit { preferences ->
+                preferences[cartItemsKey] = cartItemsJson
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * Получить сохраненные данные корзины
+     */
+    suspend fun getCartItemsData(): List<CartItemData> {
+        return try {
+            val preferences = context.dataStore.data.first()
+            val cartItemsJson = preferences[cartItemsKey]
+            
+            if (cartItemsJson != null && cartItemsJson.isNotEmpty()) {
+                val type = object : TypeToken<List<CartItemData>>() {}.type
+                gson.fromJson<List<CartItemData>>(cartItemsJson, type)
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    /**
+     * Очистить корзину
+     */
+    suspend fun clearCartItems() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(cartItemsKey)
+        }
+    }
+
+    /**
+     * DTO для сохранения данных корзины
+     */
+    data class CartItemData(
+        val id: String,
+        val productId: String,
+        val selectedVariantId: String? = null,
+        val selectedSizeId: String? = null,
+        val quantity: Int = 1,
+        val isSelected: Boolean = true
+    )
 }
 
 

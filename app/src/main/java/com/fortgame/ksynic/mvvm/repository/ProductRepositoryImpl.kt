@@ -3,6 +3,7 @@ package com.fortgame.ksynic.mvvm.repository
 import android.content.Context
 import android.util.Log
 import com.fortgame.ksynic.mvvm.data.local.LocalDataStore
+import com.fortgame.ksynic.mvvm.data.local.LocalDataStore.CartItemData
 import com.fortgame.ksynic.mvvm.model.CartItem
 import com.fortgame.ksynic.mvvm.model.Product
 import com.fortgame.ksynic.mvvm.model.TestProducts
@@ -226,13 +227,20 @@ class ProductRepositoryImpl(
         // Имитация задержки сети
         delay(200)
         
+        Log.d("CartRepository", "addToFavorites: добавляем товар $productId в избранное")
+        Log.d("CartRepository", "addToFavorites: favoriteProductIds до добавления = $favoriteProductIds")
+        
         // ====================================================================
         // ТЕСТОВЫЕ ДАННЫЕ - УДАЛИТЬ ПОСЛЕ ИНТЕГРАЦИИ С API
         // ====================================================================
         favoriteProductIds.add(productId)
         
+        Log.d("CartRepository", "addToFavorites: favoriteProductIds после добавления = $favoriteProductIds")
+        
         // Сохраняем в локальное хранилище
         localDataStore?.saveFavoriteProductIds(favoriteProductIds)
+        
+        Log.d("CartRepository", "addToFavorites: товар $productId добавлен в избранное")
         
         return true
         // TODO: Заменить на реальный запрос к API
@@ -243,13 +251,20 @@ class ProductRepositoryImpl(
         // Имитация задержки сети
         delay(200)
         
+        Log.d("CartRepository", "removeFromFavorites: удаляем товар $productId из избранного")
+        Log.d("CartRepository", "removeFromFavorites: favoriteProductIds до удаления = $favoriteProductIds")
+        
         // ====================================================================
         // ТЕСТОВЫЕ ДАННЫЕ - УДАЛИТЬ ПОСЛЕ ИНТЕГРАЦИИ С API
         // ====================================================================
         favoriteProductIds.remove(productId)
         
+        Log.d("CartRepository", "removeFromFavorites: favoriteProductIds после удаления = $favoriteProductIds")
+        
         // Сохраняем в локальное хранилище
         localDataStore?.saveFavoriteProductIds(favoriteProductIds)
+        
+        Log.d("CartRepository", "removeFromFavorites: товар $productId удален из избранного")
         
         return true
         // TODO: Заменить на реальный запрос к API
@@ -258,10 +273,20 @@ class ProductRepositoryImpl(
 
     override suspend fun getCartItems(): List<CartItem> {
         delay(100) // Имитация задержки
+        
+        // Загружаем корзину из локального хранилища при первом запросе
+        if (cartItems.isEmpty()) {
+            loadCartFromLocalStorage()
+        } else {
+            // ВСЕГДА обновляем состояние избранного перед возвратом корзины
+            // чтобы синхронизировать с актуальным состоянием из LocalDataStore
+            updateCartItemsFavoriteState()
+        }
+        
         val items = cartItems.values.toList()
         Log.d("CartRepository", "getCartItems: получено ${items.size} товаров")
         items.forEach { item ->
-            Log.d("CartRepository", "  - ${item.product.name} (ID: ${item.id}), количество: ${item.quantity}")
+            Log.d("CartRepository", "  - ${item.product.name} (ID: ${item.id}), количество: ${item.quantity}, избранное: ${item.product.isFavorite}")
         }
         return items
     }
@@ -299,11 +324,81 @@ class ProductRepositoryImpl(
             Log.d("CartRepository", "addToCart: добавлен новый товар в корзину, новое количество товаров: ${cartItems.size}")
         }
         
-        // TODO: Сохранить в DataStore для персистентности
-        // localDataStore?.saveCartItems(cartItems.values.toList())
+        // Сохраняем в DataStore
+        saveCartToLocalStorage()
         
         Log.d("CartRepository", "addToCart: итоговый размер корзины: ${cartItems.size}")
         return true
+    }
+
+    /**
+     * Сохранить корзину в локальное хранилище
+     */
+    private suspend fun saveCartToLocalStorage() {
+        localDataStore?.saveCartItems(cartItems.values.toList())
+    }
+
+    /**
+     * Загрузить корзину из локального хранилища при инициализации
+     */
+    private suspend fun loadCartFromLocalStorage() {
+        try {
+            val savedCartData = localDataStore?.getCartItemsData() ?: return
+            if (savedCartData.isEmpty()) return
+
+            Log.d("CartRepository", "loadCartFromLocalStorage: найдено ${savedCartData.size} сохраненных элементов корзины")
+            
+            // Загружаем все продукты, чтобы восстановить корзину
+            val allProducts = getAllProducts()
+            val productsMap = allProducts.associateBy { it.id }
+            
+            // Восстанавливаем корзину из сохраненных данных
+            savedCartData.forEach { cartItemData ->
+                val product = productsMap[cartItemData.productId]
+                if (product != null) {
+                    cartItems[cartItemData.id] = CartItem(
+                        id = cartItemData.id,
+                        product = product,
+                        selectedVariantId = cartItemData.selectedVariantId,
+                        selectedSizeId = cartItemData.selectedSizeId,
+                        quantity = cartItemData.quantity,
+                        isSelected = cartItemData.isSelected
+                    )
+                }
+            }
+            
+            Log.d("CartRepository", "loadCartFromLocalStorage: восстановлено ${cartItems.size} товаров в корзине")
+        } catch (e: Exception) {
+            Log.e("CartRepository", "loadCartFromLocalStorage: ошибка при загрузке корзины", e)
+        }
+    }
+    
+    /**
+     * Обновить состояние избранного для продуктов в корзине
+     */
+    private suspend fun updateCartItemsFavoriteState() {
+        Log.d("CartRepository", "updateCartItemsFavoriteState: начинаем обновление состояния избранного")
+        
+        // ВСЕГДА перезагружаем избранные из LocalDataStore для получения актуального состояния
+        val currentFavorites = localDataStore?.getFavoriteProductIds() ?: emptySet()
+        favoriteProductIds.clear()
+        favoriteProductIds.addAll(currentFavorites)
+        
+        Log.d("CartRepository", "updateCartItemsFavoriteState: загружены избранные из LocalDataStore: $currentFavorites")
+        Log.d("CartRepository", "updateCartItemsFavoriteState: favoriteProductIds = $favoriteProductIds")
+        
+        // Обновляем все товары в корзине с актуальным состоянием избранного
+        cartItems.forEach { (id, cartItem) ->
+            val wasFavorite = cartItem.product.isFavorite
+            val shouldBeFavorite = favoriteProductIds.contains(cartItem.product.id)
+            Log.d("CartRepository", "updateCartItemsFavoriteState: товар ${cartItem.product.id} (${cartItem.product.name}) - было: $wasFavorite, должно быть: $shouldBeFavorite")
+            
+            if (wasFavorite != shouldBeFavorite) {
+                val updatedProduct = cartItem.product.copy(isFavorite = shouldBeFavorite)
+                cartItems[id] = cartItem.copy(product = updatedProduct)
+                Log.d("CartRepository", "updateCartItemsFavoriteState: обновлен товар ${cartItem.product.id} (${cartItem.product.name})")
+            }
+        }
     }
 
     override suspend fun updateCartItemQuantity(cartItemId: String, quantity: Int): Boolean {
@@ -318,8 +413,7 @@ class ProductRepositoryImpl(
                 cartItems[cartItemId] = item.copy(quantity = quantity)
             }
             
-            // TODO: Сохранить в DataStore
-            // localDataStore?.saveCartItems(cartItems.values.toList())
+            saveCartToLocalStorage()
             return true
         }
         return false
@@ -333,8 +427,7 @@ class ProductRepositoryImpl(
             cartItems[cartItemId] = item.copy(isSelected = !item.isSelected)
             Log.d("CartRepository", "toggleCartItemSelection: товар ${item.product.name} теперь ${if (!item.isSelected) "выбран" else "не выбран"}")
             
-            // TODO: Сохранить в DataStore
-            // localDataStore?.saveCartItems(cartItems.values.toList())
+            saveCartToLocalStorage()
             return true
         }
         return false
@@ -345,10 +438,9 @@ class ProductRepositoryImpl(
         
         val removed = cartItems.remove(cartItemId) != null
         
-        // TODO: Сохранить в DataStore
-        // if (removed) {
-        //     localDataStore?.saveCartItems(cartItems.values.toList())
-        // }
+        if (removed) {
+            saveCartToLocalStorage()
+        }
         
         return removed
     }
@@ -357,9 +449,7 @@ class ProductRepositoryImpl(
         delay(100) // Имитация задержки
         
         cartItems.clear()
-        
-        // TODO: Сохранить в DataStore
-        // localDataStore?.saveCartItems(emptyList())
+        saveCartToLocalStorage()
         
         return true
     }

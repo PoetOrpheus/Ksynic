@@ -34,7 +34,7 @@ fun CardCart(
     onQuantityChange: (Int) -> Unit = {},
     onRemove: () -> Unit = {},
     onToggleSelection: () -> Unit = {},
-    isLover: Boolean = true
+    onToggleFavorite: () -> Unit = {}
 ) {
     val product = cartItem.product
     val price = product.price
@@ -212,13 +212,14 @@ fun CardCart(
                         .height(fh(30))
                         .width(fw(30))
                         .background(
-                            if (isLover) Color(0xFFFFD4D4) else Color.White,
+                            if (product.isFavorite) Color(0xFFFFD4D4) else Color.White,
                             RoundedCornerShape(10.dp)
-                        ),
+                        )
+                        .clickable(onClick = onToggleFavorite),
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painterResource(if (isLover) R.drawable.lover else R.drawable.unlover),
+                        painterResource(if (product.isFavorite) R.drawable.lover else R.drawable.unlover),
                         contentDescription = "Favorite"
                     )
                 }
