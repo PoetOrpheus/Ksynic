@@ -47,11 +47,7 @@ fun EditingProfileScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    start = fw(5),
-                    end = fw(5),
-                    top = fh(60)
-                ),
+                 .padding(start = fw(5), end = fw(5), top = fh(60)),
         ) {
             item {
                 PhotoAndNameBlock(

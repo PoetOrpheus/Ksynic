@@ -109,10 +109,10 @@ fun PhotoAndNameBlock(
         ){
             Text(
                 text = profile.displayName.ifEmpty { "Денис Д." },
-                fontSize = 18.sp,
+                fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
-                lineHeight = 22.sp,
-                modifier = Modifier.padding(horizontal = fw(10))
+                lineHeight = 17.sp,
+                modifier = Modifier.padding(horizontal = fw(15))
             )
         }
         

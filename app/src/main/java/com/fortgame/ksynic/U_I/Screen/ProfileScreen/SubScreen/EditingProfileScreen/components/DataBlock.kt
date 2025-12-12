@@ -43,7 +43,6 @@ fun DataBlock(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = fw(15))
             .background(Color.White, RoundedCornerShape(10.dp)),
     ){
         Spacer(Modifier.height(fh(10)))
