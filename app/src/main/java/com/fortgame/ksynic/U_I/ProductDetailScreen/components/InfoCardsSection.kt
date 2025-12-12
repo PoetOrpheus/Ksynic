@@ -83,9 +83,9 @@ fun InfoCardsSection(
             ){
                 Text(
                     text="Описание",
-                    fontSize = 16.sp,
+                    fontSize = 12.sp,
                     color= if (select) Color.White else Color.Black,
-                    lineHeight = 18.sp,
+                    lineHeight = 12.sp,
                     fontWeight = FontWeight.Normal
                 )
             }
@@ -117,9 +117,9 @@ fun InfoCardsSection(
             ){
                 Text(
                     text="Характеристики",
-                    fontSize = 16.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,
-                    lineHeight = 18.sp,
+                    lineHeight = 12.sp,
                     color= if (!select) Color.White else Color.Black
                 )
             }

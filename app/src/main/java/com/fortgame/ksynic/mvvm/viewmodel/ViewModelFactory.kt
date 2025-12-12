@@ -3,6 +3,7 @@ package com.fortgame.ksynic.mvvm.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.fortgame.ksynic.mvvm.data.local.LocalDataStore
 import com.fortgame.ksynic.mvvm.repository.ProductRepository
 import com.fortgame.ksynic.mvvm.repository.ProductRepositoryImpl
 
@@ -16,12 +17,19 @@ class ViewModelFactory(
     private val productRepository: ProductRepository by lazy {
         ProductRepositoryImpl(context)
     }
+    
+    private val localDataStore: LocalDataStore by lazy {
+        LocalDataStore(context!!)
+    }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(ProductViewModel::class.java) -> {
                 ProductViewModel(productRepository) as T
+            }
+            modelClass.isAssignableFrom(UserProfileViewModel::class.java) -> {
+                UserProfileViewModel(localDataStore) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }

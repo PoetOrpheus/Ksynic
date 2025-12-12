@@ -117,9 +117,9 @@ fun StartCardRow(
             ){
                 Text(
                     text = formatReviewsCount(reviewsCount),
-                    fontSize = 16.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
-                    lineHeight = 18.sp,
+                    lineHeight = 12.sp,
 
                 )
             }
@@ -161,8 +161,8 @@ fun StartCardRow(
                 ){
                     Text(
                         text="19",
-                        fontSize =12.sp,
-                        lineHeight = 14.sp,
+                        fontSize =16.sp,
+                        lineHeight = 16.sp,
                         fontWeight = FontWeight.ExtraBold
                     )
                 }
@@ -174,9 +174,9 @@ fun StartCardRow(
             ){
                 Text(
                     text="вопросов",
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
-                    lineHeight = 16.sp,
+                    lineHeight = 12.sp,
 
                     )
             }

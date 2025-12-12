@@ -17,9 +17,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,12 +31,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.mvvm.viewmodel.UserProfileViewModel
+import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
-fun Profile(onEditingClick: () -> Unit={}) {
+fun Profile(
+    onEditingClick: () -> Unit = {},
+    viewModel: UserProfileViewModel = viewModel(
+        factory = ViewModelFactory.getInstance(LocalContext.current)
+    )
+) {
+    val profileState by viewModel.profileState.collectAsState()
+    val profile = profileState ?: com.fortgame.ksynic.mvvm.model.UserProfile.default()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadProfile()
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,7 +65,11 @@ fun Profile(onEditingClick: () -> Unit={}) {
                 .background(Color.White, RoundedCornerShape(10.dp))
         ){
             Image(
-                painter = painterResource(R.drawable.ava_denis),
+                painter = if (profile.avatarRes != null) {
+                    painterResource(profile.avatarRes)
+                } else {
+                    painterResource(R.drawable.ava_denis)
+                },
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxHeight()
@@ -65,7 +87,7 @@ fun Profile(onEditingClick: () -> Unit={}) {
                     contentAlignment = Alignment.Center
                 ){
                     ProfileInfo(
-                        text="Денис Д.",
+                        text = profile.getShortName(),
                         size=20.sp,
                         lineHeight = 22.sp,
                         weight=FontWeight.SemiBold
@@ -73,13 +95,10 @@ fun Profile(onEditingClick: () -> Unit={}) {
                 }
 
                 // Номер телефона
-                ProfileInfo(text = "+7 777 777 77 77")
+                ProfileInfo(text = profile.phone.ifEmpty { "+7 777 777 77 77" })
 
                 // Почта
-                ProfileInfo(text="asdasdf@mail.ru")
-
-                // Город
-                ProfileInfo(text="г. Тверь")
+                ProfileInfo(text = profile.email.ifEmpty { "asdasdf@mail.ru" })
 
                 // Редактировать
                 ProfileInfo(text="Редактировать", color=Color(0xFF5D76CB), onClick=onEditingClick)

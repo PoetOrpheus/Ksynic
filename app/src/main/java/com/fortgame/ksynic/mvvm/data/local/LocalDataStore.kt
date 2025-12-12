@@ -10,6 +10,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.fortgame.ksynic.mvvm.model.Product
+import com.fortgame.ksynic.mvvm.model.UserProfile
 import com.fortgame.ksynic.mvvm.data.local.ProductDTO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -29,6 +30,7 @@ class LocalDataStore(private val context: Context) {
     private val favoriteProductIdsKey = stringSetPreferencesKey("favorite_product_ids")
     private val cachedProductsKey = stringPreferencesKey("cached_products_json")
     private val productsCacheTimestampKey = stringPreferencesKey("products_cache_timestamp")
+    private val userProfileKey = stringPreferencesKey("user_profile_json")
     
     /**
      * Получить список ID избранных продуктов
@@ -150,6 +152,42 @@ class LocalDataStore(private val context: Context) {
     suspend fun shouldRefreshCache(maxCacheAgeMs: Long = 3600000L): Boolean {
         val timestamp = getCacheTimestamp()
         return timestamp == null || (System.currentTimeMillis() - timestamp) > maxCacheAgeMs
+    }
+
+    /**
+     * Сохранить профиль пользователя
+     */
+    suspend fun saveUserProfile(profile: UserProfile) {
+        val profileJson = gson.toJson(profile)
+        context.dataStore.edit { preferences ->
+            preferences[userProfileKey] = profileJson
+        }
+    }
+
+    /**
+     * Получить профиль пользователя
+     */
+    suspend fun getUserProfile(): UserProfile? {
+        return try {
+            val preferences = context.dataStore.data.first()
+            val profileJson = preferences[userProfileKey]
+            
+            if (profileJson != null && profileJson.isNotEmpty()) {
+                gson.fromJson(profileJson, UserProfile::class.java)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    /**
+     * Получить профиль пользователя или профиль по умолчанию
+     */
+    suspend fun getUserProfileOrDefault(): UserProfile {
+        return getUserProfile() ?: UserProfile.default()
     }
 }
 

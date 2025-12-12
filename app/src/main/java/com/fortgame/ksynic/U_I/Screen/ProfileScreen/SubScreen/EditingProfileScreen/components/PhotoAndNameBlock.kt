@@ -2,6 +2,7 @@ package com.fortgame.ksynic.U_I.Screen.ProfileScreen.SubScreen.EditingProfileScr
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -23,11 +28,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.mvvm.model.UserProfile
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
-fun PhotoAndNameBlock(){
+fun PhotoAndNameBlock(
+    profile: UserProfile,
+    onProfileUpdate: (UserProfile) -> Unit
+){
     // Фото и Имя на площадке
     Column(
         Modifier
@@ -42,8 +51,12 @@ fun PhotoAndNameBlock(){
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painterResource(R.drawable.ava_denis),
-                null,
+                painter = if (profile.avatarRes != null) {
+                    painterResource(profile.avatarRes)
+                } else {
+                    painterResource(R.drawable.ava_denis)
+                },
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .width(fw(150))
@@ -79,25 +92,38 @@ fun PhotoAndNameBlock(){
                 fontWeight = FontWeight.Light
             )
         }
+        var showEditDialog by remember { mutableStateOf(false) }
+        
         Box(
             Modifier
                 .fillMaxWidth()
-                .height(fh(40))
                 .padding(horizontal = fw(20))
                 .shadow(
                     elevation = 5.dp, // Figma: Blur 5
                     shape = RoundedCornerShape(10.dp),
                     spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                 )
-                .background(Color.White),
+                .background(Color.White)
+                .clickable { showEditDialog = true },
             contentAlignment = Alignment.CenterStart
         ){
             Text(
-                text="Денис Д.",
+                text = profile.displayName.ifEmpty { "Денис Д." },
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 lineHeight = 22.sp,
                 modifier = Modifier.padding(horizontal = fw(10))
+            )
+        }
+        
+        if (showEditDialog) {
+            EditFieldDialog(
+                title = "Видимое имя на площадке",
+                currentValue = profile.displayName,
+                onDismiss = { showEditDialog = false },
+                onSave = { newValue ->
+                    onProfileUpdate(profile.copy(displayName = newValue))
+                }
             )
         }
 
@@ -107,5 +133,8 @@ fun PhotoAndNameBlock(){
 @Composable
 @Preview
 private fun PhotoAndNameBlockPreview(){
-    PhotoAndNameBlock()
+    PhotoAndNameBlock(
+        profile = com.fortgame.ksynic.mvvm.model.UserProfile.default(),
+        onProfileUpdate = {}
+    )
 }

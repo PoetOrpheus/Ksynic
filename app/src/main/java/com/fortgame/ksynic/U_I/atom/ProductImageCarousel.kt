@@ -42,7 +42,7 @@ fun ProductImageCarousel(
             Image(
                 painter = painterResource(id = images[page]),
                 contentDescription = null,
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         }

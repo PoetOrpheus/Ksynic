@@ -160,7 +160,7 @@ object TestProducts {
         rating = 5.0,
         reviewsCount = 23,
         images = emptyList(),
-        imagesRes = listOf(R.drawable.watch_cvarch_1, R.drawable.watch_cvarch_2, R.drawable.watch_cvarch_1_2, R.drawable.watch_cvarch_3), // Карусель изображений продукта
+        imagesRes = listOf(R.drawable.image_for_product_3,R.drawable.watch_cvarch_1, R.drawable.watch_cvarch_2, R.drawable.watch_cvarch_1_2, R.drawable.watch_cvarch_3), // Карусель изображений продукта
         isTimeLimited = true,
         accentColor = Color(0xFFCC3333), // Красный цвет
         isFavorite = false,
