@@ -19,10 +19,13 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,8 +53,11 @@ import com.fortgame.ksynic.U_I.ProductDetailScreen.components.StartCardRow
 import com.fortgame.ksynic.U_I.ProductDetailScreen.components.VariantItem
 import com.fortgame.ksynic.U_I.ProductDetailScreen.components.VariantItemRow
 import com.fortgame.ksynic.U_I.TopHeaderWithReturn
+import com.fortgame.ksynic.mvvm.viewmodel.CartViewModel
+import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
+import android.widget.Toast
 
 // Заглушки для цветов, чтобы соответствовать стилю
 val PurpleHeader = Color(0xFF9C89F6) // Примерный цвет хедера
@@ -63,15 +69,18 @@ val BlueButton = Color(0xFF5D76CB)
 @Composable
 fun ProductDetailScreen(
     product: com.fortgame.ksynic.mvvm.model.Product,
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    cartViewModel: CartViewModel = viewModel(factory = ViewModelFactory.getInstance(LocalContext.current))
 ) {
+    val context = LocalContext.current
+
     // Состояние выбранного варианта (цвет и т.д.) - выбираем первый доступный по умолчанию
     var selectedVariantId by remember {
         mutableStateOf(
             product.variants.firstOrNull { it.isAvailable }?.id
         )
     }
-    
+
     // Состояние выбранного размера - выбираем первый доступный по умолчанию
     var selectedSizeId by remember {
         mutableStateOf(
@@ -79,95 +88,140 @@ fun ProductDetailScreen(
         )
     }
 
-    Box(modifier = Modifier
-        .background(BgGray)) {
-        TopHeaderWithReturn(onBackClick)
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                start = fw(5),
-                end = fw(5),
-                top = fh(60)
-                ),
-        ) {
-
-            // 2. Карточка товара (Фото + Цена)
-            item {
-                Spacer(Modifier.height(fh(10)))
-                ProductMainCard(
-                    product = product,
-                    selectedVariantId = selectedVariantId
-                )
-            }
-
-            // Варианты
-            item{
-                Spacer(Modifier.height(fh(10)))
-                VariantItemRow(
-                    variants = product.variants,
-                    selectedVariantId = selectedVariantId,
-                    onVariantSelected = { variantId ->
-                        selectedVariantId = variantId
-                    }
-                )
-            }
-
-            //Размеры
-            if (product.sizes.isNotEmpty()){
-                item{
-                    Spacer(Modifier.height(fh(10)))
-                    SizeVariants(
-                        sizes = product.sizes,
-                        selectedSizeId = selectedSizeId,
-                        onSizeSelected = { sizeId ->
-                            selectedSizeId = sizeId
-                        }
+    Scaffold(
+        bottomBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(BgGray)
+                    .padding(horizontal = fw(20), vertical = fh(10))
+            ) {
+                Button(
+                    onClick = {
+                        cartViewModel.addToCart(
+                            product = product,
+                            selectedVariantId = selectedVariantId,
+                            selectedSizeId = selectedSizeId,
+                            quantity = 1
+                        )
+                        Toast.makeText(
+                            context,
+                            "Товар добавлен в корзину",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(fh(50)),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BlueButton
+                    ),
+                    shape = RoundedCornerShape(15.dp)
+                ) {
+                    Text(
+                        text = "Добавить в корзину",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
                     )
                 }
             }
+        },
+        containerColor = BgGray
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .background(BgGray)
+        ) {
+            TopHeaderWithReturn(onBackClick)
 
-            // 3. Варианты, Рейтинг, Табы, Описание
-            item {
-                Spacer(Modifier.height(fh(10)))
-                StartCardRow(
-                    rating = product.rating,
-                    reviewsCount = product.reviewsCount
-                )
-            }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = fw(5),
+                        end = fw(5),
+                        top = fh(60)
+                    ),
+            ) {
 
-
-            // 4. Описание и характеристики
-            item {
-                Spacer(Modifier.height(fh(10)))
-                InfoCardsSection(
-                    description = product.description,
-                    specifications = product.specifications
-                )
-            }
-
-            // Продавец
-            item{
-                Spacer(Modifier.height(fh(10)))
-                if (product.seller != null) {
-                    SellerBlock(seller = product.seller)
+                // 2. Карточка товара (Фото + Цена)
+                item {
+                    Spacer(Modifier.height(fh(10)))
+                    ProductMainCard(
+                        product = product,
+                        selectedVariantId = selectedVariantId
+                    )
                 }
-            }
 
-            // Бренд
-            item{
-                Spacer(Modifier.height(fh(10)))
-                if (product.brand != null) {
-                    BrandBlock(brand = product.brand)
+                // Варианты
+                item {
+                    Spacer(Modifier.height(fh(10)))
+                    VariantItemRow(
+                        variants = product.variants,
+                        selectedVariantId = selectedVariantId,
+                        onVariantSelected = { variantId ->
+                            selectedVariantId = variantId
+                        }
+                    )
                 }
-                Spacer(Modifier.height(fh(20)))
+
+                //Размеры
+                if (product.sizes.isNotEmpty()) {
+                    item {
+                        Spacer(Modifier.height(fh(10)))
+                        SizeVariants(
+                            sizes = product.sizes,
+                            selectedSizeId = selectedSizeId,
+                            onSizeSelected = { sizeId ->
+                                selectedSizeId = sizeId
+                            }
+                        )
+                    }
+                }
+
+                // 3. Варианты, Рейтинг, Табы, Описание
+                item {
+                    Spacer(Modifier.height(fh(10)))
+                    StartCardRow(
+                        rating = product.rating,
+                        reviewsCount = product.reviewsCount
+                    )
+                }
+
+
+                // 4. Описание и характеристики
+                item {
+                    Spacer(Modifier.height(fh(10)))
+                    InfoCardsSection(
+                        description = product.description,
+                        specifications = product.specifications
+                    )
+                }
+
+                // Продавец
+                item {
+                    Spacer(Modifier.height(fh(10)))
+                    if (product.seller != null) {
+                        SellerBlock(seller = product.seller)
+                    }
+                }
+
+                // Бренд
+                item {
+                    Spacer(Modifier.height(fh(10)))
+                    if (product.brand != null) {
+                        BrandBlock(brand = product.brand)
+                    }
+                    Spacer(Modifier.height(fh(80))) // Дополнительный отступ для кнопки внизу
+                }
+                /*
+                            // 5. История просмотров
+                            item {
+                                HistorySection()
+                            }*/
             }
-/*
-            // 5. История просмотров
-            item {
-                HistorySection()
-            }*/
         }
     }
 }

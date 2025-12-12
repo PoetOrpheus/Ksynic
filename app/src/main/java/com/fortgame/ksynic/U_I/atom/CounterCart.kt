@@ -2,6 +2,7 @@ package com.fortgame.ksynic.U_I.atom
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,8 @@ import com.fortgame.ksynic.utils.fw
 @Composable
 fun CounterCart(
     count: Int, // Текущее количество
+    onDecrement: () -> Unit = {},
+    onIncrement: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -41,8 +44,8 @@ fun CounterCart(
         Box(
             modifier = Modifier
                 .width(fw(30))
-                .fillMaxHeight(),
-            // .clickable { /* onDecrement logic */ }, // Добавьте обработчик нажатий
+                .fillMaxHeight()
+                .clickable(onClick = onDecrement),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -74,8 +77,8 @@ fun CounterCart(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(),
-            // .clickable { /* onIncrement logic */ }, // Добавьте обработчик нажатий
+                .fillMaxHeight()
+                .clickable(onClick = onIncrement),
             contentAlignment = Alignment.Center
         ) {
             Text(

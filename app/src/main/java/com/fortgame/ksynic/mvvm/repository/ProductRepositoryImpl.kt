@@ -1,7 +1,9 @@
 package com.fortgame.ksynic.mvvm.repository
 
 import android.content.Context
+import android.util.Log
 import com.fortgame.ksynic.mvvm.data.local.LocalDataStore
+import com.fortgame.ksynic.mvvm.model.CartItem
 import com.fortgame.ksynic.mvvm.model.Product
 import com.fortgame.ksynic.mvvm.model.TestProducts
 import kotlinx.coroutines.delay
@@ -22,6 +24,12 @@ class ProductRepositoryImpl(
     private val localDataStore = context?.let { LocalDataStore(it) }
     private val favoriteProductIds = mutableSetOf<String>()
     private var isFavoritesInitialized = false
+    
+    // Хранение корзины в памяти (можно позже перенести в DataStore)
+    // Используем companion object для статического хранения, чтобы корзина сохранялась между вызовами
+    companion object {
+        private val cartItems = mutableMapOf<String, CartItem>()
+    }
 
     override suspend fun getAllProducts(): List<Product> {
         // Сначала инициализируем избранные из локального хранилища (важно сделать это до работы с кэшем)
@@ -246,6 +254,130 @@ class ProductRepositoryImpl(
         return true
         // TODO: Заменить на реальный запрос к API
         // return apiService.removeFromFavorites(productId)
+    }
+
+    override suspend fun getCartItems(): List<CartItem> {
+        delay(100) // Имитация задержки
+        val items = cartItems.values.toList()
+        Log.d("CartRepository", "getCartItems: получено ${items.size} товаров")
+        items.forEach { item ->
+            Log.d("CartRepository", "  - ${item.product.name} (ID: ${item.id}), количество: ${item.quantity}")
+        }
+        return items
+    }
+
+    override suspend fun addToCart(
+        product: Product,
+        selectedVariantId: String?,
+        selectedSizeId: String?,
+        quantity: Int
+    ): Boolean {
+        delay(200) // Имитация задержки
+        
+        // Создаем уникальный ID для элемента корзины
+        val cartItemId = generateCartItemId(product.id, selectedVariantId, selectedSizeId)
+        Log.d("CartRepository", "addToCart: добавляем товар ${product.name} (productId: ${product.id}, variantId: $selectedVariantId, sizeId: $selectedSizeId)")
+        Log.d("CartRepository", "addToCart: сгенерированный cartItemId: $cartItemId")
+        Log.d("CartRepository", "addToCart: текущий размер корзины до добавления: ${cartItems.size}")
+        
+        // Проверяем, есть ли уже такой товар в корзине
+        val existingItem = cartItems[cartItemId]
+        if (existingItem != null) {
+            // Если товар уже есть, увеличиваем количество
+            cartItems[cartItemId] = existingItem.copy(quantity = existingItem.quantity + quantity)
+            Log.d("CartRepository", "addToCart: товар уже был в корзине, обновлено количество: ${existingItem.quantity} -> ${existingItem.quantity + quantity}")
+        } else {
+            // Добавляем новый товар в корзину (по умолчанию выбран)
+            cartItems[cartItemId] = CartItem(
+                id = cartItemId,
+                product = product,
+                selectedVariantId = selectedVariantId,
+                selectedSizeId = selectedSizeId,
+                quantity = quantity,
+                isSelected = true
+            )
+            Log.d("CartRepository", "addToCart: добавлен новый товар в корзину, новое количество товаров: ${cartItems.size}")
+        }
+        
+        // TODO: Сохранить в DataStore для персистентности
+        // localDataStore?.saveCartItems(cartItems.values.toList())
+        
+        Log.d("CartRepository", "addToCart: итоговый размер корзины: ${cartItems.size}")
+        return true
+    }
+
+    override suspend fun updateCartItemQuantity(cartItemId: String, quantity: Int): Boolean {
+        delay(100) // Имитация задержки
+        
+        val item = cartItems[cartItemId]
+        if (item != null) {
+            if (quantity <= 0) {
+                // Удаляем товар, если количество <= 0
+                cartItems.remove(cartItemId)
+            } else {
+                cartItems[cartItemId] = item.copy(quantity = quantity)
+            }
+            
+            // TODO: Сохранить в DataStore
+            // localDataStore?.saveCartItems(cartItems.values.toList())
+            return true
+        }
+        return false
+    }
+
+    override suspend fun toggleCartItemSelection(cartItemId: String): Boolean {
+        delay(50) // Имитация задержки
+        
+        val item = cartItems[cartItemId]
+        if (item != null) {
+            cartItems[cartItemId] = item.copy(isSelected = !item.isSelected)
+            Log.d("CartRepository", "toggleCartItemSelection: товар ${item.product.name} теперь ${if (!item.isSelected) "выбран" else "не выбран"}")
+            
+            // TODO: Сохранить в DataStore
+            // localDataStore?.saveCartItems(cartItems.values.toList())
+            return true
+        }
+        return false
+    }
+
+    override suspend fun removeFromCart(cartItemId: String): Boolean {
+        delay(100) // Имитация задержки
+        
+        val removed = cartItems.remove(cartItemId) != null
+        
+        // TODO: Сохранить в DataStore
+        // if (removed) {
+        //     localDataStore?.saveCartItems(cartItems.values.toList())
+        // }
+        
+        return removed
+    }
+
+    override suspend fun clearCart(): Boolean {
+        delay(100) // Имитация задержки
+        
+        cartItems.clear()
+        
+        // TODO: Сохранить в DataStore
+        // localDataStore?.saveCartItems(emptyList())
+        
+        return true
+    }
+
+    override suspend fun getCartTotal(): Int {
+        delay(50) // Имитация задержки
+        
+        // Считаем только выбранные товары
+        return cartItems.values
+            .filter { it.isSelected }
+            .sumOf { it.getTotalPrice() }
+    }
+
+    /**
+     * Генерирует уникальный ID для элемента корзины
+     */
+    private fun generateCartItemId(productId: String, variantId: String?, sizeId: String?): String {
+        return "${productId}_${variantId ?: "no_variant"}_${sizeId ?: "no_size"}"
     }
 }
 

@@ -3,6 +3,7 @@ package com.fortgame.ksynic.U_I.Screen.ShopCartScreen.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,18 +24,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
 import com.fortgame.ksynic.U_I.atom.CounterCart
+import com.fortgame.ksynic.mvvm.model.CartItem
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
 @Composable
 fun CardCart(
-    price: Int = 4200,
-    oldPrice: Int = 21000,
-    textProduct: String = "Часы наручные Кварцевые",
-    sale: Int = 80,
-    color: Color = Color(0xFFCC3333), // Акцентный цвет (Красный)
-    isLover:Boolean = true
+    cartItem: CartItem,
+    onQuantityChange: (Int) -> Unit = {},
+    onRemove: () -> Unit = {},
+    onToggleSelection: () -> Unit = {},
+    isLover: Boolean = true
 ) {
+    val product = cartItem.product
+    val price = product.price
+    val oldPrice = product.oldPrice ?: price
+    val sale = product.calculateDiscountPercent() ?: 0
+    val color = product.accentColor
+    val textProduct = product.name
+    
+    // Получаем первое изображение продукта или варианта
+    val productImage = cartItem.selectedVariantId?.let { variantId ->
+        product.variants.find { it.id == variantId }?.getFirstImageRes()
+    } ?: product.imagesRes.firstOrNull() ?: R.drawable.image_for_product_3
     // --- ОСНОВНАЯ СТРУКТУРА: COLUMN ---
     Column(
         modifier = Modifier
@@ -52,7 +64,7 @@ fun CardCart(
                 .padding(horizontal = fw(5), vertical = fh(5))
             ){
                 Image(
-                    painter = painterResource(R.drawable.image_for_product_3),
+                    painter = painterResource(productImage),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -82,43 +94,47 @@ fun CardCart(
                             lineHeight = 22.sp
                         )
                         // СЛОЙ 3: ПЛАШКА СКИДКИ
-                        Box(
-                            modifier = Modifier
-                                .width(fw(60))
-                                .height(fh(30))
-                                .shadow(
-                                    elevation = 5.dp, // Figma: Blur 5
-                                    shape = RoundedCornerShape(10.dp),
-                                    spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
-                                )
-                                .background(Color.White),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                               text="- $sale %",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.ExtraBold,
-                                lineHeight = 16.sp,
-                                color=color
+                        if (sale != 0) {
+                            Box(
+                                modifier = Modifier
+                                    .width(fw(60))
+                                    .height(fh(30))
+                                    .shadow(
+                                        elevation = 5.dp, // Figma: Blur 5
+                                        shape = RoundedCornerShape(10.dp),
+                                        spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
+                                    )
+                                    .background(Color.White),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "- $sale %",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    lineHeight = 16.sp,
+                                    color = color
 
-                            )
+                                )
+                            }
                         }
                     }
                     Spacer(Modifier.height(fh(5)))
 
                     // Старая цена
-                    Box(
-                        Modifier
-                            .height(fh(20))
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "$oldPrice ₽",
-                            style = TextStyle(textDecoration = TextDecoration.LineThrough),
-                            color = Color(0xFF999999),
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Normal
-                        )
+                    if (oldPrice != price) {
+                        Box(
+                            Modifier
+                                .height(fh(20))
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "$oldPrice ₽",
+                                style = TextStyle(textDecoration = TextDecoration.LineThrough),
+                                color = Color(0xFF999999),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
                     }
                     Spacer(Modifier.height(fh(20)))
                     Box(
@@ -150,7 +166,8 @@ fun CardCart(
                             bottomEnd = 10.dp,
                             bottomStart = 0.dp
                         )
-                    ),
+                    )
+                    .clickable(onClick = onToggleSelection),
                 contentAlignment = Alignment.Center
             ) {
                 // Внутренний квадрат (Синий чекбокс)
@@ -160,20 +177,19 @@ fun CardCart(
                         .fillMaxSize()
                         .padding(5.dp) // Отступ 4px со всех сторон
                         .clip(RoundedCornerShape(6.dp)) // Скругление самого синего квадратика
-                        .background(Color(0xCC5D76CB)) // Цвет "выбранного" состояния (синий)
-                    // Если нужно состояние "не выбрано", меняйте цвет на Color(0xFFF2F2F2)
-                    ,
+                        .background(
+                            color = if (cartItem.isSelected) Color(0xCC5D76CB) else Color(0xFFF2F2F2)
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Иконка галочки
-                    // Убедитесь, что у вас есть векторная иконка или картинка для галочки
-                    // Icon(painter = painterResource(R.drawable.ic_check), contentDescription = null, tint = Color.White)
-                    // Или Image, если используете растр:
-                    Image(
-                        painter = painterResource(R.drawable.check_icon), // Замените на ваш ресурс
-                        contentDescription = "Selected",
-                        modifier = Modifier.size(14.dp) // Примерный размер галочки
-                    )
+                    // Показываем иконку галочки только если товар выбран
+                    if (cartItem.isSelected) {
+                        Image(
+                            painter = painterResource(R.drawable.check_icon),
+                            contentDescription = "Selected",
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
                 }
             }
         } // Конец Box для верхней части
@@ -212,17 +228,31 @@ fun CardCart(
                         .height(fh(30))
                         .width(fw(30))
                         .background(Color.White, RoundedCornerShape(10.dp))
-                        .border(1.dp, Color(0xFFDCDCDC), RoundedCornerShape(10.dp)),                    contentAlignment = Alignment.Center
+                        .border(1.dp, Color(0xFFDCDCDC), RoundedCornerShape(10.dp))
+                        .clickable(onClick = onRemove),
+                    contentAlignment = Alignment.Center
                 ) {
                     Image(
                         painterResource(R.drawable.cart),
                         contentDescription = "Delete"
-                    ) // Возможно, это иконка мусорки
+                    ) // Иконка удаления
                 }
 
                 Spacer(Modifier.width(fw(20)))
-                // --- СЧЕТЧИК (ВАШ ЗАПРОС) ---
-                CounterCart(count = 1)
+                // --- СЧЕТЧИК ---
+                CounterCart(
+                    count = cartItem.quantity,
+                    onDecrement = {
+                        if (cartItem.quantity > 1) {
+                            onQuantityChange(cartItem.quantity - 1)
+                        } else {
+                            onRemove()
+                        }
+                    },
+                    onIncrement = {
+                        onQuantityChange(cartItem.quantity + 1)
+                    }
+                )
             }
 
             // Кнопка "Купить" / Другой элемент (для примера)
@@ -253,6 +283,6 @@ private fun CartCardPreview() {
     Box(modifier = Modifier
         .padding(10.dp)
         .background(Color(0xFFF2F2F2))) {
-        CardCart()
+        //CardCart()
     }
 }
