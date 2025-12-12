@@ -213,18 +213,14 @@ private fun MarketplaceContent(
     // Получаем состояние продуктов из ViewModel
     val productsState by viewModel.productsState.collectAsState()
 
-    // Загружаем продукты только один раз при первом запуске
-    // ViewModel сама проверяет, были ли данные уже загружены
-    LaunchedEffect(Unit) {
-        // Загружаем только если состояние Idle (первый запуск)
-        if (productsState is UiState.Idle) {
-            viewModel.loadProducts()
-        }
-    }
+    // Продукты уже загружены на SplashScreen, поэтому здесь ничего не загружаем
+    // Если состояние Loading, это означает что данные еще загружаются (не должно происходить в норме)
 
     // Обрабатываем различные состояния UI
     when (val state = productsState) {
         is UiState.Loading -> {
+            // Это состояние не должно появляться, так как загрузка происходит на SplashScreen
+            // Но на всякий случай показываем Loading
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -282,7 +278,16 @@ private fun MarketplaceContent(
             }
         }
         is UiState.Idle -> {
-            // Начальное состояние - ничего не показываем
+            // Начальное состояние - не должно происходить, так как данные загружаются на SplashScreen
+            // Но на всякий случай показываем Loading
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(fh(20)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 }

@@ -4,8 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import android.graphics.Color as AndroidColor
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.view.WindowInsetsControllerCompat
 import com.fortgame.ksynic.U_I.Screen.MainScreen.MainScreen
+import com.fortgame.ksynic.U_I.Screen.SplashScreen.SplashScreen
 import com.fortgame.ksynic.theme.*
 
 class MainActivity : ComponentActivity() {
@@ -18,8 +24,23 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             KsynicTheme {
-                MainScreen()
+                AppContent()
             }
         }
+    }
+}
+
+@Composable
+fun AppContent() {
+    var isLoading by remember { mutableStateOf(true) }
+
+    if (isLoading) {
+        SplashScreen(
+            onLoadingComplete = {
+                isLoading = false
+            }
+        )
+    } else {
+        MainScreen()
     }
 }
