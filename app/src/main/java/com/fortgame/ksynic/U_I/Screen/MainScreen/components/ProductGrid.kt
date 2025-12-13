@@ -108,37 +108,50 @@ fun ProductCard(
     onClick: () -> Unit = {},
     onFavoriteClick: () -> Unit = {},
     modifier: Modifier = Modifier,
-    appearanceDelay: Long = 0L
+    appearanceDelay: Long = 0L,
+    enableAppearanceAnimation: Boolean = true // Флаг для отключения анимации появления (для оптимизации)
 ) {
     val oldPrice = product.oldPrice ?: 0
     val discount = product.calculateDiscountPercent() ?: 0
     val colorBottom = product.accentColor
     val colorText = product.accentColor
     
-    // Анимация появления
-    var isVisible by remember { mutableFloatStateOf(0f) }
-    var alpha by remember { mutableFloatStateOf(0f) }
+    // Анимация появления (оптимизированная - полностью пропускаем вычисления если отключена)
+    val appearanceScale: Float
+    val appearanceAlpha: Float
     
-    LaunchedEffect(Unit) {
-        delay(appearanceDelay)
-        alpha = 1f
-        isVisible = 1f
+    if (enableAppearanceAnimation) {
+        var isVisible by remember { mutableFloatStateOf(0f) }
+        var alpha by remember { mutableFloatStateOf(0f) }
+        
+        LaunchedEffect(Unit) {
+            delay(appearanceDelay)
+            alpha = 1f
+            isVisible = 1f
+        }
+        
+        val scale by animateFloatAsState(
+            targetValue = isVisible,
+            animationSpec = spring(
+                dampingRatio = 0.7f,
+                stiffness = 300f
+            ),
+            label = "appearance_scale"
+        )
+        
+        val alphaAnimated by animateFloatAsState(
+            targetValue = alpha,
+            animationSpec = tween(durationMillis = 300),
+            label = "appearance_alpha"
+        )
+        
+        appearanceScale = scale
+        appearanceAlpha = alphaAnimated
+    } else {
+        // Когда анимация отключена - сразу используем финальные значения без анимаций
+        appearanceScale = 1f
+        appearanceAlpha = 1f
     }
-    
-    val appearanceScale by animateFloatAsState(
-        targetValue = isVisible,
-        animationSpec = spring(
-            dampingRatio = 0.7f,
-            stiffness = 300f
-        ),
-        label = "appearance_scale"
-    )
-    
-    val appearanceAlpha by animateFloatAsState(
-        targetValue = alpha,
-        animationSpec = tween(durationMillis = 300),
-        label = "appearance_alpha"
-    )
     
     // Анимация нажатия
     val interactionSource = remember { MutableInteractionSource() }
