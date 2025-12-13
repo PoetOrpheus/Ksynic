@@ -1,11 +1,19 @@
 package com.fortgame.ksynic.U_I.Screen.MainScreen.components
 
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,8 +38,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.delay
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -65,19 +76,21 @@ fun ProductGrid(
             .padding(horizontal = fw(10))
     ) {
         // Разбиваем продукты на пары для отображения в ряд
-        products.chunked(2).forEach { rowProducts ->
+        products.chunked(2).forEachIndexed { rowIndex, rowProducts ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = fh(10)),
                 horizontalArrangement = Arrangement.spacedBy(fw(10))
             ) {
-                rowProducts.forEach { product ->
+                rowProducts.forEachIndexed { itemIndex, product ->
+                    val cardIndex = rowIndex * 2 + itemIndex
                     ProductCard(
                         product = product,
                         onClick = { onProductClick(product) },
                         onFavoriteClick = { onToggleFavorite(product.id) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        appearanceDelay = cardIndex * 50L // Задержка появления для каждой карточки
                     )
                 }
                 // Если в ряду только один элемент, добавляем пустое место
@@ -94,20 +107,70 @@ fun ProductCard(
     product: Product,
     onClick: () -> Unit = {},
     onFavoriteClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    appearanceDelay: Long = 0L
 ) {
     val oldPrice = product.oldPrice ?: 0
     val discount = product.calculateDiscountPercent() ?: 0
     val colorBottom = product.accentColor
     val colorText = product.accentColor
+    
+    // Анимация появления
+    var isVisible by remember { mutableFloatStateOf(0f) }
+    var alpha by remember { mutableFloatStateOf(0f) }
+    
+    LaunchedEffect(Unit) {
+        delay(appearanceDelay)
+        alpha = 1f
+        isVisible = 1f
+    }
+    
+    val appearanceScale by animateFloatAsState(
+        targetValue = isVisible,
+        animationSpec = spring(
+            dampingRatio = 0.7f,
+            stiffness = 300f
+        ),
+        label = "appearance_scale"
+    )
+    
+    val appearanceAlpha by animateFloatAsState(
+        targetValue = alpha,
+        animationSpec = tween(durationMillis = 300),
+        label = "appearance_alpha"
+    )
+    
+    // Анимация нажатия
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val pressScale by animateFloatAsState(
+        targetValue = if (isPressed) 0.95f else 1f,
+        animationSpec = tween(durationMillis = 150),
+        label = "card_scale"
+    )
+    val elevation by animateFloatAsState(
+        targetValue = if (isPressed) 2f else 8f,
+        animationSpec = tween(durationMillis = 150),
+        label = "card_elevation"
+    )
+    
+    // Комбинированный scale
+    val combinedScale = appearanceScale * pressScale
+    
     Card(
         modifier = modifier
             .width(fw(210))
             .height(fh(420))
-            .clickable(onClick = onClick),
+            .scale(combinedScale)
+            .alpha(appearanceAlpha)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            ),
         shape = RoundedCornerShape(15.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        //elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation.dp)
     ) {
         // Ипользуем Box, чтобы накладывать слои (Z-index)
         Box(modifier = Modifier.fillMaxSize()) {
@@ -155,36 +218,15 @@ fun ProductCard(
                         images = productImages,
                         modifier = Modifier.fillMaxSize() // Говорим карусели занять всё место в родительском Box
                     )
-                    // Иконка лайка с обработчиком клика
-                    Box(
-                        Modifier
+                    // Иконка лайка с обработчиком клика и анимацией
+                    FavoriteIconButton(
+                        isFavorite = product.isFavorite,
+                        onClick = onFavoriteClick,
+                        modifier = Modifier
                             .height(fh(45))
                             .width(fw(45))
                             .align(Alignment.TopEnd)
-                    ){
-                        Box(
-                            Modifier
-                                .height(fh(30))
-                                .width(fw(30))
-                                .background(Color(0xB2F2F2F2), CircleShape)
-                                .clickable(
-                                    indication = null, // Убираем эффект клика, чтобы не мешать основному клику карточки
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    onClick = onFavoriteClick
-                                )
-                                .align(Alignment.TopEnd)
-                                .padding(4.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(
-                                    if (product.isFavorite) R.drawable.lover else R.drawable.unlover
-                                ),
-                                contentDescription = if (product.isFavorite) "Убрать из избранного" else "Добавить в избранное",
-                                modifier = Modifier.size(fw(20))
-                            )
-                        }
-                    }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(fh(5)))
@@ -338,6 +380,51 @@ fun ProductCard(
                     Spacer(modifier = Modifier.height(fh(10)))
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun FavoriteIconButton(
+    isFavorite: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val favoriteInteractionSource = remember { MutableInteractionSource() }
+    val isFavoritePressed by favoriteInteractionSource.collectIsPressedAsState()
+    
+    val favoriteScale by animateFloatAsState(
+        targetValue = if (isFavoritePressed) 0.8f else 1f,
+        animationSpec = spring(
+            dampingRatio = 0.6f,
+            stiffness = 500f
+        ),
+        label = "favorite_scale"
+    )
+    
+    Box(modifier = modifier) {
+        Box(
+            Modifier
+                .height(fh(30))
+                .width(fw(30))
+                .scale(favoriteScale)
+                .background(Color(0xB2F2F2F2), CircleShape)
+                .clickable(
+                    indication = null,
+                    interactionSource = favoriteInteractionSource,
+                    onClick = onClick
+                )
+                .align(Alignment.TopEnd)
+                .padding(4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(
+                    if (isFavorite) R.drawable.lover else R.drawable.unlover
+                ),
+                contentDescription = if (isFavorite) "Убрать из избранного" else "Добавить в избранное",
+                modifier = Modifier.size(fw(20))
+            )
         }
     }
 }

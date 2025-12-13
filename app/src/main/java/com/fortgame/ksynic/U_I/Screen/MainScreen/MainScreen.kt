@@ -1,5 +1,12 @@
 package com.fortgame.ksynic.U_I.Screen.MainScreen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -85,18 +92,44 @@ fun MainScreen() {
         },
         containerColor = Color(0xFFF2F2F2)
     ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
-            if (showProductDetail && selectedProduct != null) {
-                // Показываем экран деталей товара с выбранным продуктом
-                ProductDetailScreen(
-                    product = selectedProduct!!,
-                    onBackClick = { 
-                        showProductDetail = false
-                        selectedProduct = null
-                    }
+        Box(modifier = Modifier
+            .padding(paddingValues)
+            .fillMaxSize()) {
+            // Анимация перехода для ProductDetailScreen
+            AnimatedVisibility(
+                visible = showProductDetail && selectedProduct != null,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(250)
                 )
+            ) {
+                if (selectedProduct != null) {
+                    ProductDetailScreen(
+                        product = selectedProduct!!,
+                        onBackClick = { 
+                            showProductDetail = false
+                            selectedProduct = null
+                        }
+                    )
+                }
             }
-            else if (showHistory){
+
+            // Анимация перехода для HistoryScreen
+            AnimatedVisibility(
+                visible = showHistory && !showProductDetail,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
                 HistoryScreen(
                     onBackClick = { showHistory = false },
                     onProductClick = { product ->
@@ -106,12 +139,36 @@ fun MainScreen() {
                     }
                 )
             }
-            else if (showCanBeSeller){
+
+            // Анимация перехода для CanBeSeller
+            AnimatedVisibility(
+                visible = showCanBeSeller && !showProductDetail && !showHistory,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
                 CanBeSeller(
-                    onBackClick = { showCanBeSeller = false } ,// Функция для возврата
+                    onBackClick = { showCanBeSeller = false }
                 )
             }
-            else if(showCategory){
+
+            // Анимация перехода для CatalogScreen
+            AnimatedVisibility(
+                visible = showCategory && !showProductDetail && !showHistory && !showCanBeSeller,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
                 CatalogScreen(
                     onBackClick = {showCategory = false},
                     onCategoryClick = { categoryName ->
@@ -121,7 +178,19 @@ fun MainScreen() {
                     }
                 )
             }
-            else if(showCatalogSubScreen){
+
+            // Анимация перехода для CatalogSubScreen
+            AnimatedVisibility(
+                visible = showCatalogSubScreen && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
                 CatalogSubScreen(
                     onBackClick = { 
                         showCatalogSubScreen = false
@@ -134,14 +203,25 @@ fun MainScreen() {
                     }
                 )
             }
-            else if(showCategoryProducts){
+
+            // Анимация перехода для CategoryProductsScreen
+            AnimatedVisibility(
+                visible = showCategoryProducts && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
                 CategoryProductsScreen(
                     categoryName = selectedCategoryName ?: "",
                     subcategoryName = selectedSubcategoryName ?: "",
                     onBackClick = { 
                         showCategoryProducts = false
                         selectedSubcategoryName = null
-                        // Возвращаемся к CatalogSubScreen
                         if (selectedCategoryName != null) {
                             showCatalogSubScreen = true
                         }
@@ -152,24 +232,67 @@ fun MainScreen() {
                     }
                 )
             }
-            else if(showBrands){
+
+            // Анимация перехода для BrandsScreen
+            AnimatedVisibility(
+                visible = showBrands && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
                 BrandsScreen(
                     onBackClick = {showBrands = false}
                 )
             }
 
-            else if (showWaitingReview){
+            // Анимация перехода для WatingReviewScreen
+            AnimatedVisibility(
+                visible = showWaitingReview && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
                 WatingReviewScreen(
                     onBackClick = {showWaitingReview = false}
                 )
             }
 
-            else if (showEditingProfile){
+            // Анимация перехода для EditingProfileScreen
+            AnimatedVisibility(
+                visible = showEditingProfile && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands && !showWaitingReview,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
                 EditingProfileScreen(
                     onBackClick = {showEditingProfile=false}
                 )
             }
-            else if (showSearch) {
+
+            // Анимация перехода для SearchScreen
+            AnimatedVisibility(
+                visible = showSearch && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands && !showWaitingReview && !showEditingProfile,
+                enter = fadeIn(animationSpec = tween(300)) + expandVertically(
+                    animationSpec = tween(300),
+                    expandFrom = Alignment.Top
+                ),
+                exit = fadeOut(animationSpec = tween(250))
+            ) {
                 android.util.Log.d("MainScreen", "Отображаем SearchScreen, searchQuery = '$searchQuery'")
                 SearchScreen(
                     searchQuery = searchQuery,
@@ -189,7 +312,13 @@ fun MainScreen() {
                     }
                 )
             }
-            else {
+
+            // Анимация для основного контента (MarketplaceContent, FavoriteScreen, ProfileScreen, ShopCartScreen)
+            AnimatedVisibility(
+                visible = !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands && !showWaitingReview && !showEditingProfile && !showSearch,
+                enter = fadeIn(animationSpec = tween(400)),
+                exit = fadeOut(animationSpec = tween(200))
+            ) {
                 when (selectedTab) {
                     BottomNavItem.Home -> MarketplaceContent(
                         onProductClick = { product -> 
@@ -217,7 +346,10 @@ fun MainScreen() {
                     BottomNavItem.ShopCart -> ShopCartScreen()
 
                     else -> {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Text(
                                 text = "Заглушка для: ${selectedTab.name}",
                                 fontSize = 20.sp,
@@ -230,6 +362,7 @@ fun MainScreen() {
         }
     }
 }
+
 
 @Composable
 private fun MarketplaceContent(
