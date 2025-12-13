@@ -12,7 +12,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +39,7 @@ import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.HistoryScreen.History
 import com.fortgame.ksynic.U_I.Screen.MainScreen.components.CategoriesRow
 import com.fortgame.ksynic.U_I.Screen.MainScreen.components.ProductGrid
 import com.fortgame.ksynic.U_I.ProductDetailScreen.ProductDetailScreen
+import com.fortgame.ksynic.U_I.SearchSceen.SearchScreen
 import com.fortgame.ksynic.U_I.Screen.ShopCartScreen.ShopCartScreen
 import com.fortgame.ksynic.U_I.TopHeaderSection
 import com.fortgame.ksynic.U_I.Screen.ProfileScreen.SubScreen.WatingReviewsScreen.WatingReviewScreen
@@ -64,12 +64,19 @@ fun MainScreen() {
     var showBrands by remember { mutableStateOf(false) }
     var showWaitingReview by remember{mutableStateOf(false)}
     var showEditingProfile by remember{mutableStateOf(false)}
+    var showSearch by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
+    
+    // Логирование изменений searchQuery
+    androidx.compose.runtime.LaunchedEffect(searchQuery) {
+        android.util.Log.d("MainScreen", "searchQuery изменен: '$searchQuery', length = ${searchQuery.length}")
+    }
 
 
 
     Scaffold(
         bottomBar = {
-            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showCatalogSubScreen and !showCategoryProducts and !showBrands and !showWaitingReview and !showEditingProfile) { // Скрываем навигацию на экране деталей
+            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showCatalogSubScreen and !showCategoryProducts and !showBrands and !showWaitingReview and !showEditingProfile and !showSearch) { // Скрываем навигацию на экране деталей
                 BottomNavigationBar(
                     selectedItem = selectedTab,
                     onItemSelected = { selectedTab = it }
@@ -91,9 +98,13 @@ fun MainScreen() {
             }
             else if (showHistory){
                 HistoryScreen(
-                    onBackClick = { showHistory = false } ,// Функция для возврата
-                    onProductClick = { showProductDetail = true } // Передаем функцию
-                    )
+                    onBackClick = { showHistory = false },
+                    onProductClick = { product ->
+                        selectedProduct = product
+                        showHistory = false
+                        showProductDetail = true
+                    }
+                )
             }
             else if (showCanBeSeller){
                 CanBeSeller(
@@ -158,7 +169,26 @@ fun MainScreen() {
                     onBackClick = {showEditingProfile=false}
                 )
             }
-
+            else if (showSearch) {
+                android.util.Log.d("MainScreen", "Отображаем SearchScreen, searchQuery = '$searchQuery'")
+                SearchScreen(
+                    searchQuery = searchQuery,
+                    onSearchQueryChange = { newQuery ->
+                        android.util.Log.d("MainScreen", "onSearchQueryChange в MainScreen: новое значение = '$newQuery', старое = '$searchQuery'")
+                        searchQuery = newQuery
+                        android.util.Log.d("MainScreen", "searchQuery обновлен в MainScreen: '$searchQuery'")
+                    },
+                    onBackClick = { 
+                        showSearch = false
+                        searchQuery = ""
+                    },
+                    onProductClick = { product ->
+                        selectedProduct = product
+                        showSearch = false
+                        showProductDetail = true
+                    }
+                )
+            }
             else {
                 when (selectedTab) {
                     BottomNavItem.Home -> MarketplaceContent(
@@ -169,8 +199,10 @@ fun MainScreen() {
                         onHistoryClick = { showHistory = true },
                         onCanBeSeller = { showCanBeSeller = true },
                         onCategoryClick = { showCategory = true },
-                        onBrandsClick = { showBrands = true }
+                        onBrandsClick = { showBrands = true },
+                        onSearchClick = { showSearch = true }
                     )
+
                     BottomNavItem.Favorites -> FavoriteScreen(
                         onProductClick = { product ->
                             selectedProduct = product
@@ -208,7 +240,8 @@ private fun MarketplaceContent(
     onBrandsClick: () -> Unit = {},
     viewModel: ProductViewModel = viewModel(
         factory = ViewModelFactory.getInstance(LocalContext.current)
-    )
+    ),
+    onSearchClick: () -> Unit
 ) {
     // Получаем состояние продуктов из ViewModel
     val productsState by viewModel.productsState.collectAsState()
@@ -234,7 +267,7 @@ private fun MarketplaceContent(
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
-                TopHeaderSection()
+                TopHeaderSection(onSearchClick = onSearchClick)
                 CategoriesRow(
                     onHistoryClick = onHistoryClick,
                     onCanBeSeller = onCanBeSeller,
@@ -257,7 +290,7 @@ private fun MarketplaceContent(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-                TopHeaderSection()
+                TopHeaderSection(onSearchClick = onSearchClick)
                 CategoriesRow(
                     onHistoryClick = onHistoryClick,
                     onCanBeSeller = onCanBeSeller,

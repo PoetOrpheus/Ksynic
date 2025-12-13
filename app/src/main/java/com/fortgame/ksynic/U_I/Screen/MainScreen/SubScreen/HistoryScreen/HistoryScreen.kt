@@ -26,7 +26,7 @@ import com.fortgame.ksynic.utils.fw
 @Composable
 fun HistoryScreen(
     onBackClick: () -> Unit = {},
-    onProductClick:() -> Unit = {}
+    onProductClick: (Product) -> Unit = {}
 ){
 
     Box(modifier = Modifier
@@ -65,7 +65,9 @@ fun HistoryScreen(
             // Продукты
             item{
                 ProductGrid(
-                    onProductClick = onProductClick as (Product) -> Unit,
+                    onProductClick = { product ->
+                        onProductClick(product)
+                    },
                     products = TestProducts.allProducts.take(4)) // Передаем функцию дальше
             }
         }

@@ -34,7 +34,7 @@ fun BrandsScreen(
     Column(
         Modifier.fillMaxSize().background(Color(0xFFF2F2F2))
     ){
-        TopHeaderWithSearchAndReturn(onBackClick)
+        TopHeaderWithSearchAndReturn(onBackClick=onBackClick)
         Spacer(
             Modifier.height(fh(10))
         )

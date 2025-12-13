@@ -29,6 +29,10 @@ class ProductViewModel(
     private val _favoriteProductsState = MutableStateFlow<UiState<List<Product>>>(UiState.Idle)
     val favoriteProductsState: StateFlow<UiState<List<Product>>> = _favoriteProductsState.asStateFlow()
 
+    // Состояние результатов поиска
+    private val _searchResultsState = MutableStateFlow<UiState<List<Product>>>(UiState.Idle)
+    val searchResultsState: StateFlow<UiState<List<Product>>> = _searchResultsState.asStateFlow()
+
     // Флаг для отслеживания, были ли данные загружены
     private var hasLoadedProducts = false
     private var isLoadingProducts = false
@@ -78,21 +82,6 @@ class ProductViewModel(
                 }
             } catch (e: Exception) {
                 _productState.value = UiState.Error(message = e.message, throwable = e)
-            }
-        }
-    }
-
-    /**
-     * Поиск продуктов
-     */
-    fun searchProducts(query: String) {
-        viewModelScope.launch {
-            _productsState.value = UiState.Loading
-            try {
-                val products = productRepository.searchProducts(query)
-                _productsState.value = UiState.Success(products)
-            } catch (e: Exception) {
-                _productsState.value = UiState.Error(message = e.message, throwable = e)
             }
         }
     }
@@ -218,6 +207,33 @@ class ProductViewModel(
         viewModelScope.launch {
             toggleFavoriteSync(productId)
         }
+    }
+
+    /**
+     * Поиск продуктов по запросу
+     */
+    fun searchProducts(query: String) {
+        if (query.isBlank()) {
+            _searchResultsState.value = UiState.Success(emptyList())
+            return
+        }
+
+        viewModelScope.launch {
+            _searchResultsState.value = UiState.Loading
+            try {
+                val results = productRepository.searchProducts(query)
+                _searchResultsState.value = UiState.Success(results)
+            } catch (e: Exception) {
+                _searchResultsState.value = UiState.Error(message = e.message, throwable = e)
+            }
+        }
+    }
+
+    /**
+     * Очистить результаты поиска
+     */
+    fun clearSearchResults() {
+        _searchResultsState.value = UiState.Idle
     }
 
     /**
