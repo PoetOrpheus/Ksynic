@@ -14,7 +14,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -32,7 +37,8 @@ import com.fortgame.ksynic.utils.fw
 
 @Composable
 fun LoginScreen(
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onLoginSuccess: () -> Unit
 ) {
     Box(Modifier.fillMaxSize().background(BgGray)) {
         TopHeaderWithoutSearch()
@@ -108,7 +114,14 @@ fun LoginScreen(
                             spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                         )
                         .background(Color.White)
-                        .align(Alignment.End),
+                        .align(Alignment.End)
+                        .clickable {
+                            // Временная логика для тестирования - в реальном приложении здесь будет проверка СМС кода
+                            CoroutineScope(Dispatchers.Main).launch {
+                                delay(1000) // Имитация проверки кода
+                                onLoginSuccess()
+                            }
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -149,5 +162,8 @@ fun LoginScreen(
 @Composable
 @Preview
 private fun LoginScreenPreview(){
-    LoginScreen()
+    LoginScreen(
+        onBackClick = TODO(),
+        onLoginSuccess = TODO()
+    )
 }

@@ -68,7 +68,7 @@ fun Profile(
                 painter = if (profile.avatarRes != null) {
                     painterResource(profile.avatarRes)
                 } else {
-                    painterResource(R.drawable.ava_denis)
+                    painterResource(R.drawable.ava_denis) // Дефолтный аватар
                 },
                 contentDescription = null,
                 modifier = Modifier
@@ -87,7 +87,11 @@ fun Profile(
                     contentAlignment = Alignment.Center
                 ){
                     ProfileInfo(
-                        text = profile.getShortName(),
+                        text = if (profile.displayName.isNotEmpty()) {
+                            profile.displayName
+                        } else {
+                            profile.getFullName().ifEmpty { "Пользователь" }
+                        },
                         size=20.sp,
                         lineHeight = 22.sp,
                         weight=FontWeight.SemiBold
@@ -95,10 +99,10 @@ fun Profile(
                 }
 
                 // Номер телефона
-                ProfileInfo(text = profile.phone.ifEmpty { "+7 777 777 77 77" })
+                ProfileInfo(text = if (profile.phone.isNotEmpty()) profile.phone else "Не указан")
 
                 // Почта
-                ProfileInfo(text = profile.email.ifEmpty { "asdasdf@mail.ru" })
+                ProfileInfo(text = if (profile.email.isNotEmpty()) profile.email else "Не указана")
 
                 // Редактировать
                 ProfileInfo(text="Редактировать", color=Color(0xFF5D76CB), onClick=onEditingClick)

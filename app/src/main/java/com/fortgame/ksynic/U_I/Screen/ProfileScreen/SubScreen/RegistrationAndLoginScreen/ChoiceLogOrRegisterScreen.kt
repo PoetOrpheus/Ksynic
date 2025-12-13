@@ -1,6 +1,7 @@
 package com.fortgame.ksynic.U_I.Screen.ProfileScreen.SubScreen.RegistrationAndLoginScreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +30,8 @@ import com.fortgame.ksynic.utils.fw
 
 @Composable
 fun ChoiceLogOrRegisterScreen(
-
+    onLoginClick: () -> Unit = {},
+    onRegisterClick: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier
@@ -69,7 +71,8 @@ fun ChoiceLogOrRegisterScreen(
                             shape = RoundedCornerShape(10.dp),
                             spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                         )
-                        .background(Color.White),
+                        .background(Color.White)
+                        .clickable(onClick = onLoginClick),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -91,7 +94,8 @@ fun ChoiceLogOrRegisterScreen(
                             shape = RoundedCornerShape(10.dp),
                             spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                         )
-                        .background(Color.White),
+                        .background(Color.White)
+                        .clickable(onClick = onRegisterClick),
                     contentAlignment = Alignment.Center
 
                 ) {
@@ -101,8 +105,6 @@ fun ChoiceLogOrRegisterScreen(
                         lineHeight = 16.sp,
                         color = Color(0xFF5D76CB),
                         fontWeight = FontWeight.Bold,
-
-
                         )
                 }
             }

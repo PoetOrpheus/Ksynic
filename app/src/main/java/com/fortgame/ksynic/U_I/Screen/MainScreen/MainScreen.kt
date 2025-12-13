@@ -19,6 +19,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.fortgame.ksynic.mvvm.data.local.LocalDataStore
+import com.fortgame.ksynic.mvvm.viewmodel.UserProfileViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import com.fortgame.ksynic.Navigation.BottomNavItem
 import com.fortgame.ksynic.Navigation.BottomNavigationBar
 import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.BrandsScreen.BrandsScreen
@@ -41,6 +47,9 @@ import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.CatalogScreen.Catalog
 import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.CatalogScreen.CategoryProductsScreen
 import com.fortgame.ksynic.U_I.Screen.ProfileScreen.SubScreen.EditingProfileScreen.EditingProfileScreen
 import com.fortgame.ksynic.U_I.Screen.ProfileScreen.ProfileScreen
+import com.fortgame.ksynic.U_I.Screen.ProfileScreen.SubScreen.RegistrationAndLoginScreen.ChoiceLogOrRegisterScreen
+import com.fortgame.ksynic.U_I.Screen.ProfileScreen.SubScreen.RegistrationAndLoginScreen.LoginScreen
+import com.fortgame.ksynic.U_I.Screen.ProfileScreen.SubScreen.RegistrationAndLoginScreen.RegistrationScreen
 import com.fortgame.ksynic.U_I.Screen.FavoriteScreen.FavoriteScreen
 import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.HistoryScreen.HistoryScreen
 import com.fortgame.ksynic.U_I.Screen.MainScreen.components.CategoriesRow
@@ -73,6 +82,18 @@ fun MainScreen() {
     var showEditingProfile by remember{mutableStateOf(false)}
     var showSearch by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    var showChoiceLogOrRegister by remember { mutableStateOf(false) }
+    var showLogin by remember { mutableStateOf(false) }
+    var showRegistration by remember { mutableStateOf(false) }
+    var isLoggedIn by remember { mutableStateOf<Boolean?>(null) }
+    
+    val context = LocalContext.current
+    val localDataStore = remember { LocalDataStore(context) }
+    
+    // Проверяем состояние авторизации при первом запуске
+    LaunchedEffect(Unit) {
+        isLoggedIn = localDataStore.isLoggedIn()
+    }
     
     // Логирование изменений searchQuery
     androidx.compose.runtime.LaunchedEffect(searchQuery) {
@@ -83,10 +104,16 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showCatalogSubScreen and !showCategoryProducts and !showBrands and !showWaitingReview and !showEditingProfile and !showSearch) { // Скрываем навигацию на экране деталей
+            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showCatalogSubScreen and !showCategoryProducts and !showBrands and !showWaitingReview and !showEditingProfile and !showSearch and !showChoiceLogOrRegister and !showLogin and !showRegistration) { // Скрываем навигацию на экране деталей
                 BottomNavigationBar(
                     selectedItem = selectedTab,
-                    onItemSelected = { selectedTab = it }
+                    onItemSelected = { newTab ->
+                        selectedTab = newTab
+                        // При переходе на Profile проверяем авторизацию
+                        if (newTab == BottomNavItem.Profile && isLoggedIn == false) {
+                            showChoiceLogOrRegister = true
+                        }
+                    }
                 )
             }
         },
@@ -269,7 +296,7 @@ fun MainScreen() {
 
             // Анимация перехода для EditingProfileScreen
             AnimatedVisibility(
-                visible = showEditingProfile && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands && !showWaitingReview,
+                visible = showEditingProfile && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands && !showWaitingReview && !showChoiceLogOrRegister && !showLogin && !showRegistration,
                 enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
                     initialOffsetX = { it },
                     animationSpec = tween(300)
@@ -281,6 +308,88 @@ fun MainScreen() {
             ) {
                 EditingProfileScreen(
                     onBackClick = {showEditingProfile=false}
+                )
+            }
+
+            // Анимация перехода для ChoiceLogOrRegisterScreen
+            AnimatedVisibility(
+                visible = showChoiceLogOrRegister && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands && !showWaitingReview && !showEditingProfile && !showSearch && !showLogin && !showRegistration,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
+                ChoiceLogOrRegisterScreen(
+                    onLoginClick = {
+                        showChoiceLogOrRegister = false
+                        showLogin = true
+                    },
+                    onRegisterClick = {
+                        showChoiceLogOrRegister = false
+                        showRegistration = true
+                    }
+                )
+            }
+
+            // Анимация перехода для LoginScreen
+            AnimatedVisibility(
+                visible = showLogin && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands && !showWaitingReview && !showEditingProfile && !showSearch && !showChoiceLogOrRegister && !showRegistration,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
+                LoginScreen(
+                    onBackClick = {
+                        showLogin = false
+                        showChoiceLogOrRegister = true
+                    },
+                    onLoginSuccess = {
+                        // Сохраняем состояние авторизации и закрываем экраны
+                        CoroutineScope(Dispatchers.IO).launch {
+                            localDataStore.setLoggedIn(true)
+                            isLoggedIn = true
+                        }
+                        showLogin = false
+                        showChoiceLogOrRegister = false
+                    }
+                )
+            }
+
+            // Анимация перехода для RegistrationScreen
+            AnimatedVisibility(
+                visible = showRegistration && !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands && !showWaitingReview && !showEditingProfile && !showSearch && !showChoiceLogOrRegister && !showLogin,
+                enter = fadeIn(animationSpec = tween(300)) + slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                ),
+                exit = fadeOut(animationSpec = tween(250)) + slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(250)
+                )
+            ) {
+                RegistrationScreen(
+                    onBackClick = {
+                        showRegistration = false
+                        showChoiceLogOrRegister = true
+                    },
+                    onRegistrationSuccess = {
+                        // Сохраняем состояние авторизации и закрываем экраны
+                        CoroutineScope(Dispatchers.IO).launch {
+                            localDataStore.setLoggedIn(true)
+                            isLoggedIn = true
+                        }
+                        showRegistration = false
+                        showChoiceLogOrRegister = false
+                    }
                 )
             }
 
@@ -315,7 +424,7 @@ fun MainScreen() {
 
             // Анимация для основного контента (MarketplaceContent, FavoriteScreen, ProfileScreen, ShopCartScreen)
             AnimatedVisibility(
-                visible = !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands && !showWaitingReview && !showEditingProfile && !showSearch,
+                visible = !showProductDetail && !showHistory && !showCanBeSeller && !showCategory && !showCatalogSubScreen && !showCategoryProducts && !showBrands && !showWaitingReview && !showEditingProfile && !showSearch && !showChoiceLogOrRegister && !showLogin && !showRegistration,
                 enter = fadeIn(animationSpec = tween(400)),
                 exit = fadeOut(animationSpec = tween(200))
             ) {
@@ -338,11 +447,34 @@ fun MainScreen() {
                             showProductDetail = true
                         }
                     )
-                    BottomNavItem.Profile -> ProfileScreen(
-                        onReviewClick = {showWaitingReview=true},
-                        onEditingClick = {showEditingProfile=true}
-
-                    )
+                    BottomNavItem.Profile -> {
+                        // Показываем ProfileScreen только если пользователь авторизован
+                        if (isLoggedIn == true) {
+                            val userProfileViewModel = viewModel<UserProfileViewModel>(
+                                factory = ViewModelFactory.getInstance(LocalContext.current)
+                            )
+                            // Принудительно перезагружаем профиль при каждом показе
+                            LaunchedEffect(Unit) {
+                                userProfileViewModel.refreshProfile()
+                            }
+                            ProfileScreen(
+                                onReviewClick = {showWaitingReview=true},
+                                onEditingClick = {showEditingProfile=true}
+                            )
+                        } else if (isLoggedIn == false) {
+                            // Показываем ChoiceLogOrRegisterScreen, если не авторизован
+                            // Это будет обработано через AnimatedVisibility выше
+                            Box(modifier = Modifier.fillMaxSize())
+                        } else {
+                            // Пока загружается состояние
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
                     BottomNavItem.ShopCart -> ShopCartScreen()
 
                     else -> {

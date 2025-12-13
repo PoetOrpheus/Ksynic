@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -33,6 +34,7 @@ class LocalDataStore(private val context: Context) {
     private val productsCacheTimestampKey = stringPreferencesKey("products_cache_timestamp")
     private val userProfileKey = stringPreferencesKey("user_profile_json")
     private val cartItemsKey = stringPreferencesKey("cart_items_json")
+    private val isLoggedInKey = booleanPreferencesKey("is_logged_in")
     
     /**
      * Получить список ID избранных продуктов
@@ -259,6 +261,47 @@ class LocalDataStore(private val context: Context) {
         val quantity: Int = 1,
         val isSelected: Boolean = true
     )
+
+    /**
+     * Проверить, авторизован ли пользователь
+     */
+    suspend fun isLoggedIn(): Boolean {
+        return try {
+            val preferences = context.dataStore.data.first()
+            preferences[isLoggedInKey] ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
+     * Получить Flow для отслеживания состояния авторизации
+     */
+    fun isLoggedInFlow(): Flow<Boolean> {
+        return context.dataStore.data.map { preferences ->
+            preferences[isLoggedInKey] ?: false
+        }
+    }
+
+    /**
+     * Сохранить состояние авторизации
+     */
+    suspend fun setLoggedIn(isLoggedIn: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[isLoggedInKey] = isLoggedIn
+        }
+    }
+
+    /**
+     * Выйти из аккаунта
+     */
+    suspend fun logout() {
+        context.dataStore.edit { preferences ->
+            preferences[isLoggedInKey] = false
+            // Можно также очистить профиль, если нужно
+            // preferences.remove(userProfileKey)
+        }
+    }
 }
 
 

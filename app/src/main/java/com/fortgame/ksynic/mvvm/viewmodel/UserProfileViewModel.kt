@@ -39,6 +39,17 @@ class UserProfileViewModel(
     }
 
     /**
+     * Принудительно перезагрузить профиль из локального хранилища
+     */
+    fun refreshProfile() {
+        viewModelScope.launch {
+            val profile = localDataStore.getUserProfileOrDefault()
+            _profileState.value = profile
+            hasLoadedProfile = true
+        }
+    }
+
+    /**
      * Обновить профиль
      */
     fun updateProfile(profile: UserProfile) {
