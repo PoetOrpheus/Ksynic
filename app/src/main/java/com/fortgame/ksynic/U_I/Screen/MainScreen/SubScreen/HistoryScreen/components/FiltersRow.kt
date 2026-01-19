@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.theme.BlueGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -133,7 +134,7 @@ private fun SwitchButton(
                     shape = RoundedCornerShape(10.dp),
                     spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                 )
-                .background(Color(0xFF5D76CB))
+                .background(BlueGradient)
 
         }
         else{

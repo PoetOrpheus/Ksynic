@@ -21,6 +21,7 @@ import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.HistoryScreen.compone
 import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.HistoryScreen.components.FiltersRow
 import com.fortgame.ksynic.U_I.Screen.MainScreen.SubScreen.HistoryScreen.components.SellerCard
 import com.fortgame.ksynic.U_I.TopHeaderWithSearchAndReturn
+import com.fortgame.ksynic.theme.lowWhite
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -32,7 +33,7 @@ fun BrandsScreen(
 
 
     Column(
-        Modifier.fillMaxSize().background(Color(0xFFF2F2F2))
+        Modifier.fillMaxSize().background(lowWhite)
     ){
         TopHeaderWithSearchAndReturn(onBackClick=onBackClick)
         Spacer(

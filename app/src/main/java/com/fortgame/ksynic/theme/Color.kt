@@ -16,3 +16,8 @@ val PurpleGradientEnd = Color(0xFFBAC8E0) // Примерный градиент
 val BrandPurple = Color(0xFF7B61FF)
 val DiscountRed = Color(0xFFE94242)
 val BackgroundLight = Color(0xFFF5F5F5)
+
+val BlueGradient = Color(0xFF5D76CB)
+val PinkGradient = Color(0xFFFCB4D5)
+
+val lowWhite = Color(0xFFF2F2F2)

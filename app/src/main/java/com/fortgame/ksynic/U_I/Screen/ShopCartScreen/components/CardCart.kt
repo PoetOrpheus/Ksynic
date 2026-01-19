@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
 import com.fortgame.ksynic.U_I.atom.CounterCart
 import com.fortgame.ksynic.mvvm.model.CartItem
+import com.fortgame.ksynic.theme.lowWhite
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -178,7 +179,7 @@ fun CardCart(
                         .padding(5.dp) // Отступ 4px со всех сторон
                         .clip(RoundedCornerShape(6.dp)) // Скругление самого синего квадратика
                         .background(
-                            color = if (cartItem.isSelected) Color(0xCC5D76CB) else Color(0xFFF2F2F2)
+                            color = if (cartItem.isSelected) Color(0xCC5D76CB) else lowWhite
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -283,7 +284,7 @@ fun CardCart(
 private fun CartCardPreview() {
     Box(modifier = Modifier
         .padding(10.dp)
-        .background(Color(0xFFF2F2F2))) {
+        .background(lowWhite)) {
         //CardCart()
     }
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.mvvm.model.UserProfile
+import com.fortgame.ksynic.theme.lowWhite
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -81,7 +82,7 @@ fun DataBlock(
                 .fillMaxWidth()
                 .height(fh(2))
                 .padding(horizontal = fw(20))
-                .background(Color(0xFFF2F2F2))
+                .background(lowWhite)
         )
         Spacer(Modifier.height(fh(8)))
 
@@ -104,7 +105,7 @@ fun DataBlock(
                 .fillMaxWidth()
                 .height(fh(2))
                 .padding(horizontal = fw(20))
-                .background(Color(0xFFF2F2F2))
+                .background(lowWhite)
 
         )
         Spacer(Modifier.height(fh(8)))
@@ -128,7 +129,7 @@ fun DataBlock(
                 .fillMaxWidth()
                 .height(fh(2))
                 .padding(horizontal = fw(20))
-                .background(Color(0xFFF2F2F2))
+                .background(lowWhite)
 
         )
         Spacer(Modifier.height(fh(8)))
@@ -152,7 +153,7 @@ fun DataBlock(
                 .fillMaxWidth()
                 .height(fh(2))
                 .padding(horizontal = fw(20))
-                .background(Color(0xFFF2F2F2))
+                .background(lowWhite)
 
         )
         Spacer(Modifier.height(fh(8)))
@@ -176,7 +177,7 @@ fun DataBlock(
                 .fillMaxWidth()
                 .height(fh(2))
                 .padding(horizontal = fw(20))
-                .background(Color(0xFFF2F2F2))
+                .background(lowWhite)
 
         )
         Spacer(Modifier.height(fh(8)))

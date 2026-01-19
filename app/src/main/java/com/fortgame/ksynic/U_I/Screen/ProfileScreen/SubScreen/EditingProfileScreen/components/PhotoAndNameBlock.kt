@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
 import com.fortgame.ksynic.mvvm.model.UserProfile
+import com.fortgame.ksynic.theme.BlueGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -74,7 +75,7 @@ fun PhotoAndNameBlock(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Light,
                     lineHeight = 14.sp,
-                    color = Color(0xFF5D76CB)
+                    color = BlueGradient
                 )
             }
             Spacer(Modifier.height(fh(5)))

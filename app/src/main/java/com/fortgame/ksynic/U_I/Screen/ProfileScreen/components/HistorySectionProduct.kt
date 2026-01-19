@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.theme.BlueGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -100,6 +101,6 @@ data class ProfileItem(
     val rating: Double,
     val reviews: Int,
     val isTimeLimited: Boolean,
-    val colorBottom: Color = Color(0xFF5D76CB),
-    val colorText: Color = Color(0xFF5D76CB)
+    val colorBottom: Color = BlueGradient,
+    val colorText: Color = BlueGradient
 )

@@ -24,11 +24,14 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.theme.BlueGradient
+import com.fortgame.ksynic.theme.PinkGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -42,7 +45,7 @@ fun TopHeaderWithSearch(
             .height(fh(100))
             .background(
                 brush = Brush.linearGradient(
-                    colors = listOf(Color(0xFF5D76CB), Color(0xFFFCB4D5)),
+                    colors = listOf(BlueGradient, PinkGradient),
                     start = Offset(0f, 0f),  // Левый верхний
                     end = Offset(600f, 600f), // Правый нижний (или используйте Offset.Infinite)
                 ),
@@ -101,7 +104,7 @@ fun TopHeaderWithSearch(
                         Icon(Icons.Default.Search, contentDescription = null, tint = Color.Black)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            "Ищите что то конкретное?...",
+                            stringResource(R.string.search),
                             color = Color(0xFF6E6E6E),
                             fontSize = 16.sp
                         )

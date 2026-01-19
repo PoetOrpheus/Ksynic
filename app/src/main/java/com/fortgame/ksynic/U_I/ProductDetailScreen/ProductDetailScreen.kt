@@ -58,13 +58,15 @@ import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 import android.widget.Toast
+import com.fortgame.ksynic.theme.BlueGradient
+import com.fortgame.ksynic.theme.lowWhite
 
 // Заглушки для цветов, чтобы соответствовать стилю
 val PurpleHeader = Color(0xFF9C89F6) // Примерный цвет хедера
 val MainRed = Color(0xFFD32F2F)
 val TextGray = Color(0xFF999999)
-val BgGray = Color(0xFFF2F2F2)
-val BlueButton = Color(0xFF5D76CB)
+val BgGray = lowWhite
+val BlueButton = BlueGradient
 
 @Composable
 fun ProductDetailScreen(

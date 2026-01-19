@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.theme.BlueGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -62,11 +63,11 @@ fun CategoriesRow(
             .padding(top = fh(10)),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        CategoryItem("Стать\nпродавцом", Color(0xFF5D76CB),Color(0xFFD23E41), painterResource(R.drawable.seller_icon), 30,30, onCanBeSeller, appearanceDelay = 0L)
-        CategoryItem("Магазины\nи бренды", Color(0xFF5D76CB),Color(0xFFCC5086), painterResource(R.drawable.shops_and_brans),30,30, onBrandsClick, appearanceDelay = 50L)
-        CategoryItem("Финансы", Color(0xFF5D76CB), Color(0xFFDAA636),painterResource(R.drawable.finances_icon_home),30,30, appearanceDelay = 100L)
-        CategoryItem("История\nпросмотров", Color(0xFF5D76CB), Color(0xFF21936F),painterResource(R.drawable.history_icon),40,40, onHistoryClick, appearanceDelay = 150L)
-        CategoryItem("Каталог", Color(0xFF5D76CB), Color(0xFF1D36D7),painterResource(R.drawable.category_icon),30,44, onCategoryClick, appearanceDelay = 200L)
+        CategoryItem("Стать\nпродавцом", BlueGradient,Color(0xFFD23E41), painterResource(R.drawable.seller_icon), 30,30, onCanBeSeller, appearanceDelay = 0L)
+        CategoryItem("Магазины\nи бренды", BlueGradient,Color(0xFFCC5086), painterResource(R.drawable.shops_and_brans),30,30, onBrandsClick, appearanceDelay = 50L)
+        CategoryItem("Финансы", BlueGradient, Color(0xFFDAA636),painterResource(R.drawable.finances_icon_home),30,30, appearanceDelay = 100L)
+        CategoryItem("История\nпросмотров", BlueGradient, Color(0xFF21936F),painterResource(R.drawable.history_icon),40,40, onHistoryClick, appearanceDelay = 150L)
+        CategoryItem("Каталог", BlueGradient, Color(0xFF1D36D7),painterResource(R.drawable.category_icon),30,44, onCategoryClick, appearanceDelay = 200L)
     }
 }
 

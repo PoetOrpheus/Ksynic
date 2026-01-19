@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.U_I.ProductDetailScreen.BgGray
 import com.fortgame.ksynic.U_I.TopHeaderWithReturn
 import com.fortgame.ksynic.U_I.TopHeaderWithoutSearch
+import com.fortgame.ksynic.theme.BlueGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -103,7 +104,7 @@ fun ChoiceLogOrRegisterScreen(
                         "Регистрация",
                         fontSize = 16.sp,
                         lineHeight = 16.sp,
-                        color = Color(0xFF5D76CB),
+                        color = BlueGradient,
                         fontWeight = FontWeight.Bold,
                         )
                 }

@@ -25,6 +25,7 @@ import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
 import com.fortgame.ksynic.U_I.Screen.FavoriteScreen.components.SettingsFavoriteRow
 import com.fortgame.ksynic.U_I.Screen.MainScreen.components.ProductGrid
 import com.fortgame.ksynic.U_I.TopHeaderWithoutSearch
+import com.fortgame.ksynic.theme.lowWhite
 import com.fortgame.ksynic.utils.fh
 
 @Composable
@@ -48,7 +49,7 @@ fun FavoriteScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF2F2F2))
+            .background(lowWhite)
     ) {
         TopHeaderWithoutSearch()
         Spacer(modifier = Modifier.height(fh(10)))

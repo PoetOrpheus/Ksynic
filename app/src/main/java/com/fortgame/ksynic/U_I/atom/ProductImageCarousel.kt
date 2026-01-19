@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fortgame.ksynic.R // Замените на ваш пакет R
+import com.fortgame.ksynic.theme.BlueGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -68,7 +69,7 @@ fun ProductImageCarousel(
             ) {
                 repeat(pagerState.pageCount) { iteration ->
                     val color = if (pagerState.currentPage == iteration) {
-                        Color(0xFF5D76CB)
+                        BlueGradient
                     } else {
                         Color.Gray.copy(alpha = 0.5f)
                     }

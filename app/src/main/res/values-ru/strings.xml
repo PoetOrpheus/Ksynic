@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Ksynic</string>
+    <string name="search">Ищите что то конкретное?…</string>
+    <string name="search_term">Введите поисковый запрос</string>
+    <string name="nothing_found">Ничего не найдено</string>
+    <string name="order_sucess">Заказ оформлен</string>
+    <string name="order_place">Оформить заказ</string>
+    <string name="select_location_and_payment">Далее можно выбрать место доставки и способ оплаты</string>
+    <string name="history">История просмотров</string>
+    <string name="cart_error">Ошибка загрузки корзины</string>
+
+</resources>

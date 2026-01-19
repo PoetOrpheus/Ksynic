@@ -26,6 +26,7 @@ import com.fortgame.ksynic.U_I.Screen.ProfileScreen.components.HistorySectionPro
 import com.fortgame.ksynic.U_I.Screen.ProfileScreen.components.Profile
 import com.fortgame.ksynic.U_I.Screen.ProfileScreen.components.ProfileMenu
 import com.fortgame.ksynic.U_I.TopHeaderWithoutSearch
+import com.fortgame.ksynic.theme.lowWhite
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -34,7 +35,7 @@ fun ProfileScreen(onReviewClick: () -> Unit, onEditingClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF2F2F2))
+            .background(lowWhite)
     ) {
         TopHeaderWithoutSearch()
         Spacer(modifier = Modifier.height(fh(10)))

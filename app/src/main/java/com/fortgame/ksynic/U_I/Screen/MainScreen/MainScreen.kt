@@ -63,6 +63,7 @@ import com.fortgame.ksynic.mvvm.model.Product
 import com.fortgame.ksynic.mvvm.ui.state.UiState
 import com.fortgame.ksynic.mvvm.viewmodel.ProductViewModel
 import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
+import com.fortgame.ksynic.theme.lowWhite
 import com.fortgame.ksynic.utils.fh
 
 @Composable
@@ -117,7 +118,7 @@ fun MainScreen() {
                 )
             }
         },
-        containerColor = Color(0xFFF2F2F2)
+        containerColor = lowWhite
     ) { paddingValues ->
         Box(modifier = Modifier
             .padding(paddingValues)

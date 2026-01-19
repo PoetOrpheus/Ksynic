@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.theme.BlueGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -70,7 +71,7 @@ fun InfoCardsSection(
                         spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     )
                     .background(
-                        color = if (select) Color(0xFF5D76CB) else Color.White
+                        color = if (select) BlueGradient else Color.White
                     )
                     .clickable(
                         onClick = if (!select) {
@@ -103,7 +104,7 @@ fun InfoCardsSection(
                         spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
                     )
                     .background(
-                        color = if (!select) Color(0xFF5D76CB) else Color.White
+                        color = if (!select) BlueGradient else Color.White
                     )
                     .clickable(
                         onClick = if (select) {
@@ -212,7 +213,7 @@ private fun Info(
                     .height(fh(50))
                     .background(
                         brush = Brush.verticalGradient(
-                            colors = listOf(Color.White.copy(alpha = 0.8f), Color(0xFF5D76CB))
+                            colors = listOf(Color.White.copy(alpha = 0.8f), BlueGradient)
                         )
                     )
                     .align(Alignment.BottomCenter)

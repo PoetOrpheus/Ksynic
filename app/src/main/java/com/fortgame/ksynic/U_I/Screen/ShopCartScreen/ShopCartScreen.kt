@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import android.util.Log
+import androidx.compose.ui.res.stringResource
+import com.fortgame.ksynic.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -53,6 +55,7 @@ import com.fortgame.ksynic.mvvm.ui.state.UiState
 import com.fortgame.ksynic.mvvm.viewmodel.CartViewModel
 import com.fortgame.ksynic.mvvm.viewmodel.ProductViewModel
 import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
+import com.fortgame.ksynic.theme.lowWhite
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -92,7 +95,7 @@ fun ShopCartScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF2F2F2))
+            .background(lowWhite)
     ) {
         TopHeaderWithoutSearch()
         
@@ -142,6 +145,7 @@ fun ShopCartScreen(
                                     )
                                 }
                             } else {
+                                val textSucess = stringResource(R.string.order_sucess)
                                 // Товары корзины в обычном Column (не LazyColumn, чтобы избежать вложенных LazyColumn)
                                 cartItems.forEachIndexed { index, cartItem ->
                                     if (index > 0) {
@@ -149,7 +153,7 @@ fun ShopCartScreen(
                                             Modifier
                                                 .height(fh(2))
                                                 .fillMaxWidth()
-                                                .background(Color(0xFFF2F2F2))
+                                                .background(lowWhite)
                                         )
                                     }
                                     CardCart(
@@ -189,13 +193,13 @@ fun ShopCartScreen(
                                     onClick = {
                                         Toast.makeText(
                                             context,
-                                            "Заказ оформлен",
+                                            textSucess,
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     },
                                 ) {
                                     Text(
-                                        text = "Оформить заказ",
+                                        stringResource(R.string.order_place),
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         lineHeight = 17.sp
@@ -209,7 +213,7 @@ fun ShopCartScreen(
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = "Далее можно выбрать место доставки и способ оплаты",
+                                        stringResource(R.string.select_location_and_payment),
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.Normal,
                                         lineHeight = 12.sp,
@@ -243,7 +247,7 @@ fun ShopCartScreen(
                                 contentAlignment = Alignment.CenterStart
                             ) {
                                 Text(
-                                    text = "История просмотров",
+                                    stringResource(R.string.history),
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     lineHeight = 26.sp
@@ -307,7 +311,7 @@ fun ShopCartScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Ошибка загрузки корзины",
+                        stringResource(R.string.cart_error),
                         fontSize = 18.sp,
                         color = Color.Red
                     )

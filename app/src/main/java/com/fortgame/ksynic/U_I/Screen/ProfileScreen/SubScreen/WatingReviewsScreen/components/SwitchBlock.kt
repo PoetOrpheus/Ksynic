@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.fortgame.ksynic.theme.BlueGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -65,7 +66,7 @@ private fun Block(
                 spotColor = Color.Black.copy(alpha = 0.3f) // Figma: #000000 30%
             )
             .background(
-                color= if (isSelect) Color(0xFF5D76CB) else Color.White
+                color= if (isSelect) BlueGradient else Color.White
             )
             .clickable {
                 if (!isSelect) {

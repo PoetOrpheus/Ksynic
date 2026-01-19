@@ -35,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fortgame.ksynic.R
 import com.fortgame.ksynic.mvvm.viewmodel.UserProfileViewModel
 import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
+import com.fortgame.ksynic.theme.BlueGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -105,7 +106,7 @@ fun Profile(
                 ProfileInfo(text = if (profile.email.isNotEmpty()) profile.email else "Не указана")
 
                 // Редактировать
-                ProfileInfo(text="Редактировать", color=Color(0xFF5D76CB), onClick=onEditingClick)
+                ProfileInfo(text="Редактировать", color=BlueGradient, onClick=onEditingClick)
             }
         }
         Spacer(Modifier.width(fw(10)))
@@ -116,7 +117,7 @@ fun Profile(
                 //.fillMaxHeight()
                 //.width(fw(50))
                 .fillMaxSize()
-                .background(Color(0xFF5D76CB),RoundedCornerShape(10.dp)),
+                .background(BlueGradient,RoundedCornerShape(10.dp)),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
 

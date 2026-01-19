@@ -41,7 +41,10 @@ import androidx.compose.ui.unit.sp
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.res.stringResource
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.theme.BlueGradient
+import com.fortgame.ksynic.theme.PinkGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -58,7 +61,7 @@ fun TopHeaderWithSearchAndReturn(
             .height(fh(100))
             .background(
                 brush = Brush.linearGradient(
-                    colors = listOf(Color(0xFF5D76CB), Color(0xFFFCB4D5)),
+                    colors = listOf(BlueGradient, PinkGradient),
                     start = Offset(0f, 0f),  // Левый верхний
                     end = Offset(600f, 600f), // Правый нижний (или используйте Offset.Infinite)
                 ),
@@ -78,7 +81,7 @@ fun TopHeaderWithSearchAndReturn(
             // Строка адреса
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "ПВЗ: ул. Королева, 5",
+                    text = "ПВЗ: ул. Королева, 5",      //TODO: убрать статическую, мы должны будем получать по координатам адрес
                     //font=Font.Inter,
                     color = Color.White,
                     fontWeight = FontWeight.SemiBold,
@@ -152,7 +155,7 @@ fun TopHeaderWithSearchAndReturn(
                                 ) {
                                     if (searchQuery.isEmpty()) {
                                         Text(
-                                            "Ищите что то конкретное?...",
+                                            stringResource(R.string.search),
                                             color = Color(0xFF6E6E6E),
                                             fontSize = 16.sp,
                                             modifier = Modifier.align(Alignment.CenterStart)

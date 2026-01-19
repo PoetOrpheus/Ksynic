@@ -29,6 +29,8 @@ import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 import android.util.Log
+import androidx.compose.ui.res.stringResource
+import com.fortgame.ksynic.R
 import kotlinx.coroutines.delay
 
 @Composable
@@ -89,7 +91,7 @@ fun SearchScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "Введите поисковый запрос",
+                                text= stringResource(R.string.search_term),
                                 fontSize = 16.sp,
                                 color = Color.Gray
                             )
@@ -102,7 +104,7 @@ fun SearchScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "Ничего не найдено",
+                                stringResource(R.string.nothing_found),
                                 fontSize = 16.sp,
                                 color = Color.Gray
                             )
@@ -146,7 +148,7 @@ fun SearchScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Введите поисковый запрос",
+                            stringResource(R.string.search),
                             fontSize = 16.sp,
                             color = Color.Gray
                         )

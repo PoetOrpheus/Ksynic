@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fortgame.ksynic.mvvm.ui.state.UiState
 import com.fortgame.ksynic.mvvm.viewmodel.ProductViewModel
 import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
+import com.fortgame.ksynic.theme.lowWhite
 
 @Composable
 fun SplashScreen(
@@ -52,7 +53,7 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF2F2F2)),
+            .background(lowWhite),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()

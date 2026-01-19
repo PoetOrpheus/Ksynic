@@ -32,6 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.theme.BlueGradient
+import com.fortgame.ksynic.theme.lowWhite
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -108,7 +110,7 @@ fun ProductMainCard(
         ) {
             repeat(images.size) { iteration ->
                 val color = if (pagerState.currentPage == iteration) {
-                    Color(0xFF5D76CB) // Активный синий
+                    BlueGradient // Активный синий
                 } else {
                     Color(0xFFBDBDBD) // Неактивный серый
                 }
@@ -255,7 +257,7 @@ fun ProductMainCard(
 @Composable
 @Preview
 private fun ProductMainCardPreview() {
-    Box(modifier = Modifier.background(Color(0xFFF2F2F2)).padding(10.dp)) {
+    Box(modifier = Modifier.background(lowWhite).padding(10.dp)) {
         ProductMainCard(
             product = com.fortgame.ksynic.mvvm.model.TestProducts.calvinKleinWatch,
             selectedVariantId = "variant_3_1"

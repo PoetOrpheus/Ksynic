@@ -24,6 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.theme.BlueGradient
+import com.fortgame.ksynic.theme.PinkGradient
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -35,7 +37,7 @@ fun TopHeaderWithoutSearch() {
             .height(fh(50))
             .background(
                 brush = Brush.linearGradient(
-                    colors = listOf(Color(0xFF5D76CB), Color(0xFFFCB4D5)),
+                    colors = listOf(BlueGradient, PinkGradient),
                     start = Offset(0f, 0f),  // Левый верхний
                     end = Offset(600f, 600f), // Правый нижний (или используйте Offset.Infinite)
                 ),

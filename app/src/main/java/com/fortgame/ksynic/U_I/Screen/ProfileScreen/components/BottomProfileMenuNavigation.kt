@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fortgame.ksynic.R
+import com.fortgame.ksynic.theme.lowWhite
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
 
@@ -113,7 +114,7 @@ private fun RowCategory(
 @Preview
 private fun BottomProfileMenuNavigationPreview() {
     // Добавил фон для превью, чтобы было видно белую карточку
-    Box(modifier = Modifier.background(Color(0xFFF2F2F2)).padding(20.dp)) {
+    Box(modifier = Modifier.background(lowWhite).padding(20.dp)) {
         BottomProfileMenuNavigation()
     }
 }

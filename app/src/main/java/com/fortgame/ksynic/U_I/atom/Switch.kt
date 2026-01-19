@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.fortgame.ksynic.theme.BlueGradient
 import com.fortgame.ksynic.theme.BrandPurple
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
@@ -38,7 +39,7 @@ fun Switch(
 
     // Анимированный цвет трека
     val trackColor by animateColorAsState(
-        targetValue = if (checked) Color(0xFF5D76CB) else Color(0xFF353535),
+        targetValue = if (checked) BlueGradient else Color(0xFF353535),
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessMedium

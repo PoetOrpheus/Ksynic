@@ -49,7 +49,7 @@ fun BottomNavigationBar(
                 .width(fw(450))
                 .height(fh(60))
                 .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
-                .background(Color(0xFFF2F2F2)),
+                .background(lowWhite),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
