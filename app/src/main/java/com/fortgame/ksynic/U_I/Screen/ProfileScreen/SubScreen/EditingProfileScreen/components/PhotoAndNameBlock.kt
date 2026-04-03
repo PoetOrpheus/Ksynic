@@ -109,10 +109,11 @@ fun PhotoAndNameBlock(
             contentAlignment = Alignment.CenterStart
         ){
             Text(
-                text = profile.displayName.ifEmpty { "Денис Д." },
+                text = if (profile.displayName.isNotEmpty()) profile.displayName else "",
                 fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
                 lineHeight = 17.sp,
+                color = if (profile.displayName.isNotEmpty()) Color.Black else Color(0xFFA2A2A2),
                 modifier = Modifier.padding(horizontal = fw(15))
             )
         }

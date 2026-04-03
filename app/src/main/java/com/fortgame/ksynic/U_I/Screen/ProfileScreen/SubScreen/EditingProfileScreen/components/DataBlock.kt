@@ -95,8 +95,9 @@ fun DataBlock(
             modifier = Modifier.padding(horizontal = fw(20))
         )
         EditableFieldBox(
-            value = profile.lastName.ifEmpty { "Девятгин" },
-            onClick = { showEditLastNameDialog = true }
+            value = if (profile.lastName.isNotEmpty()) profile.lastName else "",
+            onClick = { showEditLastNameDialog = true },
+            isEmpty = profile.lastName.isEmpty()
         )
 
         Spacer(Modifier.height(fh(10)))
@@ -119,8 +120,9 @@ fun DataBlock(
             modifier = Modifier.padding(horizontal = fw(20))
         )
         EditableFieldBox(
-            value = profile.gender.ifEmpty { "Мужской" },
-            onClick = { showEditGenderDialog = true }
+            value = if (profile.gender.isNotEmpty()) profile.gender else "",
+            onClick = { showEditGenderDialog = true },
+            isEmpty = profile.gender.isEmpty()
         )
 
         Spacer(Modifier.height(fh(10)))
@@ -143,8 +145,9 @@ fun DataBlock(
             modifier = Modifier.padding(horizontal = fw(20))
         )
         EditableFieldBox(
-            value = profile.birthDate.ifEmpty { "19.09.2001" },
-            onClick = { showEditBirthDateDialog = true }
+            value = if (profile.birthDate.isNotEmpty()) profile.birthDate else "",
+            onClick = { showEditBirthDateDialog = true },
+            isEmpty = profile.birthDate.isEmpty()
         )
 
         Spacer(Modifier.height(fh(10)))
@@ -167,8 +170,9 @@ fun DataBlock(
             modifier = Modifier.padding(horizontal = fw(20))
         )
         EditableFieldBox(
-            value = profile.phone.ifEmpty { "+7 (999) 999-99-99" },
-            onClick = { showEditPhoneDialog = true }
+            value = if (profile.phone.isNotEmpty()) profile.phone else "",
+            onClick = { showEditPhoneDialog = true },
+            isEmpty = profile.phone.isEmpty()
         )
 
         Spacer(Modifier.height(fh(10)))
@@ -191,8 +195,9 @@ fun DataBlock(
             modifier = Modifier.padding(horizontal = fw(20))
         )
         EditableFieldBox(
-            value = profile.email.ifEmpty { "im_gay_19@mail.ru" },
-            onClick = { showEditEmailDialog = true }
+            value = if (profile.email.isNotEmpty()) profile.email else "",
+            onClick = { showEditEmailDialog = true },
+            isEmpty = profile.email.isEmpty()
         )
         Spacer(Modifier.height(fh(15)))
 
@@ -272,14 +277,15 @@ fun DataBlock(
 @Composable
 private fun EditableFieldBox(
     value: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isEmpty: Boolean = false
 ) {
     Text(
-        text = value,
+        text = if (isEmpty) "" else value,
         fontSize = 18.sp,
         fontWeight = FontWeight.Medium,
         lineHeight = 20.sp,
-        color = Color.Black,
+        color = if (isEmpty) Color(0xFFA2A2A2) else Color.Black,
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)

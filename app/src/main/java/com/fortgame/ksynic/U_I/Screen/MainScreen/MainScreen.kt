@@ -105,14 +105,26 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showCatalogSubScreen and !showCategoryProducts and !showBrands and !showWaitingReview and !showEditingProfile and !showSearch and !showChoiceLogOrRegister and !showLogin and !showRegistration) { // Скрываем навигацию на экране деталей
+            if (!showProductDetail and !showHistory and !showCanBeSeller and !showCategory and !showCatalogSubScreen and !showCategoryProducts and !showBrands and !showWaitingReview and !showEditingProfile and !showSearch) { // Скрываем навигацию на экране деталей
                 BottomNavigationBar(
                     selectedItem = selectedTab,
                     onItemSelected = { newTab ->
                         selectedTab = newTab
-                        // При переходе на Profile проверяем авторизацию
-                        if (newTab == BottomNavItem.Profile && isLoggedIn == false) {
-                            showChoiceLogOrRegister = true
+                        // Закрываем экраны входа/регистрации при переключении на другую вкладку
+                        if (newTab != BottomNavItem.Profile) {
+                            showChoiceLogOrRegister = false
+                            showLogin = false
+                            showRegistration = false
+                        } else {
+                            // При переходе на Profile проверяем авторизацию
+                            if (isLoggedIn == false) {
+                                showChoiceLogOrRegister = true
+                            } else {
+                                // Если авторизован, закрываем экраны входа/регистрации
+                                showChoiceLogOrRegister = false
+                                showLogin = false
+                                showRegistration = false
+                            }
                         }
                     }
                 )

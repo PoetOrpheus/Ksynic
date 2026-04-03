@@ -162,10 +162,13 @@ class LocalDataStore(private val context: Context) {
      * Сохранить профиль пользователя
      */
     suspend fun saveUserProfile(profile: UserProfile) {
+        android.util.Log.d("LocalDataStore", "saveUserProfile: firstName='${profile.firstName}', lastName='${profile.lastName}', phone='${profile.phone}', email='${profile.email}', gender='${profile.gender}', displayName='${profile.displayName}'")
         val profileJson = gson.toJson(profile)
+        android.util.Log.d("LocalDataStore", "saveUserProfile: profileJson='$profileJson'")
         context.dataStore.edit { preferences ->
             preferences[userProfileKey] = profileJson
         }
+        android.util.Log.d("LocalDataStore", "saveUserProfile: профиль сохранен в DataStore")
     }
 
     /**
@@ -175,13 +178,18 @@ class LocalDataStore(private val context: Context) {
         return try {
             val preferences = context.dataStore.data.first()
             val profileJson = preferences[userProfileKey]
+            android.util.Log.d("LocalDataStore", "getUserProfile: profileJson='$profileJson'")
             
             if (profileJson != null && profileJson.isNotEmpty()) {
-                gson.fromJson(profileJson, UserProfile::class.java)
+                val profile = gson.fromJson(profileJson, UserProfile::class.java)
+                android.util.Log.d("LocalDataStore", "getUserProfile: загружен профиль: firstName='${profile.firstName}', lastName='${profile.lastName}', phone='${profile.phone}', email='${profile.email}', gender='${profile.gender}', displayName='${profile.displayName}'")
+                profile
             } else {
+                android.util.Log.d("LocalDataStore", "getUserProfile: профиль не найден (profileJson пустой или null)")
                 null
             }
         } catch (e: Exception) {
+            android.util.Log.e("LocalDataStore", "getUserProfile: ошибка при загрузке профиля", e)
             e.printStackTrace()
             null
         }

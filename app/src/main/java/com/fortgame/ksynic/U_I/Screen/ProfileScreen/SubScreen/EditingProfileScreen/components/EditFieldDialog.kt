@@ -39,6 +39,8 @@ import com.fortgame.ksynic.R
 import com.fortgame.ksynic.U_I.ProductDetailScreen.BlueButton
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
+import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 
 /**
  * Диалог для редактирования поля профиля
@@ -54,6 +56,11 @@ fun EditFieldDialog(
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
     var textValue by remember { mutableStateOf(currentValue) }
+
+    LaunchedEffect(currentValue) {
+        Log.d("EditFieldDialog", "EditFieldDialog открыт: title='$title', currentValue='$currentValue', length=${currentValue.length}")
+        textValue = currentValue
+    }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -127,7 +134,10 @@ fun EditFieldDialog(
                             disabledContainerColor = Color.White,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
+                            disabledIndicatorColor = Color.Transparent,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black,
+                            cursorColor = Color.Black
                         ),
                         textStyle = androidx.compose.ui.text.TextStyle(
                             fontSize = 18.sp,

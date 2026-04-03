@@ -263,7 +263,6 @@ fun ProductCard(
                         Spacer(modifier = Modifier.width(fw(5)))
                         Box(
                             Modifier
-                                .height(fh(10))
                                 .width(fw(75))
                         ) {
                             Text(
@@ -278,7 +277,6 @@ fun ProductCard(
 
                         Box(
                             Modifier
-                                .height(fh(10))
                                 .width(fw(50)),
                             contentAlignment = Alignment.CenterEnd
                         ) {

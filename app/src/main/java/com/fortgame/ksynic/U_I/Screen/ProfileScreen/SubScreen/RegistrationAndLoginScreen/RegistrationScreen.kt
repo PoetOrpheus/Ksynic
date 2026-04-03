@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,6 +54,7 @@ import com.fortgame.ksynic.U_I.ProductDetailScreen.BgGray
 import com.fortgame.ksynic.U_I.TopHeaderWithoutSearch
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
+import android.util.Log
 
 @Composable
 fun RegistrationScreen(
@@ -64,7 +67,67 @@ fun RegistrationScreen(
     // Состояния для ввода данных
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("+7 (") }
+    var phoneValue by remember { mutableStateOf(TextFieldValue("+7 (", TextRange(4))) }
+    
+    // Функция форматирования номера телефона с сохранением позиции курсора
+    fun formatPhoneNumber(input: TextFieldValue): TextFieldValue {
+        val base = "+7 ("
+        
+        // Извлекаем все цифры из строки
+        val allDigits = input.text.filter { it.isDigit() }
+        
+        // Если нет цифр или только одна "7", возвращаем базовый формат
+        if (allDigits.isEmpty() || (allDigits.length == 1 && allDigits == "7")) {
+            return TextFieldValue(base, TextRange(base.length))
+        }
+        
+        // Убираем первую 7, если она есть (код страны уже в base)
+        val phoneDigits = if (allDigits.startsWith("7") && allDigits.length > 1) {
+            allDigits.substring(1).take(10)
+        } else {
+            allDigits.take(10)
+        }
+        
+        // Если после удаления первой 7 не осталось цифр, возвращаем базовый формат
+        if (phoneDigits.isEmpty()) {
+            return TextFieldValue(base, TextRange(base.length))
+        }
+        
+        // Форматируем номер
+        val formatted = when {
+            phoneDigits.length <= 3 -> "$base$phoneDigits"
+            phoneDigits.length <= 6 -> "$base${phoneDigits.substring(0, 3)}) ${phoneDigits.substring(3)}"
+            phoneDigits.length <= 8 -> "$base${phoneDigits.substring(0, 3)}) ${phoneDigits.substring(3, 6)}-${phoneDigits.substring(6)}"
+            else -> "$base${phoneDigits.substring(0, 3)}) ${phoneDigits.substring(3, 6)}-${phoneDigits.substring(6, 8)}-${phoneDigits.substring(8)}"
+        }
+        
+        // Рассчитываем новую позицию курсора
+        val oldCursor = input.selection.start
+        val oldText = input.text
+        
+        // Считаем количество цифр до старой позиции курсора (исключая первую "7")
+        val digitsBeforeCursor = oldText.substring(0, oldCursor.coerceAtMost(oldText.length)).filter { it.isDigit() }
+        // Количество цифр номера телефона (без кода страны 7)
+        val digitsCountBefore = when {
+            digitsBeforeCursor.isEmpty() -> 0
+            digitsBeforeCursor == "7" -> 0
+            digitsBeforeCursor.startsWith("7") -> digitsBeforeCursor.length - 1
+            else -> digitsBeforeCursor.length
+        }
+        
+        // Находим позицию в отформатированной строке, соответствующую этой цифре
+        // base = "+7 (" = 4 символа
+        // Формат: "+7 (XXX) XXX-XX-XX"
+        val newCursor = when {
+            digitsCountBefore <= 0 -> base.length  // 4
+            digitsCountBefore <= 3 -> base.length + digitsCountBefore  // 4 + количество цифр (1-3)
+            digitsCountBefore <= 6 -> base.length + 3 + 3 + (digitsCountBefore - 3)  // 4 + 3 цифры + ") " (3 символа) + остальные цифры
+            digitsCountBefore <= 8 -> base.length + 3 + 3 + 3 + 1 + (digitsCountBefore - 6)  // 4 + 3 + ") " (3) + 3 + "-" (1) + остальные
+            else -> base.length + 3 + 3 + 3 + 1 + 2 + 1 + (digitsCountBefore - 8)  // 4 + 3 + ") " (3) + 3 + "-" (1) + 2 + "-" (1) + остальные
+        }.coerceIn(0, formatted.length)
+        
+        return TextFieldValue(formatted, TextRange(newCursor))
+    }
     
     // Состояния для кода
     var showCodeField by remember { mutableStateOf(false) }
@@ -81,7 +144,7 @@ fun RegistrationScreen(
 
         Column(
             Modifier
-                .height(fh(385))
+                //.height(fh(385))
                 .fillMaxWidth()
                 .padding(horizontal = fw(25))
                 .align(Alignment.Center)
@@ -169,11 +232,12 @@ fun RegistrationScreen(
                     painterResource(R.drawable.russian_flag),
                     null
                 )
-                EditableNameBox(
-                    value = phone,
-                    onValueChange = { phone = it },
-                    placeholder = "+7 (000) 000-00-00",
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                EditableNameBoxPhone(
+                    value = phoneValue,
+                    onValueChange = { newValue ->
+                        phoneValue = formatPhoneNumber(newValue)
+                    },
+                    placeholder = "+7 (000) 000-00-00"
                 )
             }
             Spacer(Modifier.height(fh(20)))
@@ -219,7 +283,7 @@ fun RegistrationScreen(
                         .background(Color.White)
                         .align(Alignment.End)
                         .clickable(
-                            enabled = firstName.isNotBlank() && lastName.isNotBlank() && phone.length > 4
+                            enabled = firstName.isNotBlank() && lastName.isNotBlank() && phoneValue.text.length > 4
                         ) {
                             // Генерируем тестовый код
                             generatedCode = (1000..9999).random().toString()
@@ -235,7 +299,7 @@ fun RegistrationScreen(
                                 val profile = UserProfile(
                                     firstName = firstName.trim(),
                                     lastName = lastName.trim(),
-                                    phone = phone.trim(),
+                                    phone = phoneValue.text.trim(),
                                     email = "", // Пустое
                                     birthDate = "", // Пустое
                                     gender = "", // Пустое
@@ -255,6 +319,8 @@ fun RegistrationScreen(
                         fontWeight = FontWeight.Normal,
                     )
                 }
+
+                Spacer(Modifier.height(fh(20)))
             }
 
 
@@ -298,18 +364,19 @@ fun EditableNameBox(
     placeholder: String = "",
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
+    Log.d("EditableNameBox", "value='$value', length=${value.length}")
     TextField(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier
-            .height(fh(40))
+            //.height(fh(40))
             .fillMaxWidth()
             .padding(horizontal = fw(20)),
         placeholder = {
             Text(
                 text = placeholder,
                 fontSize = 20.sp,
-                lineHeight = 22.sp,
+                lineHeight = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFA2A2A2)
             )
@@ -328,10 +395,52 @@ fun EditableNameBox(
         textStyle = androidx.compose.ui.text.TextStyle(
             fontSize = 20.sp,
             lineHeight = 22.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
+            fontWeight = FontWeight.Bold
         ),
         keyboardOptions = keyboardOptions,
+        singleLine = true
+    )
+}
+
+@Composable
+fun EditableNameBoxPhone(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    placeholder: String = ""
+) {
+    Log.d("EditableNameBoxPhone", "value='${value.text}', cursor=${value.selection.start}")
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = fw(20)),
+        placeholder = {
+            Text(
+                text = placeholder,
+                fontSize = 20.sp,
+                lineHeight = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFA2A2A2)
+            )
+        },
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            focusedIndicatorColor = Transparent,
+            unfocusedIndicatorColor = Transparent,
+            disabledIndicatorColor = Transparent,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black,
+            cursorColor = Color.Black
+        ),
+        shape = RoundedCornerShape(10.dp),
+        textStyle = androidx.compose.ui.text.TextStyle(
+            fontSize = 20.sp,
+            lineHeight = 22.sp,
+            fontWeight = FontWeight.Bold
+        ),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
         singleLine = true
     )
 }

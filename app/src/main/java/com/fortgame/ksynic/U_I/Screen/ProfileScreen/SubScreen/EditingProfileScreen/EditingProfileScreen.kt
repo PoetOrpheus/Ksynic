@@ -24,6 +24,7 @@ import com.fortgame.ksynic.mvvm.viewmodel.UserProfileViewModel
 import com.fortgame.ksynic.mvvm.viewmodel.ViewModelFactory
 import com.fortgame.ksynic.utils.fh
 import com.fortgame.ksynic.utils.fw
+import android.util.Log
 
 @Composable
 fun EditingProfileScreen(
@@ -37,6 +38,10 @@ fun EditingProfileScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadProfile()
+    }
+
+    LaunchedEffect(profile) {
+        Log.d("EditingProfileScreen", "Профиль загружен: firstName='${profile.firstName}', lastName='${profile.lastName}', phone='${profile.phone}', email='${profile.email}', gender='${profile.gender}', displayName='${profile.displayName}'")
     }
     Box(
         modifier = Modifier
